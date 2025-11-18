@@ -13,3 +13,4 @@
 - 2025-11-16T14:53:05.349Z: fix(db): optimize database schema
 - 2025-11-17T14:21:28.461Z: refactor(ui): add support for SEO meta tags
 - 2025-11-18T17:34:00.868Z: feat(utils): implement login flow
+- 2025-11-18T20:10:00.913Z: chore(layout): fix issue in responsive design
