@@ -14,3 +14,4 @@
 - 2025-11-17T14:21:28.461Z: refactor(ui): add support for SEO meta tags
 - 2025-11-18T17:34:00.868Z: feat(utils): implement login flow
 - 2025-11-18T20:10:00.913Z: chore(layout): fix issue in responsive design
+- 2025-11-19T04:41:52.795Z: perf(hooks): add support for SEO meta tags
