@@ -16,3 +16,4 @@
 - 2025-11-18T20:10:00.913Z: chore(layout): fix issue in responsive design
 - 2025-11-19T04:41:52.795Z: perf(hooks): add support for SEO meta tags
 - 2025-11-19T06:39:31.228Z: style(api): add support for SEO meta tags
+- 2025-11-20T02:14:30.198Z: style(core): refactor responsive design
