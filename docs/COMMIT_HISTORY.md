@@ -17,3 +17,4 @@
 - 2025-11-19T04:41:52.795Z: perf(hooks): add support for SEO meta tags
 - 2025-11-19T06:39:31.228Z: style(api): add support for SEO meta tags
 - 2025-11-20T02:14:30.198Z: style(core): refactor responsive design
+- 2025-11-21T18:14:53.591Z: chore(core): add support for animations
