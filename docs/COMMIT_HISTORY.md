@@ -21,3 +21,4 @@
 - 2025-11-22T01:33:38.324Z: style(ui): refactor database schema
 - 2025-11-22T22:55:35.180Z: fix(ui): update dashboard layout
 - 2025-11-23T14:50:02.287Z: perf(core): clean up data fetching
+- 2025-11-24T06:03:31.835Z: fix(pages): update database schema
