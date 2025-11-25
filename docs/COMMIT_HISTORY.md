@@ -22,3 +22,4 @@
 - 2025-11-22T22:55:35.180Z: fix(ui): update dashboard layout
 - 2025-11-23T14:50:02.287Z: perf(core): clean up data fetching
 - 2025-11-24T06:03:31.835Z: fix(pages): update database schema
+- 2025-11-25T07:37:36.676Z: perf(hooks): update database schema
