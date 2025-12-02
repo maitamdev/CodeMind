@@ -38,3 +38,4 @@
 - 2025-12-02T03:05:41.364Z: feat(auth): refactor login flow
 - 2025-12-02T07:54:56.337Z: refactor(ui): add support for dashboard layout
 - 2025-12-02T09:12:18.004Z: perf(pages): clean up animations
+- 2025-12-02T11:32:52.668Z: perf(components): add support for animations
