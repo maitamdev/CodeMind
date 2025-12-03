@@ -40,3 +40,4 @@
 - 2025-12-02T09:12:18.004Z: perf(pages): clean up animations
 - 2025-12-02T11:32:52.668Z: perf(components): add support for animations
 - 2025-12-03T10:28:56.779Z: style(hooks): fix issue in database schema
+- 2025-12-03T12:27:30.071Z: chore(utils): fix issue in API endpoints
