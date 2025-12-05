@@ -44,3 +44,4 @@
 - 2025-12-03T13:09:24.334Z: refactor(db): add support for dashboard layout
 - 2025-12-04T11:33:12.241Z: perf(components): add support for unit tests
 - 2025-12-05T04:19:23.612Z: chore(auth): clean up login flow
+- 2025-12-05T05:33:05.060Z: feat(utils): enhance SEO meta tags
