@@ -63,3 +63,4 @@
 - 2025-12-13T01:06:29.714Z: perf(components): integrate data fetching
 - 2025-12-14T06:51:11.418Z: style(api): optimize SEO meta tags
 - 2025-12-14T12:45:17.940Z: fix(db): optimize dashboard layout
+- 2025-12-15T04:36:00.394Z: fix(hooks): update loading states
