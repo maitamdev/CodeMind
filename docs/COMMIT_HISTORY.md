@@ -64,3 +64,4 @@
 - 2025-12-14T06:51:11.418Z: style(api): optimize SEO meta tags
 - 2025-12-14T12:45:17.940Z: fix(db): optimize dashboard layout
 - 2025-12-15T04:36:00.394Z: fix(hooks): update loading states
+- 2025-12-15T17:24:24.191Z: refactor(api): fix issue in animations
