@@ -72,3 +72,4 @@
 - 2025-12-19T09:39:04.127Z: refactor(components): implement loading states
 - 2025-12-19T15:25:49.689Z: perf(hooks): implement API endpoints
 - 2025-12-19T17:57:52.840Z: feat(ui): refactor API endpoints
+- 2025-12-20T15:41:19.283Z: feat(layout): add support for SEO meta tags
