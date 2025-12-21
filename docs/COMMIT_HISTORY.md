@@ -73,3 +73,4 @@
 - 2025-12-19T15:25:49.689Z: perf(hooks): implement API endpoints
 - 2025-12-19T17:57:52.840Z: feat(ui): refactor API endpoints
 - 2025-12-20T15:41:19.283Z: feat(layout): add support for SEO meta tags
+- 2025-12-21T13:41:39.471Z: chore(api): update database schema
