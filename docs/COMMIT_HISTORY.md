@@ -78,3 +78,4 @@
 - 2025-12-22T09:51:33.220Z: style(hooks): optimize unit tests
 - 2025-12-22T13:02:58.145Z: refactor(components): add support for error handling
 - 2025-12-22T15:24:53.544Z: feat(ui): implement data fetching
+- 2025-12-22T18:34:05.216Z: feat(components): add support for loading states
