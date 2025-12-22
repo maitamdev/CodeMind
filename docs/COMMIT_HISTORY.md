@@ -75,3 +75,4 @@
 - 2025-12-20T15:41:19.283Z: feat(layout): add support for SEO meta tags
 - 2025-12-21T13:41:39.471Z: chore(api): update database schema
 - 2025-12-21T19:53:01.537Z: fix(db): integrate unit tests
+- 2025-12-22T09:51:33.220Z: style(hooks): optimize unit tests
