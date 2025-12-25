@@ -81,3 +81,4 @@
 - 2025-12-22T18:34:05.216Z: feat(components): add support for loading states
 - 2025-12-24T04:14:37.704Z: perf(auth): integrate loading states
 - 2025-12-24T13:12:49.067Z: perf(pages): optimize user profile
+- 2025-12-25T01:45:50.397Z: fix(utils): refactor navigation menu
