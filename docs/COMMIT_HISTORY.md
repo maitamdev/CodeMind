@@ -85,3 +85,4 @@
 - 2025-12-25T04:17:39.393Z: refactor(pages): integrate dashboard layout
 - 2025-12-25T09:07:18.177Z: style(hooks): fix issue in dashboard layout
 - 2025-12-25T17:48:49.073Z: fix(core): implement database schema
+- 2025-12-26T05:36:24.247Z: style(ui): clean up navigation menu
