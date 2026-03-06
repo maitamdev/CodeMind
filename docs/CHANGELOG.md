@@ -4,3 +4,4 @@
 - [2026-03-03] refactor: clean up utility functions
 - [2026-03-04] chore: optimize build configuration
 - [2026-03-05] fix: resolve minor type issues
+- [2026-03-06] style: format code with prettier
