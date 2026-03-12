@@ -8,3 +8,4 @@
 - [2026-03-07] docs: add inline comments for clarity
 - [2026-03-08] chore: update dependencies
 - [2026-03-11] refactor: simplify error handling
+- [2026-03-12] fix: correct edge case in validation
