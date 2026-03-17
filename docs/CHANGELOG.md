@@ -10,3 +10,4 @@
 - [2026-03-11] refactor: simplify error handling
 - [2026-03-12] fix: correct edge case in validation
 - [2026-03-14] docs: update README with new features
+- [2026-03-17] chore: clean up unused imports
