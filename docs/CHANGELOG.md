@@ -12,3 +12,4 @@
 - [2026-03-14] docs: update README with new features
 - [2026-03-17] chore: clean up unused imports
 - [2026-03-20] refactor: improve code readability
+- [2026-03-21] fix: resolve linting warnings
