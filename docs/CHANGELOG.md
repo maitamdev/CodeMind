@@ -15,3 +15,4 @@
 - [2026-03-21] fix: resolve linting warnings
 - [2026-03-24] style: normalize whitespace
 - [2026-03-25] docs: document API endpoints
+- [2026-03-26] chore: update environment configs
