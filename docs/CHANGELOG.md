@@ -16,3 +16,4 @@
 - [2026-03-24] style: normalize whitespace
 - [2026-03-25] docs: document API endpoints
 - [2026-03-26] chore: update environment configs
+- [2026-03-28] refactor: extract helper functions
