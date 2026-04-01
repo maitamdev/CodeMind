@@ -19,3 +19,4 @@
 - [2026-03-28] refactor: extract helper functions
 - [2026-03-29] fix: handle null checks properly
 - [2026-03-30] style: consistent naming conventions
+- [2026-04-01] docs: add usage examples
