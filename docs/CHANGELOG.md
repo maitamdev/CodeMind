@@ -20,3 +20,4 @@
 - [2026-03-29] fix: handle null checks properly
 - [2026-03-30] style: consistent naming conventions
 - [2026-04-01] docs: add usage examples
+- [2026-04-02] docs: update project documentation
