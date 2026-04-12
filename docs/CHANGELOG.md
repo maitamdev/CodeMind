@@ -29,3 +29,4 @@
 - [2026-04-09] chore: update dependencies
 - [2026-04-10] refactor: simplify error handling
 - [2026-04-11] fix: correct edge case in validation
+- [2026-04-12] docs: update README with new features
