@@ -34,3 +34,4 @@
 - [2026-04-14] refactor: improve code readability
 - [2026-04-15] fix: resolve linting warnings
 - [2026-04-16] style: normalize whitespace
+- [2026-04-17] docs: document API endpoints
