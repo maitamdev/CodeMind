@@ -37,3 +37,4 @@
 - [2026-04-17] docs: document API endpoints
 - [2026-04-18] chore: update environment configs
 - [2026-04-19] refactor: extract helper functions
+- [2026-04-20] fix: handle null checks properly
