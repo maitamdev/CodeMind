@@ -44,7 +44,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-600 text-sm">maitamdev@gmail.com</p>
+                    <p className="text-gray-600 text-sm">hello@codemind.dev</p>
                     <p className="text-gray-600 text-sm">support@codesenseaiot.com</p>
                   </div>
                 </div>

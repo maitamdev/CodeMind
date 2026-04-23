@@ -1,6 +1,6 @@
 # ============================================================
 # Setup Ollama Local - AI Models - Đường dẫn tùy chỉnh
-# For AI Learning Platform - Backup for Google Colab
+# For CodeMind Platform - Backup for Google Colab
 # Tích hợp với ai-service/main.py
 # ============================================================
 # Cách dùng:
@@ -34,7 +34,7 @@ $AI_SERVICE_ENV = Join-Path $ROOT_DIR "ai-service\.env"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Ollama Local Setup - AI Platform" -ForegroundColor Cyan
+Write-Host "  Ollama Local Setup - CodeMind Platform" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Models sẽ lưu tại: $MODELS_DIR" -ForegroundColor Cyan
 Write-Host ""

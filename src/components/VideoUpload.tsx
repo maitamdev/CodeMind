@@ -89,7 +89,7 @@ export default function VideoUpload({
       // 1. Get signature from server
       const timestamp = Math.round(new Date().getTime() / 1000);
       const paramsToSign = {
-        folder: "maitamdev/videos",
+        folder: "codemind/videos",
         timestamp: timestamp,
         eager: "w_300,h_300,c_fill,f_jpg", // Thumbnail generation
         eager_async: true,
@@ -113,7 +113,7 @@ export default function VideoUpload({
       formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || "");
       formData.append("timestamp", timestamp.toString());
       formData.append("signature", signature);
-      formData.append("folder", "maitamdev/videos");
+      formData.append("folder", "codemind/videos");
       formData.append("eager", "w_300,h_300,c_fill,f_jpg");
       formData.append("eager_async", "true");
 

@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="AI Learning Platform - AI Service",
+    title="CodeMind Platform - AI Service",
     description="AI Service: Roadmap Generation (Groq) + Code Agent (Ollama Local)",
     version="2.0.0",
     lifespan=lifespan,
@@ -65,7 +65,7 @@ async def root():
     """Health check endpoint"""
     return {
         "status": "ok",
-        "service": "AI Learning Platform - AI Service",
+        "service": "CodeMind Platform - AI Service",
         "version": "2.0.0",
         "providers": ["groq", "ollama-local"],
     }

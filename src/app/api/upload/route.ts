@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
         const buffer = Buffer.from(arrayBuffer);
 
         // Upload to Cloudinary
-        const result = await uploadImage(buffer, "maitamdev/blog-covers");
+        const result = await uploadImage(buffer, "codemind/blog-covers");
 
         return NextResponse.json({
             success: true,

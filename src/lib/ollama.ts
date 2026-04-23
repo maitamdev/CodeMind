@@ -1,5 +1,5 @@
-// Ollama REST API Client for AI Code Assistant
-// Connects to Ollama server (Local or Colab via Ngrok) for code completion, chat, and generation
+// Groq AI Client for CodeMind Platform
+// Uses Groq Cloud API for fast LLM inference (replaces local Ollama)
 
 import type {
     OllamaGenerateRequest,
@@ -18,68 +18,38 @@ import {
 
 // ===== Configuration =====
 
-// Normalize: remove trailing slash to avoid //api/chat (causes 405 with Ngrok)
-const OLLAMA_BASE_URL = (
-    process.env.OLLAMA_BASE_URL || "http://localhost:11434"
-).replace(/\/+$/, "");
-const OLLAMA_COMPLETION_MODEL =
-    process.env.OLLAMA_COMPLETION_MODEL || DEFAULT_OLLAMA_COMPLETION_MODEL;
-const OLLAMA_CHAT_MODEL =
-    process.env.OLLAMA_CHAT_MODEL || DEFAULT_OLLAMA_CHAT_MODEL;
-const OLLAMA_TUTOR_MODEL =
-    process.env.OLLAMA_TUTOR_MODEL || DEFAULT_OLLAMA_TUTOR_MODEL;
+const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const GROQ_BASE_URL = "https://api.groq.com/openai/v1";
 
-// Timeout for different operations
-const COMPLETION_TIMEOUT_MS = 120000; // 120s for autocomplete (cold start can take a while)
-const CHAT_TIMEOUT_MS = 300000; // 300s (5m) for chat, models take time to load/think
-const CHAT_INITIAL_TIMEOUT_MS = 180000; // 180s for first chunk from streaming (cold start for 7B models)
-const CHAT_ACTIVITY_TIMEOUT_MS = 30000; // 30s inactivity timeout between chunks
-const HEALTH_TIMEOUT_MS = 10000; // 10s for health check
+// Model aliases (mapped from legacy env vars)
+const CHAT_MODEL =
+    process.env.GROQ_CHAT_MODEL || process.env.OLLAMA_CHAT_MODEL || DEFAULT_OLLAMA_CHAT_MODEL;
+const COMPLETION_MODEL =
+    process.env.GROQ_COMPLETION_MODEL || process.env.OLLAMA_COMPLETION_MODEL || DEFAULT_OLLAMA_COMPLETION_MODEL;
+const TUTOR_MODEL =
+    process.env.GROQ_TUTOR_MODEL || process.env.OLLAMA_TUTOR_MODEL || DEFAULT_OLLAMA_TUTOR_MODEL;
 
-// Auto-detect local vs ngrok mode
-const isLocalOllama = /^https?:\/\/(localhost|127\.0\.0\.1)/i.test(
-    OLLAMA_BASE_URL,
-);
+// Timeouts
+const COMPLETION_TIMEOUT_MS = 30000;
+const CHAT_TIMEOUT_MS = 60000;
+const CHAT_INITIAL_TIMEOUT_MS = 30000;
+const CHAT_ACTIVITY_TIMEOUT_MS = 15000;
+const HEALTH_TIMEOUT_MS = 10000;
 
-// Base headers for all requests
-const BASE_HEADERS: Record<string, string> = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-};
-
-// Ngrok free tier requires extra headers to bypass browser warning.
-// Skip these when running locally to avoid unnecessary overhead.
-const NGROK_HEADERS: Record<string, string> = isLocalOllama
-    ? BASE_HEADERS
-    : {
-          ...BASE_HEADERS,
-          "ngrok-skip-browser-warning": "69420",
-          "User-Agent": "CodeSense-AI-Platform/1.0",
-      };
+// Legacy compat
+const OLLAMA_BASE_URL = GROQ_BASE_URL;
 
 // ===== Helper Functions =====
 
-/**
- * Create an AbortController with timeout
- */
-function createTimeoutController(timeoutMs: number): {
-    controller: AbortController;
-    clear: () => void;
-} {
+function createTimeoutController(timeoutMs: number) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
-    return {
-        controller,
-        clear: () => clearTimeout(timeout),
-    };
+    return { controller, clear: () => clearTimeout(timeout) };
 }
 
-/**
- * Make a request to Ollama with retry logic
- */
-async function ollamaFetch<T>(
+async function groqFetch<T>(
     endpoint: string,
-    options: RequestInit,
+    body: Record<string, unknown>,
     timeoutMs: number,
     retries: number = 1,
 ): Promise<T> {
@@ -89,63 +59,51 @@ async function ollamaFetch<T>(
         const { controller, clear } = createTimeoutController(timeoutMs);
 
         try {
-            const response = await fetch(`${OLLAMA_BASE_URL}${endpoint}`, {
-                ...options,
-                headers: { ...NGROK_HEADERS, ...options.headers },
+            const response = await fetch(`${GROQ_BASE_URL}${endpoint}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${GROQ_API_KEY}`,
+                },
+                body: JSON.stringify(body),
                 signal: controller.signal,
             });
 
             clear();
 
             if (!response.ok) {
-                const errorText = await response
-                    .text()
-                    .catch(() => "Unknown error");
-                throw new Error(
-                    `Ollama API error ${response.status}: ${errorText}`,
-                );
+                const errorText = await response.text().catch(() => "Unknown error");
+                throw new Error(`Groq API error ${response.status}: ${errorText}`);
             }
 
             return (await response.json()) as T;
         } catch (error) {
             clear();
-            lastError =
-                error instanceof Error ? error : new Error(String(error));
+            lastError = error instanceof Error ? error : new Error(String(error));
 
             if (lastError.name === "AbortError") {
-                lastError = new Error(
-                    `Ollama request timed out after ${timeoutMs}ms`,
-                );
+                lastError = new Error(`Groq request timed out after ${timeoutMs}ms`);
             }
 
-            // Don't retry on non-retryable errors
             if (attempt < retries) {
-                // Exponential backoff: 500ms, 1000ms, 2000ms...
-                await new Promise((resolve) =>
-                    setTimeout(resolve, 500 * Math.pow(2, attempt)),
-                );
+                await new Promise((resolve) => setTimeout(resolve, 500 * Math.pow(2, attempt)));
             }
         }
     }
 
-    throw lastError || new Error("Ollama request failed");
+    throw lastError || new Error("Groq request failed");
 }
 
 // ===== FIM (Fill-in-Middle) Format =====
 
-/**
- * Build a FIM prompt for DeepSeek Coder
- * DeepSeek Coder uses special tokens for fill-in-middle completion
- */
 export function buildFIMPrompt(prefix: string, suffix: string): string {
-    return `<｜fim▁begin｜>${prefix}<｜fim▁hole｜>${suffix}<｜fim▁end｜>`;
+    return `Complete the following code. Only output the code that fills the gap, nothing else.\n\nCode before:\n${prefix}\n\nCode after:\n${suffix}\n\nCompletion:`;
 }
 
 // ===== Public API =====
 
 /**
- * Code completion using FIM (Fill-in-Middle)
- * Uses deepseek-coder:1.3b for fast autocomplete
+ * Code completion using Groq
  */
 export async function getCodeCompletion(
     prefix: string,
@@ -153,76 +111,64 @@ export async function getCodeCompletion(
     options?: { maxTokens?: number; temperature?: number },
 ): Promise<{ completion: string; durationMs: number }> {
     const prompt = buildFIMPrompt(prefix, suffix);
+    const start = Date.now();
 
-    const request: OllamaGenerateRequest = {
-        model: OLLAMA_COMPLETION_MODEL,
-        prompt,
-        stream: false,
-        options: {
-            temperature: options?.temperature ?? 0.2,
-            num_predict: options?.maxTokens ?? 128,
-            top_p: 0.9,
-            stop: [
-                "\n\n",
-                "<｜fim▁begin｜>",
-                "<｜fim▁hole｜>",
-                "<｜fim▁end｜>",
-                "<|endoftext|>",
+    const response = await groqFetch<{
+        choices: Array<{ message: { content: string } }>;
+    }>(
+        "/chat/completions",
+        {
+            model: COMPLETION_MODEL,
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a code completion assistant. Output ONLY the code that fills the gap. No explanations, no markdown.",
+                },
+                { role: "user", content: prompt },
             ],
+            max_tokens: options?.maxTokens ?? 128,
+            temperature: options?.temperature ?? 0.2,
+            top_p: 0.9,
+            stream: false,
         },
-    };
-
-    const response = await ollamaFetch<OllamaGenerateResponse>(
-        "/api/generate",
-        { method: "POST", body: JSON.stringify(request) },
         COMPLETION_TIMEOUT_MS,
-        1, // 1 retry
+        1,
     );
 
-    const durationMs = response.total_duration
-        ? Math.round(response.total_duration / 1e6) // nanoseconds to ms
-        : 0;
-
     return {
-        completion: response.response?.trim() || "",
-        durationMs,
+        completion: response.choices?.[0]?.message?.content?.trim() || "",
+        durationMs: Date.now() - start,
     };
 }
 
 /**
  * Chat completion (non-streaming)
- * Uses the configured chat model for chat/generation/review
  */
 export async function getChatCompletion(
     messages: Array<{ role: "user" | "assistant" | "system"; content: string }>,
     options?: { maxTokens?: number; temperature?: number; modelId?: string },
 ): Promise<{ content: string; durationMs: number }> {
-    const request: OllamaChatRequest = {
-        model: options?.modelId || OLLAMA_CHAT_MODEL,
-        messages,
-        stream: false,
-        options: {
-            temperature: options?.temperature ?? 0.3,
-            num_predict: options?.maxTokens ?? 1024,
-            top_p: 0.9,
-            num_ctx: 8192,
-        },
-    };
+    const start = Date.now();
 
-    const response = await ollamaFetch<OllamaChatResponse>(
-        "/api/chat",
-        { method: "POST", body: JSON.stringify(request) },
+    const response = await groqFetch<{
+        choices: Array<{ message: { content: string } }>;
+    }>(
+        "/chat/completions",
+        {
+            model: options?.modelId || CHAT_MODEL,
+            messages,
+            max_tokens: options?.maxTokens ?? 1024,
+            temperature: options?.temperature ?? 0.3,
+            top_p: 0.9,
+            stream: false,
+        },
         CHAT_TIMEOUT_MS,
         1,
     );
 
-    const durationMs = response.total_duration
-        ? Math.round(response.total_duration / 1e6)
-        : 0;
-
     return {
-        content: response.message?.content || "",
-        durationMs,
+        content: response.choices?.[0]?.message?.content || "",
+        durationMs: Date.now() - start,
     };
 }
 
@@ -233,9 +179,7 @@ export interface ChatWithToolsResult {
 }
 
 /**
- * Parse Qwen 2.5 Coder text-based tool calls.
- * Qwen outputs tool calls as JSON in content instead of structured tool_calls.
- * Handles: {"name":"func","arguments":{}}, ```json {...} ```, text before/after JSON.
+ * Parse tool calls from text content (for models that output JSON in content)
  */
 function parseToolCallsFromText(content: string): OllamaToolCall[] {
     if (!content || typeof content !== "string") return [];
@@ -249,10 +193,7 @@ function parseToolCallsFromText(content: string): OllamaToolCall[] {
                 type: "function" as const,
                 function: {
                     name: parsed.name,
-                    arguments:
-                        parsed.arguments && typeof parsed.arguments === "object"
-                            ? parsed.arguments
-                            : {},
+                    arguments: parsed.arguments && typeof parsed.arguments === "object" ? parsed.arguments : {},
                 },
             };
         }
@@ -265,9 +206,7 @@ function parseToolCallsFromText(content: string): OllamaToolCall[] {
         const trimmed = raw.trim();
         if (!trimmed) return false;
         try {
-            const parsed = JSON.parse(trimmed) as
-                | { name?: string; arguments?: Record<string, unknown> }
-                | Array<{ name?: string; arguments?: Record<string, unknown> }>;
+            const parsed = JSON.parse(trimmed);
             if (Array.isArray(parsed)) {
                 for (const item of parsed) {
                     const tc = toToolCall(item);
@@ -283,52 +222,22 @@ function parseToolCallsFromText(content: string): OllamaToolCall[] {
         }
     };
 
-    // 1. Markdown code block: ```json ... ``` or ``` ... ```
     const blockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (blockMatch && tryParse(blockMatch[1])) return results;
 
-    // 2. Find JSON object via brace matching (handles text before/after)
     const nameIdx = content.search(/"name"\s*:\s*"/);
     if (nameIdx !== -1) {
         const start = content.lastIndexOf("{", nameIdx);
         if (start !== -1) {
             let depth = 0;
             for (let i = start; i < content.length; i++) {
-                const c = content[i];
-                if (c === "{") depth++;
-                else if (c === "}") {
+                if (content[i] === "{") depth++;
+                else if (content[i] === "}") {
                     depth--;
                     if (depth === 0) {
-                        const slice = content.slice(start, i + 1);
-                        if (tryParse(slice)) return results;
+                        if (tryParse(content.slice(start, i + 1))) return results;
                         break;
                     }
-                }
-            }
-        }
-    }
-
-    // 3. Brute-force: try JSON.parse from each { (handles nested content in edit_code)
-    if (results.length === 0) {
-        for (let i = 0; i < content.length; i++) {
-            if (content[i] !== "{") continue;
-            for (let j = content.length; j > i + 10; j--) {
-                try {
-                    const parsed = JSON.parse(content.slice(i, j)) as {
-                        name?: string;
-                        arguments?: Record<string, unknown>;
-                    };
-                    if (
-                        parsed &&
-                        (parsed.name === "read_code" ||
-                            parsed.name === "edit_code")
-                    ) {
-                        const tc = toToolCall(parsed);
-                        if (tc) results.push(tc);
-                        return results;
-                    }
-                } catch {
-                    /* try shorter slice */
                 }
             }
         }
@@ -339,67 +248,81 @@ function parseToolCallsFromText(content: string): OllamaToolCall[] {
 
 /**
  * Chat completion with tools (non-streaming, for agent)
- * Returns content and tool_calls if model requests tool execution.
- * Falls back to parsing Qwen text-based tool calls when tool_calls is empty.
  */
 export async function getChatCompletionWithTools(
     messages: Array<
         | { role: "user" | "assistant" | "system"; content: string }
-        | {
-              role: "assistant";
-              content?: string;
-              tool_calls?: OllamaToolCall[];
-          }
+        | { role: "assistant"; content?: string; tool_calls?: OllamaToolCall[] }
         | { role: "tool"; tool_name: string; content: string }
     >,
     tools: OllamaToolDefinition[],
-    options?: {
-        maxTokens?: number;
-        temperature?: number;
-        modelId?: string;
-    },
+    options?: { maxTokens?: number; temperature?: number; modelId?: string },
 ): Promise<ChatWithToolsResult> {
-    const request: OllamaChatRequest & { tools?: OllamaToolDefinition[] } = {
-        model: options?.modelId || OLLAMA_CHAT_MODEL,
-        messages: messages as OllamaChatRequest["messages"],
-        stream: false,
-        tools,
-        tool_choice: "auto",
-        options: {
-            temperature: options?.temperature ?? 0.3,
-            num_predict: options?.maxTokens ?? 2048,
-            top_p: 0.9,
-            num_ctx: 4096,
-        },
-    };
+    const start = Date.now();
 
-    const response = await ollamaFetch<OllamaChatResponse>(
-        "/api/chat",
-        { method: "POST", body: JSON.stringify(request) },
+    // Convert tools to OpenAI format for Groq
+    const groqTools = tools.map((t) => ({
+        type: "function" as const,
+        function: {
+            name: t.function.name,
+            description: t.function.description,
+            parameters: t.function.parameters,
+        },
+    }));
+
+    const response = await groqFetch<{
+        choices: Array<{
+            message: {
+                content?: string;
+                tool_calls?: Array<{
+                    id: string;
+                    type: string;
+                    function: { name: string; arguments: string };
+                }>;
+            };
+        }>;
+    }>(
+        "/chat/completions",
+        {
+            model: options?.modelId || CHAT_MODEL,
+            messages,
+            max_tokens: options?.maxTokens ?? 2048,
+            temperature: options?.temperature ?? 0.3,
+            top_p: 0.9,
+            stream: false,
+            tools: groqTools,
+            tool_choice: "auto",
+        },
         CHAT_TIMEOUT_MS,
         1,
     );
 
-    const durationMs = response.total_duration
-        ? Math.round(response.total_duration / 1e6)
-        : 0;
+    const msg = response.choices?.[0]?.message;
+    const content = msg?.content || "";
 
-    let toolCalls: OllamaToolCall[] | null =
-        response.message?.tool_calls && response.message.tool_calls.length > 0
-            ? response.message.tool_calls
-            : null;
+    let toolCalls: OllamaToolCall[] | null = null;
+    if (msg?.tool_calls && msg.tool_calls.length > 0) {
+        toolCalls = msg.tool_calls.map((tc) => ({
+            type: "function" as const,
+            function: {
+                name: tc.function.name,
+                arguments: (() => {
+                    try {
+                        return JSON.parse(tc.function.arguments);
+                    } catch {
+                        return {};
+                    }
+                })(),
+            },
+        }));
+    }
 
-    // Qwen 2.5 Coder outputs tool calls as text - parse content when tool_calls is empty
-    if (!toolCalls && response.message?.content) {
-        const parsed = parseToolCallsFromText(response.message.content);
+    if (!toolCalls && content) {
+        const parsed = parseToolCallsFromText(content);
         if (parsed.length > 0) toolCalls = parsed;
     }
 
-    return {
-        content: response.message?.content || "",
-        toolCalls,
-        durationMs,
-    };
+    return { content, toolCalls, durationMs: Date.now() - start };
 }
 
 export type ToolsStreamChunk =
@@ -407,58 +330,52 @@ export type ToolsStreamChunk =
     | { type: "done"; content: string; toolCalls: OllamaToolCall[] | null };
 
 /**
- * Chat completion with tools - STREAMING version for reduced latency.
- * Streams content chunks as they arrive; emits done with full content + toolCalls at end.
- * Buffers content that looks like JSON (tool call) to avoid showing raw JSON to user.
+ * Chat completion with tools - STREAMING version
  */
 export async function getChatCompletionWithToolsStream(
     messages: Array<
         | { role: "user" | "assistant" | "system"; content: string }
-        | {
-              role: "assistant";
-              content?: string;
-              tool_calls?: OllamaToolCall[];
-          }
+        | { role: "assistant"; content?: string; tool_calls?: OllamaToolCall[] }
         | { role: "tool"; tool_name: string; content: string }
     >,
     tools: OllamaToolDefinition[],
-    options?: {
-        maxTokens?: number;
-        temperature?: number;
-        modelId?: string;
-    },
+    options?: { maxTokens?: number; temperature?: number; modelId?: string },
 ): Promise<ReadableStream<ToolsStreamChunk>> {
-    const request: OllamaChatRequest & { tools?: OllamaToolDefinition[] } = {
-        model: options?.modelId || OLLAMA_CHAT_MODEL,
-        messages: messages as OllamaChatRequest["messages"],
-        stream: true,
-        tools,
-        tool_choice: "auto",
-        options: {
-            temperature: options?.temperature ?? 0.3,
-            num_predict: options?.maxTokens ?? 2048,
-            top_p: 0.9,
-            num_ctx: 4096,
+    const groqTools = tools.map((t) => ({
+        type: "function" as const,
+        function: {
+            name: t.function.name,
+            description: t.function.description,
+            parameters: t.function.parameters,
         },
-    };
+    }));
 
     const { controller: fetchController, clear: clearInitial } =
         createTimeoutController(CHAT_INITIAL_TIMEOUT_MS);
 
     let response: Response;
     try {
-        response = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
+        response = await fetch(`${GROQ_BASE_URL}/chat/completions`, {
             method: "POST",
-            headers: NGROK_HEADERS,
-            body: JSON.stringify(request),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${GROQ_API_KEY}`,
+            },
+            body: JSON.stringify({
+                model: options?.modelId || CHAT_MODEL,
+                messages,
+                max_tokens: options?.maxTokens ?? 2048,
+                temperature: options?.temperature ?? 0.3,
+                stream: true,
+                tools: groqTools,
+                tool_choice: "auto",
+            }),
             signal: fetchController.signal,
         });
     } catch (fetchErr) {
         clearInitial();
         if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
-            throw new Error(
-                `Ollama request timed out after ${CHAT_INITIAL_TIMEOUT_MS}ms waiting for model response. Try again.`,
-            );
+            throw new Error(`Groq request timed out after ${CHAT_INITIAL_TIMEOUT_MS}ms`);
         }
         throw fetchErr;
     }
@@ -467,74 +384,34 @@ export async function getChatCompletionWithToolsStream(
 
     if (!response.ok) {
         const errorText = await response.text().catch(() => "Unknown error");
-        throw new Error(
-            `Ollama streaming error ${response.status}: ${errorText}`,
-        );
+        throw new Error(`Groq streaming error ${response.status}: ${errorText}`);
     }
 
-    if (!response.body) {
-        throw new Error("No response body for streaming");
-    }
+    if (!response.body) throw new Error("No response body for streaming");
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
-    let bufferMode: boolean | null = null; // null = not yet decided, true = buffer (JSON), false = stream
-    let totalContent = ""; // always accumulate for final content
+    let totalContent = "";
 
     return new ReadableStream<ToolsStreamChunk>({
         async pull(streamController) {
             try {
                 const chunkTimeout = setTimeout(() => {
                     reader.cancel();
-                    streamController.error(
-                        new Error("Stream inactivity timeout"),
-                    );
+                    streamController.error(new Error("Stream inactivity timeout"));
                 }, CHAT_ACTIVITY_TIMEOUT_MS);
 
                 const { done, value } = await reader.read();
                 clearTimeout(chunkTimeout);
 
                 if (done) {
-                    if (buffer.trim()) {
-                        try {
-                            const data = JSON.parse(
-                                buffer.trim(),
-                            ) as OllamaChatResponse;
-                            const content = data.message?.content || "";
-                            totalContent += content;
-                            let toolCalls: OllamaToolCall[] | null =
-                                data.message?.tool_calls &&
-                                data.message.tool_calls.length > 0
-                                    ? data.message.tool_calls
-                                    : null;
-                            if (
-                                !toolCalls &&
-                                totalContent &&
-                                parseToolCallsFromText(totalContent).length > 0
-                            ) {
-                                toolCalls =
-                                    parseToolCallsFromText(totalContent);
-                            }
-                            streamController.enqueue({
-                                type: "done",
-                                content: totalContent,
-                                toolCalls,
-                            });
-                        } catch {
-                            streamController.enqueue({
-                                type: "done",
-                                content: totalContent,
-                                toolCalls: null,
-                            });
-                        }
-                    } else {
-                        streamController.enqueue({
-                            type: "done",
-                            content: totalContent,
-                            toolCalls: null,
-                        });
-                    }
+                    const toolCalls = parseToolCallsFromText(totalContent);
+                    streamController.enqueue({
+                        type: "done",
+                        content: totalContent,
+                        toolCalls: toolCalls.length > 0 ? toolCalls : null,
+                    });
                     streamController.close();
                     return;
                 }
@@ -546,126 +423,66 @@ export async function getChatCompletionWithToolsStream(
 
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    if (!trimmed) continue;
-                    try {
-                        const data = JSON.parse(
-                            trimmed,
-                        ) as OllamaChatResponse & {
-                            message?: {
-                                content?: string;
-                                tool_calls?: OllamaToolCall[];
-                            };
-                        };
-                        const content = data.message?.content || "";
-                        const hasToolCalls =
-                            data.message?.tool_calls &&
-                            data.message.tool_calls.length > 0;
-
-                        if (content) {
-                            totalContent += content;
-                            if (bufferMode === null) {
-                                const looksLikeJson = /^\s*[\{\`]/.test(
-                                    content.trim(),
-                                );
-                                bufferMode = looksLikeJson;
-                            }
-                            if (!bufferMode) {
-                                streamController.enqueue({
-                                    type: "chunk",
-                                    content,
-                                });
-                            }
-                        }
-
-                        if (hasToolCalls) {
-                            let toolCalls = data.message!
-                                .tool_calls as OllamaToolCall[];
-                            if (toolCalls.length === 0 && totalContent) {
-                                const parsed =
-                                    parseToolCallsFromText(totalContent);
-                                if (parsed.length > 0) toolCalls = parsed;
-                            }
-                            streamController.enqueue({
-                                type: "done",
-                                content: totalContent,
-                                toolCalls:
-                                    toolCalls.length > 0 ? toolCalls : null,
-                            });
-                            streamController.close();
-                            return;
-                        }
-
-                        if (data.done) {
-                            let toolCalls: OllamaToolCall[] | null =
-                                data.message?.tool_calls &&
-                                data.message.tool_calls.length > 0
-                                    ? data.message.tool_calls
-                                    : null;
-                            if (!toolCalls && totalContent) {
-                                const parsed =
-                                    parseToolCallsFromText(totalContent);
-                                if (parsed.length > 0) toolCalls = parsed;
-                            }
-                            streamController.enqueue({
-                                type: "done",
-                                content: totalContent,
-                                toolCalls,
-                            });
-                            streamController.close();
-                            return;
-                        }
-                    } catch {
-                        /* skip malformed line */
+                    if (!trimmed || !trimmed.startsWith("data: ")) continue;
+                    const data = trimmed.slice(6);
+                    if (data === "[DONE]") {
+                        const toolCalls = parseToolCallsFromText(totalContent);
+                        streamController.enqueue({
+                            type: "done",
+                            content: totalContent,
+                            toolCalls: toolCalls.length > 0 ? toolCalls : null,
+                        });
+                        streamController.close();
+                        return;
                     }
+                    try {
+                        const parsed = JSON.parse(data);
+                        const delta = parsed.choices?.[0]?.delta;
+                        if (delta?.content) {
+                            totalContent += delta.content;
+                            streamController.enqueue({ type: "chunk", content: delta.content });
+                        }
+                    } catch { /* skip malformed */ }
                 }
             } catch (error) {
                 streamController.error(error);
             }
         },
-        cancel() {
-            reader.cancel();
-        },
+        cancel() { reader.cancel(); },
     });
 }
 
 /**
  * Chat completion with streaming
- * Returns a ReadableStream of text chunks
  */
 export async function getChatCompletionStream(
     messages: Array<{ role: "user" | "assistant" | "system"; content: string }>,
     options?: { maxTokens?: number; temperature?: number; modelId?: string },
 ): Promise<ReadableStream<string>> {
-    const request: OllamaChatRequest = {
-        model: options?.modelId || OLLAMA_CHAT_MODEL,
-        messages,
-        stream: true,
-        options: {
-            temperature: options?.temperature ?? 0.3,
-            num_predict: options?.maxTokens ?? 1024,
-            top_p: 0.9,
-            num_ctx: 8192,
-        },
-    };
-
-    // Use initial timeout for the first response (model loading + first token)
     const { controller: fetchController, clear: clearInitial } =
         createTimeoutController(CHAT_INITIAL_TIMEOUT_MS);
 
     let response: Response;
     try {
-        response = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
+        response = await fetch(`${GROQ_BASE_URL}/chat/completions`, {
             method: "POST",
-            headers: NGROK_HEADERS,
-            body: JSON.stringify(request),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${GROQ_API_KEY}`,
+            },
+            body: JSON.stringify({
+                model: options?.modelId || CHAT_MODEL,
+                messages,
+                max_tokens: options?.maxTokens ?? 1024,
+                temperature: options?.temperature ?? 0.3,
+                stream: true,
+            }),
             signal: fetchController.signal,
         });
     } catch (fetchErr) {
         clearInitial();
         if (fetchErr instanceof Error && fetchErr.name === "AbortError") {
-            throw new Error(
-                `Ollama request timed out after ${CHAT_INITIAL_TIMEOUT_MS}ms waiting for model response. Try again.`,
-            );
+            throw new Error(`Groq request timed out after ${CHAT_INITIAL_TIMEOUT_MS}ms`);
         }
         throw fetchErr;
     }
@@ -674,14 +491,10 @@ export async function getChatCompletionStream(
 
     if (!response.ok) {
         const errorText = await response.text().catch(() => "Unknown error");
-        throw new Error(
-            `Ollama streaming error ${response.status}: ${errorText}`,
-        );
+        throw new Error(`Groq streaming error ${response.status}: ${errorText}`);
     }
 
-    if (!response.body) {
-        throw new Error("No response body for streaming");
-    }
+    if (!response.body) throw new Error("No response body for streaming");
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -690,7 +503,6 @@ export async function getChatCompletionStream(
     return new ReadableStream<string>({
         async pull(streamController) {
             try {
-                // Per-chunk activity timeout: abort if no data for 30s
                 const chunkTimeout = setTimeout(() => {
                     reader.cancel();
                     streamController.close();
@@ -700,16 +512,6 @@ export async function getChatCompletionStream(
                 clearTimeout(chunkTimeout);
 
                 if (done) {
-                    if (buffer.trim()) {
-                        try {
-                            const data = JSON.parse(
-                                buffer.trim(),
-                            ) as OllamaChatResponse;
-                            if (data.message?.content) {
-                                streamController.enqueue(data.message.content);
-                            }
-                        } catch {}
-                    }
                     streamController.close();
                     return;
                 }
@@ -721,32 +523,28 @@ export async function getChatCompletionStream(
 
                 for (const line of lines) {
                     const trimmed = line.trim();
-                    if (!trimmed) continue;
-                    try {
-                        const data = JSON.parse(trimmed) as OllamaChatResponse;
-                        if (data.message?.content) {
-                            streamController.enqueue(data.message.content);
-                        }
-                        if (data.done) {
-                            streamController.close();
-                            return;
-                        }
-                    } catch {
-                        // Skip malformed JSON lines
+                    if (!trimmed || !trimmed.startsWith("data: ")) continue;
+                    const data = trimmed.slice(6);
+                    if (data === "[DONE]") {
+                        streamController.close();
+                        return;
                     }
+                    try {
+                        const parsed = JSON.parse(data);
+                        const content = parsed.choices?.[0]?.delta?.content;
+                        if (content) streamController.enqueue(content);
+                    } catch { /* skip malformed */ }
                 }
             } catch (error) {
                 streamController.error(error);
             }
         },
-        cancel() {
-            reader.cancel();
-        },
+        cancel() { reader.cancel(); },
     });
 }
 
 /**
- * Health check - verify Ollama server is reachable and models are available
+ * Health check - verify Groq API is reachable
  */
 export async function checkHealth(): Promise<{
     status: "connected" | "disconnected" | "error";
@@ -757,43 +555,38 @@ export async function checkHealth(): Promise<{
     const start = Date.now();
 
     try {
-        const response = await ollamaFetch<OllamaTagsResponse>(
-            "/api/tags",
-            { method: "GET" },
-            HEALTH_TIMEOUT_MS,
-            0, // no retry for health check
-        );
+        const { controller, clear } = createTimeoutController(HEALTH_TIMEOUT_MS);
+        const response = await fetch(`${GROQ_BASE_URL}/models`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${GROQ_API_KEY}` },
+            signal: controller.signal,
+        });
+        clear();
 
-        const models = response.models?.map((m) => m.name) || [];
-        const latencyMs = Date.now() - start;
+        if (!response.ok) throw new Error(`Groq API error ${response.status}`);
 
-        return {
-            status: "connected",
-            models,
-            latencyMs,
-        };
+        const data = (await response.json()) as { data?: Array<{ id: string }> };
+        const models = data.data?.map((m) => m.id) || [];
+
+        return { status: "connected", models, latencyMs: Date.now() - start };
     } catch (error) {
-        const latencyMs = Date.now() - start;
-        const errorMessage =
-            error instanceof Error ? error.message : "Unknown error";
-
         return {
             status: "disconnected",
             models: [],
-            latencyMs,
-            error: errorMessage,
+            latencyMs: Date.now() - start,
+            error: error instanceof Error ? error.message : "Unknown error",
         };
     }
 }
 
 /**
- * Get configuration info (for debugging/settings)
+ * Get configuration info
  */
 export function getOllamaConfig() {
     return {
-        baseUrl: OLLAMA_BASE_URL,
-        completionModel: OLLAMA_COMPLETION_MODEL,
-        chatModel: OLLAMA_CHAT_MODEL,
-        tutorModel: OLLAMA_TUTOR_MODEL,
+        baseUrl: GROQ_BASE_URL,
+        completionModel: COMPLETION_MODEL,
+        chatModel: CHAT_MODEL,
+        tutorModel: TUTOR_MODEL,
     };
 }

@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
         // Send email with OTP
         await sendEmail({
           to: email,
-          subject: 'Mã xác thực đặt lại mật khẩu - CodeSense AI',
+          subject: 'Mã xác thực đặt lại mật khẩu - CodeMind',
           html: generateOTPEmailHTML(otp, userName),
           text: generateOTPEmailText(otp, userName),
         });

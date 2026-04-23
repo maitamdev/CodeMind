@@ -20,8 +20,8 @@ import {
 
 // ─── CORS whitelist ───
 const ALLOWED_ORIGINS = [
-    "https://maitamdev.com",
-    "https://www.maitamdev.com",
+    "https://codemind.dev",
+    "https://www.codemind.dev",
     "http://localhost:3000",
     "http://localhost:3001",
     process.env.NEXT_PUBLIC_MOBILE_APP_ORIGIN,

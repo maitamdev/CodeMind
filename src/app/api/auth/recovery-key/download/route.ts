@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Format recovery keys for download (similar to GitHub format)
-    const content = `CodeSense AI Recovery Keys
+    const content = `CodeMind Recovery Keys
 =====================
 
 Lưu ý: Hãy lưu trữ file này ở nơi an toàn. Mỗi recovery key chỉ có thể sử dụng một lần để khôi phục mật khẩu.
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Format recovery keys for download (similar to GitHub format)
-    const content = `CodeSense AI Recovery Keys
+    const content = `CodeMind Recovery Keys
 =====================
 
 Lưu ý: Hãy lưu trữ file này ở nơi an toàn. Mỗi recovery key chỉ có thể sử dụng một lần để khôi phục mật khẩu.

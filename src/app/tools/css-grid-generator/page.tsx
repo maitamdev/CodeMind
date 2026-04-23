@@ -5,7 +5,7 @@ import { ArrowLeft, Grid3X3 } from "lucide-react";
 import { CssGridGenerator } from "@/components/tools/css-grid/CssGridGenerator";
 
 export const metadata: Metadata = {
-    title: "CSS Grid Generator | CodeSense AI",
+    title: "CSS Grid Generator | CodeMind",
     description:
         "Tạo layout CSS Grid trực quan — thêm cột, hàng, đặt tên area rồi copy CSS và HTML.",
 };

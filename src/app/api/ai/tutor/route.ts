@@ -28,7 +28,7 @@ interface TutorMessage {
 
 function buildTutorSystemPrompt(ctx: LearningContext | null): string {
     const base = [
-        "You are the AI Tutor for the CodeSense AI learning platform.",
+        "You are the AI Tutor for the CodeMind learning platform.",
         "Always answer in Vietnamese.",
         "Use markdown with headings, bullet lists, and code blocks when helpful.",
         "Explain concepts clearly, accurately, and step by step.",
@@ -95,7 +95,7 @@ function buildCompactSystemPrompt(ctx: LearningContext | null): string {
     }
 
     return [
-        "You are a coding tutor on CodeSense AI.",
+        "You are a coding tutor on CodeMind.",
         "Answer in Vietnamese.",
         "Use markdown.",
         `Current lesson: ${ctx.currentLessonTitle}`,

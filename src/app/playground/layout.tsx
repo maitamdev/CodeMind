@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Code Playground — CodeSense AI",
+    title: "Code Playground — CodeMind",
     description: "IDE-style code editor with live preview and AI assistant",
 };
 

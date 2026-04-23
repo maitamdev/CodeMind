@@ -1,6 +1,6 @@
 # ============================================================
 # Start All AI Services - Ollama + FastAPI
-# For AI Learning Platform
+# For CodeMind Platform
 # ============================================================
 
 $ErrorActionPreference = "Continue"
@@ -10,7 +10,7 @@ $AI_SERVICE_DIR = Join-Path $PROJECT_ROOT "ai-service"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  AI Platform - Start AI Services" -ForegroundColor Cyan
+Write-Host "  CodeMind Platform - Start AI Services" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 

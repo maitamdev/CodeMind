@@ -11,20 +11,19 @@ import { cn } from "@/lib/utils";
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-    title: "Nền tảng học lập trình tích hợp AI | Hệ thống E-Learning cho giáo dục Việt Nam",
+    title: "CodeMind — Nền tảng học lập trình tích hợp AI",
     description:
-        "Nền tảng học lập trình thông minh tích hợp AI và IoT, hỗ trợ học tập trực tuyến, quản lý khóa học, và hệ thống điểm danh thông minh.",
+        "CodeMind — Nền tảng học lập trình thông minh tích hợp AI. Khóa học chất lượng, IDE trực tuyến, AI Code Assistant và lộ trình học tập cá nhân hóa.",
     keywords: [
-        "học trực tuyến",
-        "nền tảng e-learning",
         "học lập trình",
-        "AI",
-        "trí tuệ nhân tạo trong giáo dục",
-        "hệ thống học tập thông minh",
-        "điểm danh bằng AI",
-        "giáo dục số",
-        "đồ án tốt nghiệp",
-        "công nghệ thông tin",
+        "code online",
+        "AI tutor",
+        "khóa học lập trình",
+        "CodeMind",
+        "học code",
+        "lập trình web",
+        "javascript",
+        "python",
     ],
 };
 

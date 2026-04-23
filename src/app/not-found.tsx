@@ -87,7 +87,7 @@ export default function NotFound() {
                         <p className="text-xs text-gray-400">
                             Cần hỗ trợ?{" "}
                             <a
-                                href="mailto:maitamdev@gmail.com"
+                                href="mailto:hello@codemind.dev"
                                 className="text-indigo-600 hover:text-indigo-700 font-medium underline"
                             >
                                 Liên hệ với chúng tôi

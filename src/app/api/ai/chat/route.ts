@@ -6,7 +6,7 @@ import {
 } from "@/lib/ollama";
 
 // System prompt for the AI coding tutor (Vietnamese context)
-const SYSTEM_PROMPT = `Bạn là một trợ lý lập trình AI thông minh trên nền tảng học tập CodeSense AI - một trang web E-learning dành cho sinh viên và người mới bắt đầu học lập trình tại Việt Nam.
+const SYSTEM_PROMPT = `Bạn là một trợ lý lập trình AI thông minh trên nền tảng học tập CodeMind - một trang web E-learning dành cho sinh viên và người mới bắt đầu học lập trình tại Việt Nam.
 
 VAI TRÒ CỦA BẠN:
 - Giúp học viên hiểu code, giải thích khái niệm lập trình

@@ -288,7 +288,7 @@ async function uploadToCloudinary(
             try {
                 const uploadStream = cloudinary.uploader.upload_stream(
                     {
-                        folder: "maitamdev/videos",
+                        folder: "codemind/videos",
                         public_id: `${lessonId}-${Date.now()}`,
                         resource_type: "video",
                         // Video optimization

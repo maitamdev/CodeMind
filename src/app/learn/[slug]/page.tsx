@@ -171,7 +171,7 @@ export default function LearnCoursePage() {
 
     // Update page title when course changes
     usePageTitle(
-        course ? `${course.title} - CodeSense AI` : "CodeSense AI",
+        course ? `${course.title} - CodeMind` : "CodeMind",
     );
 
     // Load markdown content when current lesson changes
@@ -740,7 +740,7 @@ export default function LearnCoursePage() {
                     >
                         <img
                             src="/assets/img/logo.png"
-                            alt="CodeSense AI Logo"
+                            alt="CodeMind Logo"
                             className="h-8 w-8 rounded"
                         />
                     </button>

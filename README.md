@@ -1,18 +1,18 @@
-# Nền tảng học lập trình tích hợp AI
+# CodeMind — Nền tảng học lập trình tích hợp AI
 
 > **Nền tảng đào tạo Lập trình Thế hệ mới**
 
-**Đội ngũ phát triển:** MaiTamDev Team  
-**Liên hệ:** [https://maitamdev.com](https://maitamdev.com)
+**Đội ngũ phát triển:** CodeMind Team  
+**Liên hệ:** [https://codemind.dev](https://codemind.dev)
 
-**Repository:** [https://github.com/maitamdev/maitam-ai-learning](https://github.com/maitamdev/maitam-ai-learning)  
-**Website:** [https://maitamdev.com](https://maitamdev.com)
+**Repository:** [https://github.com/codemind-dev/codemind](https://github.com/codemind-dev/codemind)  
+**Website:** [https://codemind.dev](https://codemind.dev)
 
 ---
 
 ## 📋 Tóm tắt đồ án
 
-Nền tảng này tập trung vào việc phát triển một **hệ thống học lập trình thông minh tích hợp AI** (AI Learning Platform), nhằm cung cấp giải pháp giáo dục công nghệ hoàn chỉnh và chuyên nghiệp. Hệ thống không chỉ cung cấp các tính năng học tập trực tuyến cơ bản mà còn tích hợp các công nghệ tiên tiến như Trí tuệ nhân tạo (AI) cho việc gợi ý khóa học, trợ lý ảo viết mã, và nhận diện khuôn mặt chống gian lận.
+Nền tảng này tập trung vào việc phát triển một **hệ thống học lập trình thông minh tích hợp AI** (CodeMind Platform), nhằm cung cấp giải pháp giáo dục công nghệ hoàn chỉnh và chuyên nghiệp. Hệ thống không chỉ cung cấp các tính năng học tập trực tuyến cơ bản mà còn tích hợp các công nghệ tiên tiến như Trí tuệ nhân tạo (AI) cho việc gợi ý khóa học, trợ lý ảo viết mã, và nhận diện khuôn mặt chống gian lận.
 
 Hệ thống được thiết kế với kiến trúc phân tán, sử dụng Supabase làm database chính và VPS với MySQL cho các dịch vụ AI, đảm bảo khả năng mở rộng và hiệu suất cao.
 
@@ -133,7 +133,7 @@ Hệ thống được thiết kế theo kiến trúc phân tán với các thàn
   - WebSocket - Real-time communication
 
 ### 3.5. Deployment & Infrastructure
-- **Domain**: maitamdev.com
+- **Domain**: codemind.dev
 - **Hosting**: 
   - Vercel - Frontend deployment
   - VPS - Backend services (AI & IoT)
@@ -337,7 +337,7 @@ Hệ thống được thiết kế theo kiến trúc phân tán với các thàn
 ## 📦 5. Cấu trúc dự án
 
 ```
-maitam-ai-learning/
+codemind/
 ├── src/
 │   ├── app/                      # Next.js App Router
 │   │   ├── (main)/              # Layout chính cho người dùng
@@ -389,8 +389,8 @@ maitam-ai-learning/
 
 1. **Clone repository:**
    ```bash
-   git clone https://github.com/maitamdev/maitam-ai-learning.git
-   cd maitam-ai-learning
+   git clone https://github.com/codemind-dev/codemind.git
+   cd codemind
    ```
 
 2. **Cài đặt dependencies:**
@@ -562,14 +562,14 @@ maitam-ai-learning/
 
 ## 📝 10. Liên hệ
 
-**Sinh viên thực hiện**: MaiTamDev  
-**Email**: maitamdev@gmail.com  
-**GitHub**: [maitamdev](https://github.com/maitamdev)  
-**Website**: [maitamdev.com](https://maitamdev.com)
+**Sinh viên thực hiện**: CodeMind  
+**Email**: hello@codemind.dev  
+**GitHub**: [codemind](https://github.com/codemind-dev)  
+**Website**: [codemind.dev](https://codemind.dev)
 
-**Trường MaiTamDev Academy**  
-**MaiTamDev Team**
+**Trường CodeMind**  
+**CodeMind Team**
 
 ---
 
-© 2025 Nền tảng học lập trình tích hợp AI - MaiTamDev Academy. All rights reserved.
+© 2025 CodeMind — Nền tảng học lập trình tích hợp AI - CodeMind. All rights reserved.

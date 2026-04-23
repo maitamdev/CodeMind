@@ -145,18 +145,11 @@ export default function Header() {
         {/* Logo Section */}
         <div className="flex items-center gap-3 flex-shrink-0 z-10">
           <Link href="/" className="flex items-center justify-center transition-all duration-200 cursor-pointer">
-            <img 
-              src="/assets/img/logo.png" 
-              alt="CodeSense AI Logo" 
-              width={38}
-              height={38}
-              style={{ objectFit: 'contain' }}
-              className="w-[38px] h-[38px] rounded-lg"
-            />
+            <span className="text-xl font-bold tracking-tight text-gray-900">Code<span className="text-indigo-600">Mind</span></span>
           </Link>
           <div className="hidden lg:block">
             <Link href="/" className="transition-colors duration-200 hover:opacity-80">
-              <p className="text-small font-[700] text-black">Học lập trình thông minh với AI & IoT</p>
+              <p className="text-sm font-medium text-gray-500">Học lập trình cùng AI</p>
             </Link>
           </div>
         </div>

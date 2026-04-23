@@ -20,7 +20,7 @@ export default function RecoveryKeysModal({ isOpen, onClose, recoveryKeys }: Rec
   const handleDownload = async () => {
     try {
       // Create download link
-      const content = `CodeSense AI Recovery Keys
+      const content = `CodeMind Recovery Keys
 =====================
 
 Lưu ý: Hãy lưu trữ file này ở nơi an toàn. Mỗi recovery key chỉ có thể sử dụng một lần để khôi phục mật khẩu.

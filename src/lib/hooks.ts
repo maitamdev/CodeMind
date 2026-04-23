@@ -8,7 +8,7 @@ export function usePageTitle(title: string) {
   useEffect(() => {
     document.title = title;
     return () => {
-      document.title = 'CodeSense AI';
+      document.title = 'CodeMind';
     };
   }, [title]);
 }

@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         // 6. Upload to Cloudinary
         const uploadResult = await uploadImage(
             buffer,
-            "maitamdev/avatars", // Cloudinary folder
+            "codemind/avatars", // Cloudinary folder
             `user_${userId}`, // Public ID = user_{userId}
         );
 
@@ -165,7 +165,7 @@ export async function DELETE(request: NextRequest) {
         const userId = payload.userId;
 
         // 2. Delete from Cloudinary
-        const publicId = `maitamdev/avatars/user_${userId}`;
+        const publicId = `codemind/avatars/user_${userId}`;
         await deleteImage(publicId);
 
         return NextResponse.json({

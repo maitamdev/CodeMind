@@ -41,13 +41,13 @@ function ensureCloudinaryConfig() {
 /**
  * Upload image to Cloudinary
  * @param fileBuffer - File buffer from FormData
- * @param folder - Cloudinary folder path (e.g., 'maitamdev/avatars')
+ * @param folder - Cloudinary folder path (e.g., 'codemind/avatars')
  * @param publicId - Optional custom public_id
  * @returns Upload result with URL
  */
 export async function uploadImage(
   fileBuffer: Buffer,
-  folder: string = 'maitamdev/uploads',
+  folder: string = 'codemind/uploads',
   publicId?: string
 ): Promise<{
   url: string;
@@ -97,7 +97,7 @@ export async function uploadImage(
 
 /**
  * Delete image from Cloudinary
- * @param publicId - Cloudinary public_id (e.g., 'maitamdev/avatars/abc123')
+ * @param publicId - Cloudinary public_id (e.g., 'codemind/avatars/abc123')
  */
 export async function deleteImage(publicId: string): Promise<void> {
   ensureCloudinaryConfig();

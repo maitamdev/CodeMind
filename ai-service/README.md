@@ -2,7 +2,7 @@
 
 > **Dịch vụ FastAPI tạo lộ trình học tập cá nhân hóa sử dụng AI (Groq + Llama 3)**
 
-Đây là phần backend AI của nền tảng **AI Learning Platform**, sử dụng mô hình ngôn ngữ lớn (LLM) **Llama 3.3 70B** thông qua **Groq API** để sinh ra lộ trình học tập dạng đồ thị có hướng (DAG) theo phong cách [roadmap.sh](https://roadmap.sh).
+Đây là phần backend AI của nền tảng **CodeMind Platform**, sử dụng mô hình ngôn ngữ lớn (LLM) **Llama 3.3 70B** thông qua **Groq API** để sinh ra lộ trình học tập dạng đồ thị có hướng (DAG) theo phong cách [roadmap.sh](https://roadmap.sh).
 
 ---
 
@@ -798,7 +798,7 @@ MIT License - Xem file [LICENSE](../LICENSE) để biết thêm chi tiết.
 
 ## 👥 Contributors
 
-- **AI Learning Platform Team** - Development & Maintenance
+- **CodeMind Platform Team** - Development & Maintenance
 
 ---
 

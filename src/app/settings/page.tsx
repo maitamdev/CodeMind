@@ -860,7 +860,7 @@ export default function SettingsPage() {
                                                                 username: v,
                                                             })
                                                         }
-                                                        placeholder="maitamdev"
+                                                        placeholder="codemind"
                                                     />
                                                 </div>
 

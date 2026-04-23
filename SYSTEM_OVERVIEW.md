@@ -1,14 +1,14 @@
-# SYSTEM_OVERVIEW.md — Nền tảng học lập trình tích hợp AI
+# SYSTEM_OVERVIEW.md — CodeMind — Nền tảng học lập trình tích hợp AI
 
 > **Tài liệu phân tích kỹ thuật toàn diện**
-> Dự án: Nền tảng học lập trình tích hợp AI
-> Chủ quản: MaiTamDev Team
+> Dự án: CodeMind — Nền tảng học lập trình tích hợp AI
+> Chủ quản: CodeMind Team
 
 ---
 
 ## 1. Tổng quan hệ thống
 
-**MaiTamDev AI Learning** là một nền tảng học lập trình trực tuyến thông minh, tích hợp Trí tuệ nhân tạo (AI). Hệ thống được xây dựng trên nền tảng **Next.js 15** (App Router, Turbopack) kết hợp **Supabase** (PostgreSQL) làm backend-as-a-service, cùng một microservice AI riêng biệt viết bằng **Python FastAPI**.
+**CodeMind** là một nền tảng học lập trình trực tuyến thông minh, tích hợp Trí tuệ nhân tạo (AI). Hệ thống được xây dựng trên nền tảng **Next.js 15** (App Router, Turbopack) kết hợp **Supabase** (PostgreSQL) làm backend-as-a-service, cùng một microservice AI riêng biệt viết bằng **Python FastAPI**.
 
 Hệ thống hướng đến mô hình **kiến trúc phân tán** (distributed architecture) với ba lớp backend chính:
 
@@ -19,8 +19,8 @@ Hệ thống hướng đến mô hình **kiến trúc phân tán** (distributed 
 | **AI Microservice** | Python FastAPI | Roadmap AI, Code Agent, Face-touch, CV Builder |
 | **Media Storage** | Cloudinary | Video, hình ảnh tối ưu hóa |
 
-**Website production:** [https://maitamdev.com](https://maitamdev.com)
-**Repository:** [https://github.com/maitamdev/maitam-ai-learning](https://github.com/maitamdev/maitam-ai-learning)
+**Website production:** [https://codemind.dev](https://codemind.dev)
+**Repository:** [https://github.com/codemind-dev/codemind](https://github.com/codemind-dev/codemind)
 
 ---
 
@@ -181,7 +181,7 @@ Ngoài ra còn phân biệt **membership tier**: `FREE` và `PRO`.
 | Database | **Supabase Cloud** (PostgreSQL managed) |
 | AI Service | **VPS / Google Colab** (Dockerfile sẵn sàng) |
 | Media | **Cloudinary CDN** |
-| Domain | maitamdev.com |
+| Domain | codemind.dev |
 
 ---
 

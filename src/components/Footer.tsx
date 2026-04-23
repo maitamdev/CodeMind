@@ -36,7 +36,7 @@ const socialLinks = [
     { icon: Facebook, href: "#", label: "Facebook" },
     { icon: Twitter, href: "#", label: "Twitter" },
     { icon: Youtube, href: "#", label: "Youtube" },
-    { icon: Github, href: "https://github.com/maitamdev", label: "Github" },
+    { icon: Github, href: "https://github.com/codemind-dev", label: "Github" },
 ];
 
 function getLinkProps(href: string) {
@@ -70,14 +70,7 @@ export default function Footer() {
                                 className="flex items-center justify-center cursor-pointer"
                                 style={{ transition: "all .2s ease" }}
                             >
-                                <img
-                                    src="/assets/img/logo.png"
-                                    alt="CodeSense AI Logo"
-                                    width={38}
-                                    height={38}
-                                    style={{ objectFit: "contain" }}
-                                    className="w-[38px] h-[38px] rounded-lg"
-                                />
+                                    <span className="text-xl font-bold tracking-tight text-white">Code<span className="text-indigo-400">Mind</span></span>
                             </Link>
                             <div className="hidden sm:block">
                                 <Link
@@ -85,21 +78,21 @@ export default function Footer() {
                                     className="hover:opacity-80"
                                     style={{ transition: "all .2s ease" }}
                                 >
-                                    <p className="text-small font-[700] text-white">
-                                        Học lập trình thông minh với AI & IoT
+                                    <p className="text-sm font-medium text-gray-300">
+                                        Học lập trình cùng AI
                                     </p>
                                 </Link>
                             </div>
                         </div>
 
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            Nền tảng học lập trình hàng đầu Việt Nam.
+                            Nền tảng học lập trình tích hợp AI hàng đầu.
                         </p>
 
                         <div className="space-y-2 flex flex-col items-center md:items-start">
                             <div className="flex items-center space-x-2 text-gray-400 text-sm">
                                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span>maitamdev@gmail.com</span>
+                                <span>hello@codemind.dev</span>
                             </div>
                             <div className="flex items-center space-x-2 text-gray-400 text-sm">
                                 <Phone className="w-3.5 h-3.5 flex-shrink-0" />
@@ -114,10 +107,10 @@ export default function Footer() {
 
                     {/* Three columns - Row on tablet */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* About CodeSense AI */}
+                        {/* About CodeMind */}
                         <div className="text-center md:text-left">
                             <h4 className="font-semibold text-base mb-4 text-white">
-                                Về CodeSense AI
+                            Về CodeMind
                             </h4>
                             <ul className="space-y-2">
                                 <li>
@@ -215,14 +208,7 @@ export default function Footer() {
                                 className="flex items-center justify-center cursor-pointer"
                                 style={{ transition: "all .2s ease" }}
                             >
-                                <img
-                                    src="/assets/img/logo.png"
-                                    alt="CodeSense AI Logo"
-                                    width={38}
-                                    height={38}
-                                    style={{ objectFit: "contain" }}
-                                    className="w-[38px] h-[38px] rounded-lg"
-                                />
+                                <span className="text-xl font-bold tracking-tight text-white">Code<span className="text-indigo-400">Mind</span></span>
                             </Link>
                             <div className="hidden sm:block">
                                 <Link
@@ -230,21 +216,21 @@ export default function Footer() {
                                     className="hover:opacity-80"
                                     style={{ transition: "all .2s ease" }}
                                 >
-                                    <p className="text-small font-[700] text-white">
-                                        Học lập trình thông minh với AI & IoT
+                                    <p className="text-sm font-medium text-gray-300">
+                                        Học lập trình cùng AI
                                     </p>
                                 </Link>
                             </div>
                         </div>
 
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            Nền tảng học lập trình hàng đầu Việt Nam.
+                            Nền tảng học lập trình tích hợp AI hàng đầu.
                         </p>
 
                         <div className="space-y-2">
                             <div className="flex items-center space-x-2 text-gray-400 text-sm">
                                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span>maitamdev@gmail.com</span>
+                                <span>hello@codemind.dev</span>
                             </div>
                             <div className="flex items-center space-x-2 text-gray-400 text-sm">
                                 <Phone className="w-3.5 h-3.5 flex-shrink-0" />
@@ -257,10 +243,10 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* About CodeSense AI */}
+                    {/* About CodeMind */}
                     <div>
                         <h4 className="font-semibold text-base mb-4 text-white">
-                            Về CodeSense AI
+                            Về CodeMind
                         </h4>
                         <ul className="space-y-2">
                             <li>
@@ -350,7 +336,7 @@ export default function Footer() {
                 <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between pointer-events-auto">
                     <div className="flex items-center space-x-2 text-gray-400 text-xs mb-3 md:mb-0">
                         <span>
-                            © 2025 - 2026 CodeSense AI. All rights reserved.
+                            © 2025 - 2026 CodeMind. All rights reserved.
                         </span>
                     </div>
 

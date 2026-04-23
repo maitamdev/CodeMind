@@ -305,7 +305,7 @@ function createDefaultSections(
                 {
                     id: cvId(),
                     label: "Tên dự án",
-                    value: "AI Learning Platform",
+                    value: "CodeMind Platform",
                     meta: {
                         techStack: "Next.js, Supabase, Python, TensorFlow.js",
                         role: "Fullstack Developer",
