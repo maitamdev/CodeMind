@@ -1,0 +1,239 @@
+"use client";
+
+import { useState } from "react";
+import { CheckCircle, XCircle } from "lucide-react";
+import ExerciseWrapper from "./ExerciseWrapper";
+import ExerciseActions from "./ExerciseActions";
+
+interface Option {
+    id: string;
+    content: string;
+    is_correct: boolean;
+    sort_order: number;
+    explanation?: string;
+}
+
+interface QuizMultipleChoiceProps {
+    exerciseId: string;
+    title: string;
+    description?: string;
+    options: Option[];
+    difficulty?: "easy" | "medium" | "hard";
+    updatedAt?: string;
+    isDarkTheme?: boolean;
+    onCorrect: (xpEarned: number) => void;
+    onWrong: () => void;
+}
+
+export default function QuizMultipleChoice({
+    exerciseId,
+    title,
+    description,
+    options,
+    difficulty = "easy",
+    updatedAt,
+    isDarkTheme = true,
+    onCorrect,
+    onWrong,
+}: QuizMultipleChoiceProps) {
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [result, setResult] = useState<{
+        correct: boolean;
+        correctAnswer: string;
+        explanation: string;
+    } | null>(null);
+    const [showAnswer, setShowAnswer] = useState(false);
+    const [hasSubmittedOnce, setHasSubmittedOnce] = useState(false);
+
+    const handleSubmit = () => {
+        if (!selectedId) return;
+
+        const selectedOption = options.find((o) => o.id === selectedId);
+        const correctOption = options.find((o) => o.is_correct);
+        const isCorrect = selectedOption?.is_correct === true;
+
+        setResult({
+            correct: isCorrect,
+            correctAnswer: correctOption?.content || "",
+            explanation: selectedOption?.explanation || "",
+        });
+        setHasSubmittedOnce(true);
+
+        if (isCorrect) {
+            onCorrect(10);
+        } else {
+            onWrong();
+        }
+
+        // Fire API in background for XP tracking
+        fetch(`/api/exercises/${exerciseId}/submit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ answer: selectedId }),
+        }).catch(() => {});
+    };
+
+    const handleShowAnswer = () => {
+        setShowAnswer(true);
+        const correctOption = options.find((o) => o.is_correct);
+        setResult({
+            correct: false,
+            correctAnswer: correctOption?.content || "",
+            explanation: correctOption?.explanation || "",
+        });
+        setHasSubmittedOnce(true);
+    };
+
+    const isAnswered = result !== null || showAnswer;
+    const correctOptionId = options.find((o) => o.is_correct)?.id;
+
+    const handleSelect = (optionId: string) => {
+        setSelectedId(optionId);
+        if (result) {
+            setResult(null);
+            setShowAnswer(false);
+        }
+    };
+
+    const getOptionStyle = (optionId: string) => {
+        if (!isAnswered) {
+            if (selectedId === optionId) {
+                return isDarkTheme
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-blue-500 bg-blue-50";
+            }
+            return isDarkTheme
+                ? "border-gray-700 hover:border-gray-600 bg-gray-800/50"
+                : "border-gray-200 hover:border-gray-400 bg-white";
+        }
+
+        if (optionId === correctOptionId) {
+            return isDarkTheme
+                ? "border-emerald-500 bg-emerald-500/10"
+                : "border-emerald-500 bg-emerald-50";
+        }
+        if (selectedId === optionId && !result?.correct) {
+            return isDarkTheme
+                ? "border-red-500 bg-red-500/10"
+                : "border-red-500 bg-red-50";
+        }
+        return isDarkTheme
+            ? "border-gray-700/50 bg-gray-800/30 opacity-60"
+            : "border-gray-200 bg-gray-50 opacity-60";
+    };
+
+    return (
+        <ExerciseWrapper
+            title={title}
+            description={description}
+            difficulty={difficulty}
+            updatedAt={updatedAt}
+            isDarkTheme={isDarkTheme}
+        >
+            <div className="space-y-3">
+                {options.map((option) => (
+                    <button
+                        key={option.id}
+                        onClick={() => handleSelect(option.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left cursor-pointer ${getOptionStyle(option.id)}`}
+                    >
+                        <div className="flex-shrink-0">
+                            {isAnswered && option.id === correctOptionId ? (
+                                <CheckCircle className="w-5 h-5 text-emerald-500" />
+                            ) : isAnswered &&
+                              selectedId === option.id &&
+                              !result?.correct ? (
+                                <XCircle className="w-5 h-5 text-red-500" />
+                            ) : selectedId === option.id ? (
+                                <div className="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                                </div>
+                            ) : (
+                                <div
+                                    className={`w-5 h-5 rounded-full border-2 ${isDarkTheme ? "border-gray-600" : "border-gray-400"}`}
+                                />
+                            )}
+                        </div>
+
+                        <span
+                            className={`text-sm font-medium ${
+                                isDarkTheme ? "text-gray-200" : "text-gray-800"
+                            }`}
+                        >
+                            {option.content}
+                        </span>
+                    </button>
+                ))}
+            </div>
+
+            {/* Explanation block */}
+            {result && (
+                <div
+                    className={`mt-5 rounded-xl p-4 ${
+                        isDarkTheme
+                            ? "bg-gray-800/80 border border-gray-700/50"
+                            : "bg-gray-50 border border-gray-200"
+                    }`}
+                >
+                    <h4
+                        className={`text-sm font-bold mb-2 ${
+                            isDarkTheme ? "text-gray-200" : "text-gray-800"
+                        }`}
+                    >
+                        Giải thích
+                    </h4>
+                    <p
+                        className={`text-sm leading-relaxed ${
+                            isDarkTheme ? "text-gray-400" : "text-gray-600"
+                        }`}
+                    >
+                        <span
+                            className={`font-semibold ${
+                                result.correct
+                                    ? isDarkTheme
+                                        ? "text-emerald-400"
+                                        : "text-emerald-600"
+                                    : isDarkTheme
+                                      ? "text-red-400"
+                                      : "text-red-600"
+                            }`}
+                        >
+                            {result.correct
+                                ? "Chính xác! "
+                                : "Chưa chính xác! "}
+                        </span>
+                        {result.explanation ||
+                            (result.correct
+                                ? "Bạn đã chọn đúng đáp án."
+                                : "Hãy xem xét lại các đáp án và thử lại.")}
+                    </p>
+                </div>
+            )}
+
+            {/* Only show "Xem đáp án" before first submit */}
+            {!hasSubmittedOnce ? (
+                <ExerciseActions
+                    onShowAnswer={handleShowAnswer}
+                    onSubmit={handleSubmit}
+                    hasSelected={!!selectedId}
+                    isDarkTheme={isDarkTheme}
+                />
+            ) : (
+                <div className="flex items-center justify-end mt-6">
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!selectedId}
+                        className="px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                        style={{
+                            background:
+                                "linear-gradient(135deg, #6366f1, #9333ea)",
+                        }}
+                    >
+                        Trả lời
+                    </button>
+                </div>
+            )}
+        </ExerciseWrapper>
+    );
+}

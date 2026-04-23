@@ -1,0 +1,172 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { AlertCircle, ArrowLeft } from "lucide-react";
+import AIRoadmapTreeView from "@/components/AIRoadmap/AIRoadmapTreeView";
+import { Button } from "@/components/ui/button";
+import PageLoading from "@/components/PageLoading";
+import { ensureRoadmapSections } from "@/lib/ai-roadmap-sections";
+import type { AIGeneratedRoadmap, NodeStatus } from "@/types/ai-roadmap";
+
+export default function AIRoadmapDetailPage() {
+    const params = useParams();
+    const router = useRouter();
+    const id = params.id as string;
+
+    const [roadmap, setRoadmap] = useState<AIGeneratedRoadmap | null>(null);
+    const [progress, setProgress] = useState<Record<string, NodeStatus>>({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [isTempRoadmap, setIsTempRoadmap] = useState(false);
+
+    useEffect(() => {
+        if (id) {
+            void loadRoadmap();
+        }
+    }, [id]);
+
+    const loadRoadmap = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+
+            if (id.startsWith("temp-")) {
+                const tempData = localStorage.getItem(`temp-roadmap-${id}`);
+                if (tempData) {
+                    const tempRoadmap = JSON.parse(tempData);
+                    setRoadmap(
+                        ensureRoadmapSections({
+                            roadmap_title:
+                                tempRoadmap.roadmap_title || "Lộ trình học tập",
+                            roadmap_description:
+                                tempRoadmap.roadmap_description || "",
+                            total_estimated_hours:
+                                tempRoadmap.total_estimated_hours || 0,
+                            sections: tempRoadmap.sections || [],
+                            phases: tempRoadmap.phases || [],
+                            nodes: tempRoadmap.nodes || [],
+                            edges: tempRoadmap.edges || [],
+                        }),
+                    );
+                    setProgress(tempRoadmap.progress || {});
+                    setIsTempRoadmap(true);
+                    setIsLoading(false);
+                    return;
+                }
+            }
+
+            const response = await fetch(`/api/ai-roadmap/${id}`, {
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    setError("Lộ trình không tồn tại hoặc đã bị xóa.");
+                } else {
+                    setError("Không thể tải lộ trình. Vui lòng thử lại.");
+                }
+                setIsLoading(false);
+                return;
+            }
+
+            const data = await response.json();
+            if (data.success && data.data) {
+                setRoadmap(
+                    ensureRoadmapSections({
+                        roadmap_title: data.data.title,
+                        roadmap_description: data.data.description || "",
+                        total_estimated_hours: data.data.total_estimated_hours,
+                        sections: data.data.sections || [],
+                        phases: data.data.phases || [],
+                        nodes: data.data.nodes || [],
+                        edges: data.data.edges || [],
+                    }),
+                );
+                setProgress(data.data.progress || {});
+            } else {
+                setError(data.error || "Không thể tải lộ trình.");
+            }
+        } catch (err) {
+            console.error("Error loading roadmap:", err);
+            setError("Đã xảy ra lỗi khi tải lộ trình.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleProgressUpdate = async (nodeId: string, status: NodeStatus) => {
+        setProgress((prev) => ({ ...prev, [nodeId]: status }));
+
+        if (isTempRoadmap) {
+            const tempData = localStorage.getItem(`temp-roadmap-${id}`);
+            if (tempData) {
+                const tempRoadmap = JSON.parse(tempData);
+                tempRoadmap.progress = {
+                    ...tempRoadmap.progress,
+                    [nodeId]: status,
+                };
+                localStorage.setItem(
+                    `temp-roadmap-${id}`,
+                    JSON.stringify(tempRoadmap),
+                );
+            }
+            return;
+        }
+
+        try {
+            await fetch(`/api/ai-roadmap/${id}/progress`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ node_id: nodeId, status }),
+            });
+        } catch (err) {
+            console.error("Error updating progress:", err);
+        }
+    };
+
+    if (isLoading) {
+        return <PageLoading message="Đang tải lộ trình..." />;
+    }
+
+    if (error || !roadmap) {
+        return (
+            <div className="roadmap-route">
+                <div className="roadmap-shell roadmap-shell__body">
+                    <div className="roadmap-surface">
+                        <div className="roadmap-empty-state">
+                            <AlertCircle className="mx-auto h-10 w-10 text-red-500" />
+                            <div className="roadmap-empty-state__title">
+                                Không thể tải lộ trình
+                            </div>
+                            <p className="roadmap-empty-state__body">
+                                {error || "Lộ trình không tồn tại."}
+                            </p>
+                            <div className="mt-5">
+                                <Button
+                                    onClick={() => router.push("/roadmap/my")}
+                                    variant="outline"
+                                    className="rounded-full border-slate-200 bg-white px-5"
+                                >
+                                    <ArrowLeft className="mr-2 h-4 w-4" />
+                                    Quay lại danh sách
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <AIRoadmapTreeView
+            roadmap={roadmap}
+            roadmapId={id}
+            initialProgress={progress}
+            onProgressUpdate={handleProgressUpdate}
+            isTempRoadmap={isTempRoadmap}
+        />
+    );
+}
