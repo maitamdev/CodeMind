@@ -131,9 +131,94 @@ export default function IDELayout({
         [updateCodeByTab, setActiveTab],
     );
 
+    const handleCommitAndPush = async () => {
+        const msg = window.prompt("Nhập nội dung commit (ví dụ: 'Hoàn thành giao diện đăng nhập'):");
+        if (!msg) return;
+
+        const projectName = window.prompt("Nhập tên Project để hiển thị trên Profile (để trống sẽ dùng tên mặc định):") || undefined;
+
+        try {
+            const res = await fetch("/api/user/code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    lessonId: lessonId || "scratch",
+                    action: "commit",
+                    message: msg,
+                    isPublic: true, // Publish to profile
+                    projectName: projectName,
+                    ...code
+                })
+            });
+            if (res.ok) {
+                alert("🎉 Đã Commit và Push thành công lên Profile của bạn!");
+            } else {
+                alert("❌ Có lỗi xảy ra, vui lòng thử lại sau.");
+            }
+        } catch (error) {
+            alert("❌ Lỗi kết nối mạng!");
+        }
+    };
+
+    // --- Custom Resizing Logic ---
+    const [sidebarWidth, setSidebarWidth] = useState(250);
+    const [agentWidth, setAgentWidth] = useState(400);
+    const [isResizing, setIsResizing] = useState<"sidebar" | "agent" | null>(null);
+
+    const handleSidebarResizeStart = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsResizing("sidebar");
+        const startX = e.clientX;
+        const startWidth = sidebarWidth;
+
+        const handleMove = (e: MouseEvent) => {
+            const diff = e.clientX - startX;
+            setSidebarWidth(Math.max(150, Math.min(600, startWidth + diff)));
+        };
+
+        const handleUp = () => {
+            setIsResizing(null);
+            window.removeEventListener("mousemove", handleMove);
+            window.removeEventListener("mouseup", handleUp);
+        };
+
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("mouseup", handleUp);
+    }, [sidebarWidth]);
+
+    const handleAgentResizeStart = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsResizing("agent");
+        const startX = e.clientX;
+        const startWidth = agentWidth;
+
+        const handleMove = (e: MouseEvent) => {
+            const diff = startX - e.clientX;
+            setAgentWidth(Math.max(250, Math.min(800, startWidth + diff)));
+        };
+
+        const handleUp = () => {
+            setIsResizing(null);
+            window.removeEventListener("mousemove", handleMove);
+            window.removeEventListener("mouseup", handleUp);
+        };
+
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("mouseup", handleUp);
+    }, [agentWidth]);
+
+    const isSidebarOpen = activeView === "explorer" || activeView === "search";
+    const isAgentOpen = !hideAIAgent && panels.agent;
+
+    const gridStyle = {
+        gridTemplateColumns: `48px ${isSidebarOpen ? `${sidebarWidth}px` : "0px"} 1fr ${isAgentOpen ? `${agentWidth}px` : "0px"}`,
+        // Prevent pointer events on iframe while resizing so drag doesn't get interrupted
+        pointerEvents: isResizing ? "none" as const : "auto" as const
+    };
+
     return (
         <div className={`ide-root ${theme === "light" ? "light" : ""}`}>
-            <div className={`ide-grid ${panels.agent ? "agent-open" : ""} ${(activeView === "explorer" || activeView === "search") ? "sidebar-open" : ""}`}>
+            <div className={`ide-grid ${panels.agent ? "agent-open" : ""} ${(activeView === "explorer" || activeView === "search") ? "sidebar-open" : ""}`} style={gridStyle}>
                 {/* Title Bar */}
                 <TitleBar
                     activeTab={activeTab}
@@ -141,6 +226,7 @@ export default function IDELayout({
                     onToggleTheme={toggleTheme}
                     autoSaveStatus={autoSaveStatus}
                     onBack={onBack}
+                    onCommitAndPush={handleCommitAndPush}
                 />
 
                 {/* Activity Bar */}
@@ -169,6 +255,11 @@ export default function IDELayout({
                                 }}
                             />
                         )}
+                        {/* Custom Resize Handle for Sidebar */}
+                        <div 
+                            className={`ide-grid-resize-handle sidebar-handle ${isResizing === "sidebar" ? "dragging" : ""}`}
+                            onMouseDown={handleSidebarResizeStart}
+                        />
                     </div>
                 )}
 
@@ -208,7 +299,12 @@ export default function IDELayout({
 
                 {/* AI Agent Panel */}
                 {!hideAIAgent && panels.agent && (
-                    <div className="ide-agent overflow-hidden">
+                    <div className="ide-agent overflow-hidden relative">
+                        {/* Custom Resize Handle for Agent */}
+                        <div 
+                            className={`ide-grid-resize-handle agent-handle ${isResizing === "agent" ? "dragging" : ""}`}
+                            onMouseDown={handleAgentResizeStart}
+                        />
                         <AIErrorBoundary fallbackMessage="AI Agent tạm thời không hoạt động.">
                             <AIAgentPanel
                                 codeContext={code[activeTab]}

@@ -4,43 +4,45 @@
 
 /* --- CSS Variables --- */
 .ide-root {
-    --ide-bg: #1e1e1e;
-    --ide-bg-alt: #252526;
-    --ide-bg-active: #37373d;
-    --ide-bg-hover: #2a2d2e;
-    --ide-border: #3c3c3c;
-    --ide-text: #cccccc;
-    --ide-text-muted: #858585;
-    --ide-accent: #007acc;
-    --ide-accent-hover: #0098ff;
-    --ide-titlebar: #323233;
-    --ide-activitybar: #333333;
-    --ide-statusbar: #007acc;
-    --ide-tab-active: #1e1e1e;
-    --ide-tab-inactive: #2d2d30;
-    --ide-scrollbar: #424242;
-    --ide-scrollbar-hover: #4f4f4f;
+    --ide-bg: #0a0a0a;
+    --ide-bg-alt: #111111;
+    --ide-bg-active: #222222;
+    --ide-bg-hover: #1a1a1a;
+    --ide-border: #262626;
+    --ide-text: #e5e5e5;
+    --ide-text-muted: #a3a3a3;
+    --ide-accent: #3b82f6;
+    --ide-accent-hover: #60a5fa;
+    --ide-titlebar: #0a0a0a;
+    --ide-activitybar: #0a0a0a;
+    --ide-statusbar: #0a0a0a;
+    --ide-statusbar-text: #e5e5e5;
+    --ide-tab-active: #0a0a0a;
+    --ide-tab-inactive: #111111;
+    --ide-scrollbar: #333333;
+    --ide-scrollbar-hover: #4d4d4d;
     font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         sans-serif;
 }
 
 .ide-root.light {
     --ide-bg: #ffffff;
-    --ide-bg-alt: #f3f3f3;
-    --ide-bg-active: #e8e8e8;
-    --ide-bg-hover: #e8e8e8;
-    --ide-border: #e0e0e0;
-    --ide-text: #333333;
-    --ide-text-muted: #616161;
-    --ide-accent: #007acc;
-    --ide-titlebar: #dddddd;
-    --ide-activitybar: #2c2c2c;
-    --ide-statusbar: #007acc;
+    --ide-bg-alt: #f9fafb;
+    --ide-bg-active: #f3f4f6;
+    --ide-bg-hover: #f3f4f6;
+    --ide-border: #e5e7eb;
+    --ide-text: #111827;
+    --ide-text-muted: #6b7280;
+    --ide-accent: #2563eb;
+    --ide-titlebar: #ffffff;
+    --ide-activitybar: #f9fafb;
+    --ide-statusbar: #ffffff;
+    --ide-statusbar-text: #111827;
     --ide-tab-active: #ffffff;
-    --ide-tab-inactive: #ececec;
-    --ide-scrollbar: #c1c1c1;
-    --ide-scrollbar-hover: #a0a0a0;
+    --ide-tab-inactive: #f9fafb;
+    --ide-scrollbar: #d1d5db;
+    --ide-scrollbar-hover: #9ca3af;
 }
 
 /* --- Grid Layout --- */
@@ -50,23 +52,53 @@
         "titlebar   titlebar   titlebar   titlebar"
         "activity   sidebar    editor     agent"
         "statusbar  statusbar  statusbar  statusbar";
-    grid-template-columns: 48px 0px 1fr 0px;
     grid-template-rows: 38px 1fr 24px;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
 }
 
-.ide-grid.agent-open {
-    grid-template-columns: 48px 0px 1fr clamp(400px, 32vw, 460px);
+/* --- Custom Grid Resizing Handles --- */
+.ide-sidebar {
+    position: relative;
+    grid-area: sidebar;
+    background: var(--ide-bg-alt);
+    border-right: 1px solid var(--ide-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.ide-grid.sidebar-open {
-    grid-template-columns: 48px 250px 1fr 0px;
+.ide-agent {
+    position: relative;
+    grid-area: agent;
+    border-left: 1px solid var(--ide-border);
 }
 
-.ide-grid.agent-open.sidebar-open {
-    grid-template-columns: 48px 250px 1fr clamp(400px, 32vw, 460px);
+.ide-grid-resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 50;
+    transition: background 0.2s ease;
+}
+
+.ide-grid-resize-handle:hover,
+.ide-grid-resize-handle.dragging {
+    background: var(--ide-accent);
+}
+
+/* Sidebar handle stays on the right edge */
+.ide-grid-resize-handle.sidebar-handle {
+    right: -3px;
+}
+
+/* Agent handle stays on the left edge */
+.ide-grid-resize-handle.agent-handle {
+    left: -3px;
 }
 
 .ide-grid .ide-titlebar {
@@ -75,19 +107,8 @@
 .ide-grid .ide-activitybar {
     grid-area: activity;
 }
-.ide-grid .ide-sidebar {
-    grid-area: sidebar;
-    background: var(--ide-bg-alt);
-    border-right: 1px solid var(--ide-border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
 .ide-grid .ide-editor {
     grid-area: editor;
-}
-.ide-grid .ide-agent {
-    grid-area: agent;
 }
 .ide-grid .ide-statusbar {
     grid-area: statusbar;
@@ -152,7 +173,7 @@
     justify-content: space-between;
     padding: 0 12px;
     font-size: 12px;
-    color: #ffffff;
+    color: var(--ide-statusbar-text);
     user-select: none;
 }
 

@@ -511,6 +511,21 @@ export function generatePreviewHTML(
           window.addEventListener('unhandledrejection', function(e) {
             console.error('Unhandled Promise Rejection:', e.reason);
           });
+          
+          // Listen for evaluation commands from the parent
+          window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'eval') {
+              try {
+                console.info("> " + e.data.code);
+                const result = eval(e.data.code);
+                if (result !== undefined) {
+                  console.log(result);
+                }
+              } catch (error) {
+                console.error(error.message);
+              }
+            }
+          });
         })();
         
         // Execute user JavaScript

@@ -42,6 +42,15 @@ export default function BottomPanel({
     const executionRef = useRef(0);
     const prevCodeRef = useRef<CodeState>(code);
     const [isDragging, setIsDragging] = useState(false);
+    const [consoleInput, setConsoleInput] = useState("");
+    const terminalEndRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to bottom of console when new logs arrive
+    useEffect(() => {
+        if (activeTab === "console" && terminalEndRef.current) {
+            terminalEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [consoleLogs, activeTab]);
 
     // Live preview update - ONLY when code changes. Do NOT include activeTab.
     // Including activeTab caused iframe to reload on tab switch → JS re-runs → duplicate console logs.
@@ -99,8 +108,8 @@ export default function BottomPanel({
     );
 
     const tabs: { id: BottomTab; label: string; icon: typeof Globe }[] = [
+        { id: "console", label: "Terminal", icon: Terminal },
         { id: "preview", label: "Preview", icon: Globe },
-        { id: "console", label: "Console", icon: Terminal },
         { id: "problems", label: "Problems", icon: AlertTriangle },
     ];
 
@@ -190,34 +199,64 @@ export default function BottomPanel({
                 />
 
                 {activeTab === "console" && (
-                    <div className="relative z-10 p-2 font-mono text-[12px]">
-                        {consoleLogs.length === 0 ? (
-                            <div className="text-[var(--ide-text-muted)] p-2">
-                                No console output
-                            </div>
-                        ) : (
-                            consoleLogs.map((log, i) => (
-                                <div
-                                    key={i}
-                                    className={`px-2 py-0.5 border-b border-[var(--ide-border)] flex items-start gap-2 ${
-                                        log.type === "error"
-                                            ? "text-red-400 bg-red-500/5"
-                                            : log.type === "warn"
-                                              ? "text-yellow-400 bg-yellow-500/5"
-                                              : "text-[var(--ide-text)]"
-                                    }`}
-                                >
-                                    <span className="text-[10px] text-[var(--ide-text-muted)] flex-shrink-0 mt-0.5">
-                                        {new Date(
-                                            log.timestamp,
-                                        ).toLocaleTimeString("vi-VN")}
-                                    </span>
-                                    <span className="whitespace-pre-wrap break-all">
-                                        {log.message}
-                                    </span>
+                    <div className="relative z-10 flex flex-col h-full font-mono text-[13px]">
+                        <div className="flex-1 overflow-auto p-3 space-y-1 scrollbar-thin">
+                            {consoleLogs.length === 0 ? (
+                                <div className="text-[var(--ide-text-muted)] italic">
+                                    CodeMind Terminal v1.0.0
                                 </div>
-                            ))
-                        )}
+                            ) : (
+                                consoleLogs.map((log, i) => (
+                                    <div
+                                        key={i}
+                                        className={`flex items-start gap-3 py-1 px-2 rounded-md ${
+                                            log.type === "error"
+                                                ? "text-red-400 bg-red-500/10 border-l-2 border-red-500"
+                                                : log.type === "warn"
+                                                  ? "text-yellow-400 bg-yellow-500/10 border-l-2 border-yellow-500"
+                                                  : log.type === "info" && log.message.startsWith(">")
+                                                  ? "text-[var(--ide-accent)] font-semibold"
+                                                  : "text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)]"
+                                        }`}
+                                    >
+                                        <span className="text-[11px] text-[var(--ide-text-muted)] flex-shrink-0 mt-0.5 opacity-60">
+                                            {new Date(log.timestamp).toLocaleTimeString("vi-VN")}
+                                        </span>
+                                        <span className="whitespace-pre-wrap break-all leading-relaxed">
+                                            {log.message}
+                                        </span>
+                                    </div>
+                                ))
+                            )}
+                            <div ref={terminalEndRef} />
+                        </div>
+                        
+                        {/* Interactive Terminal Input */}
+                        <div className="flex items-center gap-2 p-2 border-t border-[var(--ide-border)] bg-[var(--ide-bg-alt)]">
+                            <span className="text-[var(--ide-accent)] font-bold ml-1">❯</span>
+                            <input
+                                type="text"
+                                value={consoleInput}
+                                onChange={(e) => setConsoleInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && consoleInput.trim()) {
+                                        // Send to iframe for evaluation
+                                        if (iframeRef.current?.contentWindow) {
+                                            iframeRef.current.contentWindow.postMessage({
+                                                type: "eval",
+                                                code: consoleInput,
+                                                executionId: executionRef.current
+                                            }, "*");
+                                        }
+                                        setConsoleInput("");
+                                    }
+                                }}
+                                placeholder="Nhập lệnh JavaScript (VD: console.log('Hello'))"
+                                className="flex-1 bg-transparent border-none outline-none text-[var(--ide-text)] placeholder-[var(--ide-text-muted)] font-mono text-[13px]"
+                                autoComplete="off"
+                                spellCheck="false"
+                            />
+                        </div>
                     </div>
                 )}
 
