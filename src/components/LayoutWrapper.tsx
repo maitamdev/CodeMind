@@ -70,7 +70,7 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
     // Course landing page — Footer only
     if (isCourseLandingPage) {
         return (
-            <div style={{ backgroundColor: "#0a0c10", minHeight: "100vh" }}>
+            <div className="bg-background min-h-screen text-foreground">
                 <main>{children}</main>
                 <Footer />
             </div>
@@ -79,13 +79,10 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
 
     // Standard pages — conditionally use hover-reveal on profile
     return (
-        <div style={{ backgroundColor: "#ffffff", minHeight: "100vh" }}>
+        <div className="bg-background min-h-screen text-foreground">
             <Header />
             <Menu variant={isProfilePage ? "hover-reveal" : "default"} />
-            <main
-                className={`${isProfilePage ? "" : "md:ml-[96px]"} pb-[60px] md:pb-0`}
-                style={{ backgroundColor: "#ffffff" }}
-            >
+            <main className={`${isProfilePage ? "" : "md:ml-[96px]"} pb-[60px] md:pb-0 bg-background`}>
                 {children}
             </main>
             <Footer />

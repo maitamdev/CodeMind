@@ -14,9 +14,10 @@ export async function POST(request: NextRequest) {
     try {
         // Rate limit check
         const clientIP = getClientIP(request);
-        const rateCheck = checkRateLimit(
+        const rateCheck = await checkRateLimit(
             `register:${clientIP}`,
             RATE_LIMITS.register,
+            "register"
         );
         if (!rateCheck.allowed) {
             const retryAfterSec = Math.ceil(rateCheck.resetInMs / 1000);

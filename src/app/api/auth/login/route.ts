@@ -14,9 +14,10 @@ export async function POST(request: NextRequest) {
     try {
         // Rate limit check
         const clientIP = getClientIP(request);
-        const rateCheck = checkRateLimit(
+        const rateCheck = await checkRateLimit(
             `login:${clientIP}`,
             RATE_LIMITS.login,
+            "login"
         );
 
         if (!rateCheck.allowed) {

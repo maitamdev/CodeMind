@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowRight, Clock, Eye } from "lucide-react";
+import { ArrowRight, Clock, Eye, Users, Sparkles, Zap, Star } from "lucide-react";
 
 import AvatarWithProBadge from "@/components/AvatarWithProBadge";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,26 +36,15 @@ interface Course {
     };
 }
 
-// Gradients cho PRO courses (màu sắc đa dạng)
-const GRADIENTS_PRO = [
-    "from-indigo-500 to-purple-600",
-    "from-blue-500 to-indigo-600",
-    "from-purple-500 to-pink-600",
-    "from-yellow-500 to-orange-600",
-];
-
-// Gradients cho FREE courses (sử dụng primary color Indigo)
-const GRADIENTS_FREE = [
-    "from-indigo-500 to-indigo-600",
-    "from-indigo-600 to-indigo-700",
-    "from-indigo-400 to-indigo-600",
-];
+const LEVEL_MAP: Record<string, string> = {
+    BEGINNER: "Cơ bản",
+    INTERMEDIATE: "Trung cấp",
+    ADVANCED: "Nâng cao",
+};
 
 // Helper function to calculate original price and discount for PRO courses
 const calculatePricing = (currentPrice: number) => {
-    // Original price is ~40% higher than current price (seller strategy)
     const originalPrice = Math.round(currentPrice * 1.4);
-    // Round to nearest 100k for cleaner display
     const roundedOriginalPrice = Math.round(originalPrice / 100000) * 100000;
     const discountPercent = Math.round(
         ((roundedOriginalPrice - currentPrice) / roundedOriginalPrice) * 100,
@@ -89,22 +78,12 @@ export default function CoursesSection() {
 
             if (data.success) {
                 const courses = data.data.courses.map(
-                    (course: any, index: number) => {
-                        // Sử dụng gradient khác cho PRO và FREE courses
-                        const gradients = course.isFree
-                            ? GRADIENTS_FREE
-                            : GRADIENTS_PRO;
-                        const gradientIndex = course.isFree
-                            ? index % gradients.length
-                            : index % gradients.length;
-
-                        return {
-                            ...course,
-                            gradient: gradients[gradientIndex],
-                            featured: index === 0 && !course.isFree,
-                            isEnrolled: false, // Sẽ cập nhật nếu người dùng đã đăng ký
-                        };
-                    },
+                    (course: any, index: number) => ({
+                        ...course,
+                        gradient: "",
+                        featured: index === 0 && !course.isFree,
+                        isEnrolled: false,
+                    }),
                 );
 
                 const pro = courses.filter((c: Course) => c.isPro);
@@ -129,19 +108,10 @@ export default function CoursesSection() {
             return;
         }
 
-        // Prevent multiple enrollments
-        if (enrollingCourse) {
-            console.log("[COURSE] Already enrolling, ignore");
-            return;
-        }
+        if (enrollingCourse) return;
 
         try {
             setEnrollingCourse(course.id);
-
-            const courseType = course.isFree ? "FREE" : "PRO";
-            console.log(
-                `[${courseType} COURSE] Starting enrollment: ${course.slug}`,
-            );
 
             const response = await fetch(`/api/courses/${course.slug}/enroll`, {
                 method: "POST",
@@ -149,30 +119,21 @@ export default function CoursesSection() {
             });
 
             const data = await response.json();
-            console.log(`[${courseType} COURSE] Enroll response:`, data);
 
             if (data.success) {
                 toast.success(data.message || "Đăng ký khóa học thành công!");
 
                 if (data.data?.upgradedToPro) {
-                    console.log(`[${courseType} COURSE] User upgraded to PRO`);
-                    // Reload page after delay to show new PRO status
                     setTimeout(() => {
                         window.location.reload();
                     }, 1500);
                 } else {
-                    // Navigate to learn page after short delay
-                    console.log(
-                        `[${courseType} COURSE] Enrollment successful, navigating to: /learn/${course.slug}`,
-                    );
                     setTimeout(() => {
                         router.push(`/learn/${course.slug}`);
                     }, 800);
                 }
             } else {
-                // Handle specific error cases
                 if (data.message && data.message.includes("đã đăng ký")) {
-                    console.log(`[${courseType} COURSE] Already enrolled`);
                     toast.info(
                         "Bạn đã đăng ký khóa học này. Đang chuyển hướng...",
                     );
@@ -180,40 +141,27 @@ export default function CoursesSection() {
                         router.push(`/learn/${course.slug}`);
                     }, 800);
                 } else {
-                    console.error(
-                        `[${courseType} COURSE] Enrollment failed:`,
-                        data.message,
-                    );
                     toast.error(data.message || "Không thể đăng ký khóa học");
                 }
             }
         } catch (error) {
-            console.error("[COURSE] Error during enrollment:", error);
+            console.error("Error during enrollment:", error);
             toast.error("Đã có lỗi xảy ra khi đăng ký. Vui lòng thử lại");
         } finally {
-            // ✅ IMPORTANT: Always clear the enrolling state
             setEnrollingCourse(null);
         }
     };
 
     const handleProCourseClick = async (course: Course) => {
-        // If not authenticated, navigate to course landing page directly
         if (!isAuthenticated) {
             router.push(`/courses/${course.slug}`);
             return;
         }
 
-        // Prevent multiple checks
-        if (enrollingCourse) {
-            console.log("[PRO COURSE] Already checking, ignore");
-            return;
-        }
+        if (enrollingCourse) return;
 
         try {
             setEnrollingCourse(course.id);
-            console.log(
-                `[PRO COURSE] Checking enrollment status for: ${course.slug}`,
-            );
 
             const response = await fetch(`/api/courses/${course.slug}`, {
                 credentials: "include",
@@ -224,89 +172,87 @@ export default function CoursesSection() {
             }
 
             const data = await response.json();
-            console.log(`[PRO COURSE] Course status:`, data);
 
             if (data.success) {
                 if (data.data.isEnrolled) {
-                    console.log(
-                        `[PRO COURSE] User already enrolled, navigating to learn page`,
-                    );
                     router.push(`/learn/${course.slug}`);
                 } else {
-                    console.log(
-                        `[PRO COURSE] User not enrolled, navigating to course details`,
-                    );
                     router.push(`/courses/${course.slug}`);
                 }
             } else {
                 router.push(`/courses/${course.slug}`);
             }
         } catch (error) {
-            console.error("[PRO COURSE] Error checking enrollment:", error);
+            console.error("Error checking enrollment:", error);
             router.push(`/courses/${course.slug}`);
         } finally {
             setEnrollingCourse(null);
         }
     };
 
-    const GRID_CLASS =
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6";
-
     // Skeleton loading component
     const SkeletonCard = () => (
-        <div className="rounded-2xl overflow-hidden border border-gray-100 h-full flex flex-col bg-[#f7f7f7] animate-pulse">
-            <div className="relative aspect-video bg-gray-200 flex-shrink-0 rounded-t-2xl"></div>
+        <div className="border border-border overflow-hidden h-full flex flex-col bg-background animate-pulse">
+            <div className="relative aspect-video bg-secondary flex-shrink-0" />
             <div className="p-4 flex-1 flex flex-col">
                 <div className="mb-3 flex-1">
-                    <div className="h-5 w-3/4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 w-full bg-gray-200 rounded mb-3"></div>
+                    <div className="h-5 w-3/4 bg-secondary mb-2" />
+                    <div className="h-4 w-full bg-secondary mb-3" />
                 </div>
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                        <div className="h-4 w-12 bg-gray-200 rounded"></div>
-                        <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-12 bg-secondary" />
+                        <div className="h-4 w-16 bg-secondary" />
                     </div>
-                    <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-16 bg-secondary" />
                 </div>
                 <div className="flex items-center justify-between">
-                    <div className="h-6 w-24 bg-gray-200 rounded"></div>
-                    <div className="h-6 w-16 bg-gray-200 rounded"></div>
+                    <div className="h-6 w-24 bg-secondary" />
+                    <div className="h-6 w-16 bg-secondary" />
                 </div>
             </div>
         </div>
     );
 
+    const renderSectionHeader = (title: string, subtitle: string, badge?: string) => (
+        <div className="flex items-center justify-between mb-8">
+            <div>
+                <div className="flex items-center gap-3 mb-2">
+                    <h2 className="text-foreground font-mono" style={{ fontWeight: 800 }}>
+                        {title}
+                    </h2>
+                    {badge && (
+                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 border border-border text-muted-foreground">
+                            {badge}
+                        </span>
+                    )}
+                </div>
+                <p className="text-muted-foreground text-sm">{subtitle}</p>
+            </div>
+            <a
+                href="/roadmap"
+                className="hidden md:flex items-center text-muted-foreground font-mono text-sm hover:text-foreground transition-colors duration-200"
+            >
+                Xem lộ trình
+                <ArrowRight className="w-4 h-4 ml-2" />
+            </a>
+        </div>
+    );
+
+    const GRID_CLASS =
+        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-px bg-border";
+
     return (
         <section
             id="courses-section"
-            className="py-16 bg-gradient-to-br from-gray-50 to-white"
+            className="py-16 bg-background"
         >
             <div className="px-4 sm:px-6 md:px-10 lg:px-16 xl:px-[90px] 2xl:px-16">
                 {loading ? (
                     <>
                         {/* PRO Courses Skeleton */}
                         <div className="mb-16">
-                            <div className="flex items-center justify-between mb-8">
-                                <div>
-                                    <div className="text-2xl font-black text-gray-900 mb-2">
-                                        Khóa học Pro
-                                        <span className="ml-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-1 rounded-full">
-                                            PRO
-                                        </span>
-                                    </div>
-                                    <p className="text-gray-600">
-                                        Khóa học JavaScript chuyên sâu cho
-                                        developer
-                                    </p>
-                                </div>
-                                <a
-                                    href="/roadmap"
-                                    className="hidden md:flex items-center text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
-                                >
-                                    Xem lộ trình
-                                    <ArrowRight className="w-4 h-4 ml-2" />
-                                </a>
-                            </div>
+                            {renderSectionHeader("Khóa học Pro", "Khóa học chuyên sâu cho developer", "PRO")}
                             <div className={GRID_CLASS}>
                                 {[...Array(4)].map((_, index) => (
                                     <SkeletonCard key={index} />
@@ -315,23 +261,7 @@ export default function CoursesSection() {
                         </div>
                         {/* FREE Courses Skeleton */}
                         <div>
-                            <div className="flex items-center justify-between mb-8">
-                                <div>
-                                    <div className="text-2xl font-black text-gray-900 mb-2">
-                                        Khóa học miễn phí
-                                    </div>
-                                    <p className="text-gray-600">
-                                        Học miễn phí với các khóa học chất lượng
-                                    </p>
-                                </div>
-                                <a
-                                    href="/roadmap"
-                                    className="hidden md:flex items-center text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
-                                >
-                                    Xem lộ trình
-                                    <ArrowRight className="w-4 h-4 ml-2" />
-                                </a>
-                            </div>
+                            {renderSectionHeader("Khóa học miễn phí", "Học miễn phí với các khóa học chất lượng")}
                             <div className={GRID_CLASS}>
                                 {[...Array(4)].map((_, index) => (
                                     <SkeletonCard key={index} />
@@ -348,27 +278,7 @@ export default function CoursesSection() {
                                 transition={{ duration: 0.3 }}
                                 className="mb-16"
                             >
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <div className="text-2xl font-black text-gray-900 mb-2">
-                                            Khóa học Pro
-                                            <span className="ml-3 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-1 rounded-full">
-                                                PRO
-                                            </span>
-                                        </div>
-                                        <p className="text-gray-600">
-                                            Khóa học JavaScript chuyên sâu cho
-                                            developer
-                                        </p>
-                                    </div>
-                                    <a
-                                        href="/roadmap"
-                                        className="hidden md:flex items-center text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
-                                    >
-                                        Xem lộ trình
-                                        <ArrowRight className="w-4 h-4 ml-2" />
-                                    </a>
-                                </div>
+                                {renderSectionHeader("Khóa học Pro", "Khóa học chuyên sâu cho developer", "PRO")}
                                 <div className={GRID_CLASS}>
                                     {proCourses.map((course) => (
                                         <CourseCard
@@ -394,24 +304,7 @@ export default function CoursesSection() {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <div className="flex items-center justify-between mb-8">
-                                    <div>
-                                        <div className="text-2xl font-black text-gray-900 mb-2">
-                                            Khóa học miễn phí
-                                        </div>
-                                        <p className="text-gray-600">
-                                            Học miễn phí với các khóa học chất
-                                            lượng
-                                        </p>
-                                    </div>
-                                    <a
-                                        href="/roadmap"
-                                        className="hidden md:flex items-center text-primary font-semibold hover:text-primary/80 transition-colors duration-200"
-                                    >
-                                        Xem lộ trình
-                                        <ArrowRight className="w-4 h-4 ml-2" />
-                                    </a>
-                                </div>
+                                {renderSectionHeader("Khóa học miễn phí", "Học miễn phí với các khóa học chất lượng")}
                                 <div className={GRID_CLASS}>
                                     {freeCourses.map((course) => (
                                         <CourseCard
@@ -449,17 +342,25 @@ function CourseCard({
     const { isAuthenticated } = useAuth();
     const toast = useToast();
     const router = useRouter();
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [localMouse, setLocalMouse] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (cardRef.current) {
+            const rect = cardRef.current.getBoundingClientRect();
+            setLocalMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+        }
+    };
 
     const handleCardClick = () => {
         if (isEnrolling) return;
 
-        // If not authenticated, always go to course landing page
         if (!isAuthenticated) {
             router.push(`/courses/${course.slug}`);
             return;
         }
 
-        // If authenticated, check enrollment status
         (async () => {
             try {
                 const response = await fetch(`/api/courses/${course.slug}`, {
@@ -483,55 +384,70 @@ function CourseCard({
     const instructorAvatar = course.instructor?.avatar;
     const instructorIsPro = course.instructor?.isPro ?? false;
     const instructorIsRegistered = course.instructor?.isRegistered ?? false;
+    const levelDisplay = LEVEL_MAP[course.level] || "Cơ bản";
 
-    const cardBg = "#f7f7f7";
     return (
-        <div className="group cursor-pointer pb-1" onClick={handleCardClick}>
-            <div
-                data-course-card
-                className="rounded-2xl overflow-hidden h-full flex flex-col transform transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-                style={{ backgroundColor: cardBg }}
-            >
+        <div
+            ref={cardRef}
+            className="group cursor-pointer relative overflow-hidden bg-background"
+            onClick={handleCardClick}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Spotlight hover effect */}
+            {isHovered && (
+                <div
+                    className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+                    style={{
+                        background: `radial-gradient(250px circle at ${localMouse.x}px ${localMouse.y}px, rgba(255,255,255,0.05), transparent 60%)`,
+                    }}
+                />
+            )}
+
+            <div className="relative z-10">
                 {/* Banner */}
                 <div
-                    className={`relative aspect-video flex-shrink-0 overflow-hidden rounded-t-2xl ${isEnrolling ? "opacity-50" : ""}`}
+                    className={`relative aspect-video flex-shrink-0 overflow-hidden ${isEnrolling ? "opacity-50" : ""}`}
                 >
                     {course.thumbnailUrl ? (
                         <img
                             src={course.thumbnailUrl}
                             alt={course.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = "none";
-                                const parent = target.parentElement;
-                                if (parent) {
-                                    parent.className = `relative aspect-video bg-gradient-to-br ${course.gradient} flex items-center justify-center flex-shrink-0 overflow-hidden rounded-t-2xl ${isEnrolling ? "opacity-50" : ""}`;
-                                }
-                            }}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                     ) : (
-                        <div
-                            className={`absolute inset-0 bg-gradient-to-br ${course.gradient}`}
-                        ></div>
-                    )}
-
-                    {/* Crown icon for Pro courses */}
-                    {course.isPro && !isEnrolling && (
-                        <div className="absolute top-3 left-3 z-20">
-                            <span className="text-xl drop-shadow-lg">👑</span>
+                        <div className="absolute inset-0 bg-secondary flex items-center justify-center">
+                            <Sparkles className="w-8 h-8 text-muted-foreground/30" />
                         </div>
                     )}
 
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Pro badge */}
+                    {course.isPro && !isEnrolling && (
+                        <div className="absolute top-3 left-3 z-20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-foreground text-background text-[10px] font-mono font-bold uppercase tracking-wider">
+                                <Zap className="w-3 h-3" /> PRO
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Level badge */}
+                    <div className="absolute top-3 right-3 z-20">
+                        <span className="px-2 py-0.5 bg-background/80 backdrop-blur-sm border border-border text-foreground text-[10px] font-mono uppercase tracking-wider">
+                            {levelDisplay}
+                        </span>
+                    </div>
+
                     {/* Loading overlay */}
                     {isEnrolling && (
-                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
-                            <div className="text-white text-center">
-                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto mb-2"></div>
-                                <div className="text-xs font-semibold opacity-90">
-                                    {course.isFree
-                                        ? "Đang đăng ký..."
-                                        : "Đang kiểm tra..."}
+                        <div className="absolute inset-0 bg-background/60 flex items-center justify-center z-10">
+                            <div className="text-foreground text-center">
+                                <div className="animate-spin h-5 w-5 border border-foreground border-t-transparent rounded-full mx-auto mb-2" />
+                                <div className="text-xs font-mono">
+                                    {course.isFree ? "enrolling..." : "checking..."}
                                 </div>
                             </div>
                         </div>
@@ -539,13 +455,9 @@ function CourseCard({
                 </div>
 
                 {/* Content */}
-                <div
-                    data-course-card-content
-                    className="flex-1 flex flex-col rounded-b-2xl"
-                    style={{ padding: "16px 20px", backgroundColor: cardBg }}
-                >
+                <div className="flex-1 flex flex-col p-4">
                     {/* Title */}
-                    <h3 className="course-card-title text-gray-900 mb-2 line-clamp-2">
+                    <h3 className="text-foreground font-semibold text-sm mb-2 line-clamp-2 group-hover:text-foreground/80 transition-colors">
                         {course.title}
                     </h3>
 
@@ -553,14 +465,14 @@ function CourseCard({
                     <div className="mb-3">
                         {course.isPro ? (
                             <div className="flex items-baseline gap-2">
-                                <span className="text-sm text-gray-400 line-through">
+                                <span className="text-xs text-muted-foreground line-through font-mono">
                                     {new Intl.NumberFormat("vi-VN").format(
                                         calculatePricing(course.priceAmount)
                                             .originalPrice,
                                     )}
                                     đ
                                 </span>
-                                <span className="text-base font-bold text-[#f05123]">
+                                <span className="text-sm font-bold text-foreground font-mono">
                                     {new Intl.NumberFormat("vi-VN").format(
                                         course.priceAmount,
                                     )}
@@ -568,16 +480,16 @@ function CourseCard({
                                 </span>
                             </div>
                         ) : (
-                            <span className="text-base font-bold text-[#f05123]">
+                            <span className="text-sm font-bold text-foreground font-mono">
                                 {course.price === "Miễn phí"
-                                    ? "Miễn phí"
+                                    ? "$ free"
                                     : course.price}
                             </span>
                         )}
                     </div>
 
                     {/* Author + Stats row */}
-                    <div className="flex items-center justify-between text-[13px] text-gray-500 mt-auto">
+                    <div className="flex items-center justify-between text-[12px] text-muted-foreground mt-auto font-mono">
                         {/* Author */}
                         <div className="flex items-center gap-1.5 min-w-0">
                             <AvatarWithProBadge
@@ -587,21 +499,21 @@ function CourseCard({
                                 isRegistered={instructorIsRegistered}
                                 size="2xs"
                             />
-                            <span className="truncate text-gray-600">
+                            <span className="truncate">
                                 {instructorName}
                             </span>
                         </div>
 
-                        {/* Student count */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                            <Eye className="w-3.5 h-3.5 text-gray-400" />
-                            <span>{course.students.toLocaleString()}</span>
-                        </div>
-
-                        {/* Duration */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                            <Clock className="w-3.5 h-3.5 text-gray-400" />
-                            <span>{course.duration}</span>
+                        {/* Stats */}
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                            <span className="flex items-center gap-1">
+                                <Eye className="w-3 h-3" />
+                                {course.students.toLocaleString()}
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {course.duration}
+                            </span>
                         </div>
                     </div>
                 </div>

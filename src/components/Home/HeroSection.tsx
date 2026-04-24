@@ -1,22 +1,28 @@
 "use client";
 
 import {
-    ChevronLeft,
-    ChevronRight,
-    Star,
     Users,
     BookOpen,
     ArrowRight,
     Sparkles,
     GraduationCap,
     Zap,
+    Star,
+    Terminal,
+    Code2,
+    Braces,
+    Cpu,
+    Search,
+    X,
+    FileText,
 } from "lucide-react";
-import PageContainer from "@/components/PageContainer";
+import { removeVietnameseTones } from "@/lib/string-utils";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
+import Logo from "@/components/Logo";
 
 interface Course {
     id: string;
@@ -40,40 +46,18 @@ interface Course {
     featured?: boolean;
 }
 
-const LEVEL_MAP: Record<string, "Cơ bản" | "Trung cấp" | "Nâng cao"> = {
-    BEGINNER: "Cơ bản",
-    INTERMEDIATE: "Trung cấp",
-    ADVANCED: "Nâng cao",
-};
-
-// Gradient palette for slides — cycles through these for each course
-const SLIDE_GRADIENTS = [
-    { from: "#4F46E5", to: "#3B82F6", label: "indigo-blue" },
-    { from: "#0D9488", to: "#059669", label: "teal-emerald" },
-    { from: "#EA580C", to: "#D97706", label: "orange-amber" },
-    { from: "#E11D48", to: "#DB2777", label: "rose-pink" },
-    { from: "#0891B2", to: "#2563EB", label: "cyan-blue" },
-];
-
-const calculatePricing = (currentPrice: number) => {
-    const originalPrice = Math.round(currentPrice * 1.4);
-    const roundedOriginalPrice = Math.round(originalPrice / 100000) * 100000;
-    const discountPercent = Math.round(
-        ((roundedOriginalPrice - currentPrice) / roundedOriginalPrice) * 100,
-    );
-    return {
-        originalPrice: roundedOriginalPrice,
-        currentPrice,
-        discountPercent,
-    };
-};
-
 interface PlatformStats {
     totalStudents: number;
     totalInstructors: number;
     totalCourses: number;
     avgRating: number;
 }
+
+const LEVEL_MAP: Record<string, string> = {
+    BEGINNER: "Cơ bản",
+    INTERMEDIATE: "Trung cấp",
+    ADVANCED: "Nâng cao",
+};
 
 const formatStatNumber = (num: number): string => {
     if (num >= 1000000)
@@ -82,58 +66,123 @@ const formatStatNumber = (num: number): string => {
     return num.toString();
 };
 
+// Typing animation hook
+function useTypingEffect(text: string, speed: number = 60) {
+    const [displayText, setDisplayText] = useState("");
+    const [isComplete, setIsComplete] = useState(false);
+
+    useEffect(() => {
+        setDisplayText("");
+        setIsComplete(false);
+        let i = 0;
+        const timer = setInterval(() => {
+            if (i < text.length) {
+                setDisplayText(text.slice(0, i + 1));
+                i++;
+            } else {
+                setIsComplete(true);
+                clearInterval(timer);
+            }
+        }, speed);
+        return () => clearInterval(timer);
+    }, [text, speed]);
+
+    return { displayText, isComplete };
+}
+
 export default function HeroSection() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [direction, setDirection] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [slideKey, setSlideKey] = useState(0);
     const [enrollingCourse, setEnrollingCourse] = useState<string | null>(null);
-    const [isPaused, setIsPaused] = useState(false);
-    const [platformStats, setPlatformStats] = useState<PlatformStats | null>(
-        null,
-    );
-    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const [platformStats, setPlatformStats] = useState<PlatformStats | null>(null);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const heroRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
     const toast = useToast();
     const { isAuthenticated } = useAuth();
 
+    // Search Logic
+    const [searchValue, setSearchValue] = useState("");
+    const [searchResults, setSearchResults] = useState<Course[]>([]);
+    const [showResults, setShowResults] = useState(false);
+    const searchContainerRef = useRef<HTMLDivElement>(null);
+
+    // Close results when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+                setShowResults(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchValue(value);
+        
+        if (value.trim()) {
+            const normalizedSearch = removeVietnameseTones(value.toLowerCase());
+            const filtered = courses.filter(course => {
+                const normalizedTitle = removeVietnameseTones(course.title.toLowerCase());
+                return normalizedTitle.includes(normalizedSearch);
+            });
+            setSearchResults(filtered.slice(0, 5));
+            setShowResults(true);
+        } else {
+            setSearchResults([]);
+            setShowResults(false);
+        }
+    };
+
+    const clearSearch = () => {
+        setSearchValue("");
+        setSearchResults([]);
+        setShowResults(false);
+    };
+
+    const { displayText, isComplete } = useTypingEffect(
+        "Nền tảng học lập trình tích hợp AI",
+        45,
+    );
+
     useEffect(() => {
         fetchCourses();
     }, []);
 
-    // Auto-advance carousel every 5 seconds
+    // Track mouse for spotlight effect
     useEffect(() => {
-        if (courses.length <= 1 || isPaused) return;
-
-        timerRef.current = setInterval(() => {
-            paginate(1);
-        }, 5000);
-
-        return () => {
-            if (timerRef.current) clearInterval(timerRef.current);
+        const handleMouseMove = (e: MouseEvent) => {
+            if (heroRef.current) {
+                const rect = heroRef.current.getBoundingClientRect();
+                setMousePos({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top,
+                });
+            }
         };
-    }, [courses.length, isPaused, currentIndex]);
+        const el = heroRef.current;
+        if (el) el.addEventListener("mousemove", handleMouseMove);
+        return () => {
+            if (el) el.removeEventListener("mousemove", handleMouseMove);
+        };
+    }, []);
 
     const fetchCourses = async () => {
         try {
             setLoading(true);
-            const response = await fetch(
-                "/api/courses?limit=5&include_stats=1",
-            );
+            const response = await fetch("/api/courses?limit=4&include_stats=1");
             const data = await response.json();
 
             if (data.success) {
-                const fetchedCourses = data.data.courses.map(
-                    (course: any, index: number) => ({
+                setCourses(
+                    data.data.courses.map((course: any, index: number) => ({
                         ...course,
                         featured: index === 0,
-                    }),
+                    })),
                 );
-                setCourses(fetchedCourses);
-
                 if (data.data.platformStats) {
                     setPlatformStats(data.data.platformStats);
                 }
@@ -169,9 +218,7 @@ export default function HeroSection() {
                 }
             } else {
                 if (data.message?.includes("đã đăng ký")) {
-                    toast.info(
-                        "Bạn đã đăng ký khóa học này. Đang chuyển hướng...",
-                    );
+                    toast.info("Bạn đã đăng ký khóa học này. Đang chuyển hướng...");
                     setTimeout(() => router.push(`/learn/${course.slug}`), 800);
                 } else {
                     toast.error(data.message || "Không thể đăng ký khóa học");
@@ -185,357 +232,389 @@ export default function HeroSection() {
         }
     };
 
-    const handleProCourseClick = async (course: Course) => {
-        // If not authenticated, navigate to course landing page directly
-        if (!isAuthenticated) {
-            router.push(`/courses/${course.slug}`);
-            return;
-        }
-        if (enrollingCourse) return;
-
-        try {
-            setEnrollingCourse(course.id);
-            const response = await fetch(`/api/courses/${course.slug}`, {
-                credentials: "include",
-            });
-            const data = await response.json();
-
-            if (data.success && data.data.isEnrolled) {
-                router.push(`/learn/${course.slug}`);
-            } else {
-                router.push(`/courses/${course.slug}`);
-            }
-        } catch (error) {
-            console.error("Error checking enrollment:", error);
-            router.push(`/courses/${course.slug}`);
-        } finally {
-            setEnrollingCourse(null);
-        }
-    };
-
-    const handleSlideAction = useCallback(
-        (course: Course) => {
-            if (isDragging) return;
+    const handleCourseClick = useCallback(
+        async (course: Course) => {
+            if (enrollingCourse) return;
 
             if (!isAuthenticated) {
-                toast.error("Vui lòng đăng nhập để tiếp tục");
+                if (course.isFree) {
+                    toast.error("Vui lòng đăng nhập để tiếp tục");
+                } else {
+                    router.push(`/courses/${course.slug}`);
+                }
                 return;
             }
 
-            if (course.isFree) {
-                (async () => {
-                    try {
-                        const response = await fetch(
-                            `/api/courses/${course.slug}`,
-                            { credentials: "include" },
-                        );
-                        const data = await response.json();
-                        if (data.success && data.data.isEnrolled) {
-                            router.push(`/learn/${course.slug}`);
-                        } else {
-                            handleEnroll(course);
-                        }
-                    } catch {
-                        toast.error("Có lỗi xảy ra. Vui lòng thử lại");
-                    }
-                })();
-            } else {
-                handleProCourseClick(course);
+            try {
+                setEnrollingCourse(course.id);
+                const response = await fetch(`/api/courses/${course.slug}`, {
+                    credentials: "include",
+                });
+                const data = await response.json();
+
+                if (data.success && data.data.isEnrolled) {
+                    router.push(`/learn/${course.slug}`);
+                } else if (course.isFree) {
+                    await handleEnroll(course);
+                } else {
+                    router.push(`/courses/${course.slug}`);
+                }
+            } catch {
+                router.push(`/courses/${course.slug}`);
+            } finally {
+                setEnrollingCourse(null);
             }
         },
-        [isDragging, isAuthenticated],
+        [isAuthenticated, enrollingCourse],
     );
 
-    const slideVariants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 800 : -800,
-            opacity: 0,
-        }),
-        center: {
-            zIndex: 1,
-            x: 0,
-            opacity: 1,
-        },
-        exit: (direction: number) => ({
-            zIndex: 0,
-            x: direction < 0 ? 800 : -800,
-            opacity: 0,
-        }),
-    };
-
-    const swipeConfidenceThreshold = 10000;
-    const swipePower = (offset: number, velocity: number) =>
-        Math.abs(offset) * velocity;
-
-    const paginate = useCallback(
-        (newDirection: number) => {
-            if (courses.length === 0) return;
-            setDirection(newDirection);
-            setCurrentIndex((prev) => {
-                const isWrapping =
-                    (newDirection === 1 && prev === courses.length - 1) ||
-                    (newDirection === -1 && prev === 0);
-                if (isWrapping) setSlideKey((k) => k + 1);
-                return newDirection === 1
-                    ? prev === courses.length - 1
-                        ? 0
-                        : prev + 1
-                    : prev === 0
-                      ? courses.length - 1
-                      : prev - 1;
-            });
-        },
-        [courses.length],
-    );
-
-    const getGradient = (index: number) =>
-        SLIDE_GRADIENTS[index % SLIDE_GRADIENTS.length];
-    const currentCourse = courses[currentIndex];
-
-    // --- Skeleton ---
-    const SkeletonBanner = () => (
-        <div
-            className="w-full rounded-2xl overflow-hidden animate-pulse"
-            style={{ height: 300 }}
-        >
-            <div className="w-full h-full bg-gradient-to-r from-gray-200 to-gray-300 flex items-center px-10 gap-8">
-                <div className="flex-[3] space-y-4">
-                    <div className="h-5 w-20 bg-gray-300 rounded-full" />
-                    <div className="h-8 w-3/4 bg-gray-300 rounded-lg" />
-                    <div className="h-4 w-full bg-gray-300 rounded" />
-                    <div className="h-4 w-2/3 bg-gray-300 rounded" />
-                    <div className="h-10 w-40 bg-gray-300 rounded-full mt-4" />
+    // Skeleton
+    const SkeletonGrid = () => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px">
+            {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-secondary/50 animate-pulse p-8" style={{ minHeight: 180 }}>
+                    <div className="h-3 w-16 bg-muted-foreground/20 mb-4" />
+                    <div className="h-5 w-3/4 bg-muted-foreground/20 mb-3" />
+                    <div className="h-3 w-full bg-muted-foreground/20 mb-2" />
+                    <div className="h-3 w-2/3 bg-muted-foreground/20" />
                 </div>
-                <div className="flex-[2] flex items-center justify-center">
-                    <div className="w-52 h-36 bg-gray-300 rounded-xl" />
-                </div>
-            </div>
+            ))}
         </div>
     );
 
-    return (
-        <section className="relative w-full bg-white overflow-x-clip">
-            {/* Subtle background */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-50/50 via-white to-white" />
+    const FEATURE_ITEMS = [
+        { icon: Terminal, label: "IDE trực tuyến", desc: "Code ngay trên trình duyệt" },
+        { icon: Cpu, label: "AI Assistant", desc: "Trợ giảng AI thông minh" },
+        { icon: Braces, label: "Dự án thực tế", desc: "Xây dựng portfolio chuẩn" },
+        { icon: Code2, label: "Multi-language", desc: "JS, Python, C++, Java..." },
+    ];
 
-            {/* Carousel section — full width, arrows outside */}
-            <div className="relative pt-8 sm:pt-10">
-                {/* Carousel banner — full width, no container constraints */}
-                <div className="px-6">
-                    <div
-                        className="relative w-full"
-                        style={{ height: 300 }}
-                        onMouseEnter={() => setIsPaused(true)}
-                        onMouseLeave={() => setIsPaused(false)}
+    return (
+        <section ref={heroRef} className="relative w-full overflow-hidden bg-background">
+            {/* ═══════════ PREMIUM BACKGROUND EFFECTS ═══════════ */}
+            {/* 1. Base Grid */}
+            <div
+                className="absolute inset-0 opacity-[0.05]"
+                style={{
+                    backgroundImage:
+                        "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
+                    backgroundSize: "48px 48px",
+                }}
+            />
+
+            {/* 2. Scanning Line Animation */}
+            <motion.div 
+                animate={{ y: ["0%", "100%"] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent z-[1] opacity-50"
+            />
+
+            {/* 3. Floating Code Symbols */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
+                {[...Array(20)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ 
+                            x: Math.random() * 100 + "%", 
+                            y: Math.random() * 100 + "%",
+                            opacity: 0 
+                        }}
+                        animate={{ 
+                            y: ["0%", "100%"],
+                            opacity: [0, 1, 0]
+                        }}
+                        transition={{ 
+                            duration: 10 + Math.random() * 20, 
+                            repeat: Infinity, 
+                            delay: Math.random() * 5 
+                        }}
+                        className="absolute font-mono text-4xl select-none"
                     >
-                        <div className="relative w-full h-full rounded-2xl overflow-hidden cursor-pointer select-none">
-                            {loading ? (
-                                <SkeletonBanner />
-                            ) : courses.length === 0 ? (
-                                <div className="flex items-center justify-center h-full bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-                                    <p className="text-gray-500">
-                                        Chưa có khóa học nào
-                                    </p>
+                        {["{ }", "[ ]", "/>", "++", "==", "=>", "!!"][i % 7]}
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* 4. Moving Gradient Blobs (Glassmorphism feel) */}
+            <motion.div
+                animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.03, 0.06, 0.03],
+                }}
+                transition={{ duration: 10, repeat: Infinity }}
+                className="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] bg-primary rounded-full blur-[120px] pointer-events-none"
+            />
+
+            {/* 5. Radial spotlight following cursor */}
+            <div
+                className="pointer-events-none absolute inset-0 transition-opacity duration-500 z-[2]"
+                style={{
+                    background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(var(--primary-rgb), 0.05), transparent 65%)`,
+                }}
+            />
+
+            <div className="relative z-10">
+                {/* ═══════════ HERO TEXT ═══════════ */}
+                <div className="px-6 pt-16 pb-10 md:pt-24 md:pb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="max-w-4xl">
+                        {/* Terminal prompt */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                            className="flex items-center gap-2 mb-6"
+                        >
+                            <span className="text-muted-foreground font-mono text-sm">$</span>
+                            <span className="text-muted-foreground font-mono text-sm">
+                                cd ~/codemind
+                            </span>
+                        </motion.div>
+
+                        {/* Main heading */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="mb-4"
+                        >
+                            <Logo size="xl" />
+                        </motion.div>
+
+                        {/* Typing effect subtitle */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4, delay: 0.5 }}
+                            className="mb-8"
+                        >
+                            <p className="text-muted-foreground text-lg md:text-xl font-mono">
+                                <span className="text-foreground/60">{">"} </span>
+                                {displayText}
+                                <span
+                                    className={`inline-block w-[2px] h-5 bg-foreground ml-0.5 align-middle ${isComplete ? "animate-pulse" : ""}`}
+                                />
+                            </p>
+                        </motion.div>
+
+                        {/* CTA buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.8 }}
+                            className="flex flex-wrap items-center gap-3"
+                        >
+                            <button
+                                onClick={() => {
+                                    const el = document.getElementById("courses-section");
+                                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                                }}
+                                className="group px-6 py-3 bg-foreground text-background font-mono text-sm font-semibold
+                                           hover:opacity-90 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                            >
+                                <span>Khám phá khóa học</span>
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+
+                            <button
+                                onClick={() => router.push("/roadmap")}
+                                className="px-6 py-3 border border-border text-foreground font-mono text-sm font-semibold
+                                           hover:bg-secondary transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                <span>Lộ trình học</span>
+                            </button>
+                        </motion.div>
+                    </div>
+
+                    {/* Right Side: Search & Feature Box */}
+                    <div className="relative">
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                            className="border border-border p-6 md:p-10 bg-secondary/10 backdrop-blur-sm relative z-50"
+                            ref={searchContainerRef}
+                        >
+                            <div className="mb-6">
+                                <h3 className="text-foreground font-mono text-lg font-bold mb-2">// Tìm kiếm tri thức</h3>
+                                <p className="text-muted-foreground text-sm">Khám phá hàng trăm khóa học lập trình chất lượng cao.</p>
+                            </div>
+
+                            <div className="group relative flex items-center">
+                                <Search className="absolute left-4 w-5 h-5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
+                                <input 
+                                    type="text"
+                                    placeholder="Tìm khóa học, ngôn ngữ..."
+                                    value={searchValue}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => {
+                                        if (searchValue.trim()) setShowResults(true);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && searchResults.length > 0) {
+                                            router.push(`/courses/${searchResults[0].slug}`);
+                                            setShowResults(false);
+                                        } else if (e.key === 'Escape') {
+                                            clearSearch();
+                                        }
+                                    }}
+                                    className="w-full bg-background border border-border px-12 py-4 font-mono text-sm
+                                             focus:outline-none focus:border-foreground transition-all"
+                                />
+                                <div className="absolute right-4 flex items-center gap-2">
+                                    {searchValue ? (
+                                        <button onClick={clearSearch} className="text-muted-foreground hover:text-foreground">
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    ) : (
+                                        <span className="hidden sm:block text-[10px] font-mono border border-border px-1.5 py-0.5 text-muted-foreground uppercase">Ctrl + K</span>
+                                    )}
                                 </div>
-                            ) : (
-                                <AnimatePresence
-                                    initial={false}
-                                    custom={direction}
-                                    mode="popLayout"
-                                >
+                            </div>
+
+                            {/* Search Results Dropdown */}
+                            <AnimatePresence>
+                                {showResults && (
                                     <motion.div
-                                        key={`${currentIndex}-${slideKey}`}
-                                        custom={direction}
-                                        variants={slideVariants}
-                                        initial="enter"
-                                        animate="center"
-                                        exit="exit"
-                                        transition={{
-                                            x: {
-                                                type: "spring",
-                                                stiffness: 300,
-                                                damping: 30,
-                                            },
-                                            opacity: { duration: 0.25 },
-                                        }}
-                                        drag="x"
-                                        dragConstraints={{ left: 0, right: 0 }}
-                                        dragElastic={1}
-                                        onDragStart={() => setIsDragging(true)}
-                                        onDragEnd={(
-                                            _,
-                                            { offset, velocity },
-                                        ) => {
-                                            const swipe = swipePower(
-                                                offset.x,
-                                                velocity.x,
-                                            );
-                                            if (
-                                                swipe <
-                                                -swipeConfidenceThreshold
-                                            )
-                                                paginate(1);
-                                            else if (
-                                                swipe > swipeConfidenceThreshold
-                                            )
-                                                paginate(-1);
-                                            setTimeout(
-                                                () => setIsDragging(false),
-                                                200,
-                                            );
-                                        }}
-                                        className="absolute inset-0 w-full h-full"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        className="absolute top-[calc(100%-1px)] left-[24px] right-[24px] md:left-[40px] md:right-[40px] bg-background border border-border border-t-0 shadow-2xl overflow-hidden z-50"
                                     >
-                                        <SlideContent
-                                            course={currentCourse}
-                                            gradient={getGradient(currentIndex)}
-                                            onAction={() =>
-                                                handleSlideAction(currentCourse)
-                                            }
-                                            isEnrolling={
-                                                enrollingCourse ===
-                                                currentCourse.id
-                                            }
-                                            isDragging={isDragging}
-                                        />
+                                        {searchResults.length > 0 ? (
+                                            <div className="divide-y divide-border">
+                                                {searchResults.map((course) => (
+                                                    <button
+                                                        key={course.id}
+                                                        onClick={() => {
+                                                            router.push(`/courses/${course.slug}`);
+                                                            setShowResults(false);
+                                                        }}
+                                                        className="w-full flex items-center gap-4 px-4 py-3 hover:bg-secondary transition-colors text-left"
+                                                    >
+                                                        <div className="w-10 h-10 bg-secondary flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                            {course.thumbnailUrl ? (
+                                                                <img src={course.thumbnailUrl} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <FileText className="w-5 h-5 text-muted-foreground" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-semibold text-foreground truncate">{course.title}</p>
+                                                            <p className="text-xs text-muted-foreground font-mono">{course.isFree ? "$ Miễn phí" : "Khóa học PRO"}</p>
+                                                        </div>
+                                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="p-8 text-center border-t border-border">
+                                                <p className="text-muted-foreground font-mono text-xs">// Không tìm thấy kết quả</p>
+                                            </div>
+                                        )}
                                     </motion.div>
-                                </AnimatePresence>
-                            )}
-                        </div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
                     </div>
                 </div>
 
-                {/* Navigation arrows — 50% on carousel edge (arrow=32px, padding=24px → left/right = 24px - 16px = 8px = left-2) */}
-                {!loading && courses.length > 1 && (
-                    <>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                paginate(-1);
-                            }}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-md border border-gray-200 flex items-center justify-center text-gray-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg transition-all cursor-pointer"
-                            aria-label="Slide trước"
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                paginate(1);
-                            }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-md border border-gray-200 flex items-center justify-center text-gray-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg transition-all cursor-pointer"
-                            aria-label="Slide tiếp theo"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
-                    </>
-                )}
-
-                {/* Bar-Shaped Indicators — below the banner */}
-                {!loading && courses.length > 1 && (
-                    <div className="flex items-center gap-2 mt-3 px-6">
-                        {courses.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => {
-                                    setDirection(index > currentIndex ? 1 : -1);
-                                    setCurrentIndex(index);
-                                }}
-                                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                                    index === currentIndex
-                                        ? "w-10 bg-indigo-500"
-                                        : "w-6 bg-gray-300 hover:bg-gray-400"
-                                }`}
-                                aria-label={`Đi đến slide ${index + 1}`}
-                            />
+                {/* ═══════════ BENTO GRID ═══════════ */}
+                <div className="px-6 pb-8">
+                    {/* Stats bar */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.0 }}
+                        className="border border-border divide-x divide-border flex overflow-x-auto mb-px"
+                    >
+                        {[
+                            {
+                                icon: Users,
+                                value: platformStats ? formatStatNumber(platformStats.totalStudents) : "—",
+                                label: "Học viên",
+                            },
+                            {
+                                icon: GraduationCap,
+                                value: platformStats ? platformStats.totalCourses.toString() : "—",
+                                label: "Khóa học",
+                            },
+                            {
+                                icon: Star,
+                                value: platformStats ? (platformStats.avgRating || "—").toString() : "—",
+                                label: "Đánh giá",
+                            },
+                            {
+                                icon: Zap,
+                                value: "24/7",
+                                label: "AI Support",
+                            },
+                        ].map((stat, i) => (
+                            <div
+                                key={i}
+                                className="flex-1 min-w-[120px] flex items-center gap-3 px-5 py-4 bg-background hover:bg-secondary/50 transition-colors"
+                            >
+                                <stat.icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                <div>
+                                    <p className="text-foreground font-mono font-bold text-sm leading-none">
+                                        {stat.value}
+                                    </p>
+                                    <p className="text-muted-foreground text-xs mt-0.5">{stat.label}</p>
+                                </div>
+                            </div>
                         ))}
-                    </div>
-                )}
-            </div>
+                    </motion.div>
 
-            {/* --- STATS + ACTIONS ROW — same px-6 as carousel for alignment --- */}
-            <div className="relative px-6 pb-6 sm:pb-8">
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    {/* Stats */}
-                    <div className="flex items-center gap-6 sm:gap-8">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center">
-                                <Users className="w-4 h-4 text-indigo-600" />
-                            </div>
-                            <div>
-                                <p className="text-lg font-bold text-gray-900 leading-tight">
-                                    {platformStats
-                                        ? formatStatNumber(
-                                              platformStats.totalStudents,
-                                          )
-                                        : "—"}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                    Học viên
+                    {/* Featured courses grid */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.2 }}
+                    >
+                        {loading ? (
+                            <SkeletonGrid />
+                        ) : courses.length === 0 ? (
+                            <div className="border border-border p-16 text-center">
+                                <p className="text-muted-foreground font-mono text-sm">
+                                    // Chưa có khóa học nào
                                 </p>
                             </div>
-                        </div>
-
-                        <div className="w-px h-8 bg-gray-200" />
-
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                                <GraduationCap className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 border border-border">
+                                {courses.slice(0, 4).map((course, i) => (
+                                    <BentoCard
+                                        key={course.id}
+                                        course={course}
+                                        index={i}
+                                        onClick={() => handleCourseClick(course)}
+                                        isEnrolling={enrollingCourse === course.id}
+                                    />
+                                ))}
                             </div>
-                            <div>
-                                <p className="text-lg font-bold text-gray-900 leading-tight">
-                                    {platformStats
-                                        ? platformStats.totalCourses
-                                        : "—"}
+                        )}
+                    </motion.div>
+
+                    {/* Feature grid */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.4 }}
+                        className="grid grid-cols-2 md:grid-cols-4 border-x border-b border-border"
+                    >
+                        {FEATURE_ITEMS.map((feat, i) => (
+                            <div
+                                key={i}
+                                className="group px-5 py-5 border-r last:border-r-0 border-b md:border-b-0 border-border
+                                           hover:bg-secondary/50 transition-colors cursor-default"
+                            >
+                                <feat.icon className="w-5 h-5 text-muted-foreground mb-3 group-hover:text-foreground transition-colors" />
+                                <p className="text-foreground font-mono text-sm font-semibold mb-1">
+                                    {feat.label}
                                 </p>
-                                <p className="text-xs text-gray-500">
-                                    Khóa học
-                                </p>
+                                <p className="text-muted-foreground text-xs">{feat.desc}</p>
                             </div>
-                        </div>
-
-                        <div className="w-px h-8 bg-gray-200" />
-
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-yellow-50 flex items-center justify-center">
-                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                            </div>
-                            <div>
-                                <p className="text-lg font-bold text-gray-900 leading-tight">
-                                    {platformStats
-                                        ? platformStats.avgRating || "—"
-                                        : "—"}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                    Đánh giá
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => router.push("/roadmap")}
-                            className="px-5 py-2.5 bg-white border border-gray-200 hover:border-indigo-200 text-gray-700 hover:text-indigo-600 font-medium rounded-full transition-all hover:bg-indigo-50 flex items-center gap-2 text-sm cursor-pointer"
-                        >
-                            <BookOpen className="w-4 h-4" />
-                            <span>Lộ trình học</span>
-                        </button>
-
-                        <button
-                            onClick={() => {
-                                const el =
-                                    document.getElementById("courses-section");
-                                if (el)
-                                    el.scrollIntoView({ behavior: "smooth" });
-                            }}
-                            className="group px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full shadow-lg shadow-indigo-200 transition-all hover:shadow-indigo-300 hover:-translate-y-0.5 flex items-center gap-2 text-sm cursor-pointer"
-                        >
-                            <span>Khám phá khóa học</span>
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                        </button>
-                    </div>
+                        ))}
+                    </motion.div>
                 </div>
             </div>
         </section>
@@ -543,163 +622,127 @@ export default function HeroSection() {
 }
 
 // ============================================================
-// Slide Content Component
+// Bento Card Component
 // ============================================================
-
-function SlideContent({
+function BentoCard({
     course,
-    gradient,
-    onAction,
+    index,
+    onClick,
     isEnrolling,
-    isDragging,
 }: {
     course: Course;
-    gradient: { from: string; to: string };
-    onAction: () => void;
+    index: number;
+    onClick: () => void;
     isEnrolling: boolean;
-    isDragging: boolean;
 }) {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [localMouse, setLocalMouse] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (cardRef.current) {
+            const rect = cardRef.current.getBoundingClientRect();
+            setLocalMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+        }
+    };
+
     const levelDisplay = LEVEL_MAP[course.level] || "Cơ bản";
 
     return (
         <div
-            className="w-full h-full flex items-center"
-            style={{
-                background: `linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%)`,
-            }}
+            ref={cardRef}
+            onClick={onClick}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={`
+                relative group cursor-pointer overflow-hidden
+                transition-colors duration-300
+                ${index % 2 === 0 ? "md:border-r" : ""} ${index < 2 ? "border-b" : ""} border-border
+                hover:bg-secondary/30
+            `}
+            style={{ minHeight: 200 }}
         >
-            {/* Left Column — Text */}
-            <div className="flex-[3] px-8 sm:px-10 py-6 flex flex-col justify-center min-w-0">
-                {/* Badges */}
-                <div className="flex items-center gap-2 mb-3">
-                    {course.isPro ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-400/90 backdrop-blur-sm text-amber-900 text-xs font-bold rounded-full">
-                            <Zap className="w-3 h-3" /> PRO
+            {/* Spotlight glow on hover */}
+            {isHovered && (
+                <div
+                    className="pointer-events-none absolute inset-0 transition-opacity duration-300 z-0"
+                    style={{
+                        background: `radial-gradient(300px circle at ${localMouse.x}px ${localMouse.y}px, rgba(255,255,255,0.06), transparent 60%)`,
+                    }}
+                />
+            )}
+
+            <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between">
+                {/* Top section */}
+                <div>
+                    {/* Tags */}
+                    <div className="flex items-center gap-2 mb-4">
+                        {course.isPro ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 border border-border text-foreground text-[11px] font-mono font-bold uppercase tracking-wider">
+                                <Zap className="w-3 h-3" /> PRO
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 border border-border text-muted-foreground text-[11px] font-mono font-bold uppercase tracking-wider">
+                                <Sparkles className="w-3 h-3" /> FREE
+                            </span>
+                        )}
+                        <span className="px-2 py-0.5 border border-border text-muted-foreground text-[11px] font-mono uppercase tracking-wider">
+                            {levelDisplay}
                         </span>
-                    ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-green-400/90 backdrop-blur-sm text-green-900 text-xs font-bold rounded-full">
-                            <Sparkles className="w-3 h-3" /> Miễn phí
-                        </span>
-                    )}
-                    <span className="px-2.5 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full">
-                        {levelDisplay}
-                    </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-foreground font-semibold text-lg mb-2 line-clamp-2 group-hover:text-foreground/90 transition-colors">
+                        {course.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-4">
+                        {course.subtitle ||
+                            "Khám phá khóa học chất lượng cao từ các chuyên gia hàng đầu."}
+                    </p>
                 </div>
 
-                {/* Title */}
-                <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-2 line-clamp-2">
-                    {course.title}
-                </h2>
+                {/* Bottom section */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-muted-foreground text-xs font-mono">
+                        <span className="flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            {course.students.toLocaleString()}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <Star className="w-3 h-3" />
+                            {course.rating > 0 ? course.rating.toFixed(1) : "—"}
+                        </span>
+                    </div>
 
-                {/* Description */}
-                <p className="text-sm sm:text-base text-white/80 leading-relaxed mb-4 line-clamp-2 max-w-lg">
-                    {course.subtitle ||
-                        `Khám phá khóa học chất lượng cao từ các chuyên gia hàng đầu. Nâng cao kỹ năng và xây dựng sự nghiệp vững chắc.`}
-                </p>
-
-                {/* Marketing stats */}
-                <div className="flex items-center gap-4 mb-4 text-white/70 text-sm">
-                    <span className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5" />
-                        {course.students.toLocaleString()} học viên
-                    </span>
-                    <span className="flex items-center gap-1">
-                        <BookOpen className="w-3.5 h-3.5" />
-                        {levelDisplay}
-                    </span>
-                    <span className="flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-current" />
-                        {course.rating > 0 ? course.rating.toFixed(1) : "4.8"}
-                    </span>
-                </div>
-
-                {/* CTA + Price */}
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (!isDragging && !isEnrolling) onAction();
-                        }}
-                        disabled={isEnrolling}
-                        className="px-5 py-2.5 rounded-full border-2 border-white text-white font-semibold text-sm hover:bg-white hover:text-gray-900 transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-60"
-                    >
+                    <div className="flex items-center gap-2 text-muted-foreground group-hover:text-foreground transition-colors text-sm font-mono">
                         {isEnrolling ? (
-                            <>
-                                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                                <span>Đang xử lý...</span>
-                            </>
-                        ) : course.isFree ? (
-                            <>
-                                <span>Học ngay miễn phí</span>
-                                <ArrowRight className="w-4 h-4" />
-                            </>
+                            <span className="flex items-center gap-2">
+                                <div className="animate-spin h-3 w-3 border border-foreground border-t-transparent rounded-full" />
+                                <span className="text-xs">loading...</span>
+                            </span>
                         ) : (
                             <>
-                                <span>Xem chi tiết</span>
-                                <ArrowRight className="w-4 h-4" />
+                                <span className="text-xs hidden sm:inline">
+                                    {course.isFree ? "Học ngay" : "Xem chi tiết"}
+                                </span>
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </>
                         )}
-                    </button>
-
-                    {course.isPro && (
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs text-white/50 line-through">
-                                {new Intl.NumberFormat("vi-VN").format(
-                                    calculatePricing(course.priceAmount)
-                                        .originalPrice,
-                                )}
-                                ₫
-                            </span>
-                            <span className="text-lg font-bold text-white">
-                                {new Intl.NumberFormat("vi-VN").format(
-                                    course.priceAmount,
-                                )}
-                                ₫
-                            </span>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Right Column — Image */}
-            <div className="hidden sm:flex flex-[2] items-center justify-center pr-8 py-6">
-                <div className="relative w-full max-w-[280px] aspect-[16/10] rounded-xl overflow-hidden shadow-2xl shadow-black/20">
-                    {course.thumbnailUrl ? (
-                        <img
-                            src={course.thumbnailUrl}
-                            alt={course.title}
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                            <Sparkles className="w-12 h-12 text-white/40" />
-                        </div>
-                    )}
-
-                    {/* Decorative overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-
-                    {/* Students count badge */}
-                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full">
-                        <Users className="w-3 h-3 text-white" />
-                        <span className="text-xs text-white font-medium">
-                            {course.students.toLocaleString()} học viên
-                        </span>
                     </div>
                 </div>
             </div>
 
-            {/* Loading overlay */}
-            {isEnrolling && (
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10">
-                    <div className="text-white text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2" />
-                        <p className="text-sm font-medium opacity-90">
-                            {course.isFree
-                                ? "Đang đăng ký..."
-                                : "Đang kiểm tra..."}
-                        </p>
-                    </div>
+            {/* Thumbnail peek on large cards */}
+            {course.thumbnailUrl && index === 0 && (
+                <div className="absolute right-0 bottom-0 w-32 h-24 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <img
+                        src={course.thumbnailUrl}
+                        alt=""
+                        className="w-full h-full object-cover"
+                    />
                 </div>
             )}
         </div>

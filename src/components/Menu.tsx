@@ -156,7 +156,7 @@ export default function Menu({ variant = "default" }: MenuProps) {
         <>
             {/* Mobile Bottom Navigation — same for both variants */}
             <nav
-                className="fixed bottom-0 left-0 right-0 md:hidden flex items-center bg-white border-t border-gray-200"
+                className="fixed bottom-0 left-0 right-0 md:hidden flex items-center bg-background border-t border-border"
                 style={{
                     height: "60px",
                     zIndex: 40,
@@ -241,11 +241,11 @@ export default function Menu({ variant = "default" }: MenuProps) {
                     <aside
                         className="hidden md:flex fixed left-0 flex-col items-center justify-start px-2"
                         style={{
-                            backgroundColor: "#ffffff",
+                            backgroundColor: "var(--background)",
                             top: "88px",
                             width: "96px",
-                            borderRadius: "0 12px 12px 0",
-                            border: "1px solid rgba(0,0,0,0.06)",
+                            borderRadius: "0",
+                            border: "1px solid var(--border)",
                             borderLeft: "none",
                             paddingTop: "12px",
                             paddingBottom: "12px",
@@ -271,9 +271,8 @@ export default function Menu({ variant = "default" }: MenuProps) {
             ) : (
                 /* Default fixed sidebar — unchanged behaviour */
                 <aside
-                    className="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center justify-start pt-20 px-2 border-r border-gray-200"
+                    className="hidden md:flex fixed left-0 top-0 h-screen flex-col items-center justify-start pt-20 px-2 border-r border-border bg-background"
                     style={{
-                        backgroundColor: "#ffffff",
                         width: "96px",
                         zIndex: 10,
                         pointerEvents: "auto",

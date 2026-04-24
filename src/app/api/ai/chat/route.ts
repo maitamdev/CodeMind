@@ -164,6 +164,7 @@ export async function POST(request: NextRequest) {
                 throw streamErr;
             }
         }
+        }
 
         // Convert to SSE (Server-Sent Events) format
         const sseStream = new ReadableStream({

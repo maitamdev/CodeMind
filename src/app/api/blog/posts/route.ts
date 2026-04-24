@@ -184,6 +184,48 @@ export async function GET(request: NextRequest) {
                 });
             }
 
+            // Fetch likes, comments, bookmarks and tags counts
+            let likesCountMap = new Map<number, number>();
+            let commentsCountMap = new Map<number, number>();
+            let bookmarksCountMap = new Map<number, number>();
+            let postTagsMap = new Map<number, string[]>();
+
+            if (postIds.length > 0) {
+                const [
+                    { data: likesData },
+                    { data: commentsData },
+                    { data: bookmarksData },
+                    { data: postTagsData }
+                ] = await Promise.all([
+                    supabaseAdmin!.from('blog_post_likes').select('post_id').in('post_id', postIds),
+                    supabaseAdmin!.from('blog_comments').select('post_id').in('post_id', postIds),
+                    supabaseAdmin!.from('blog_bookmarks').select('post_id').in('post_id', postIds),
+                    supabaseAdmin!.from('blog_post_tags').select('post_id, tag_id').in('post_id', postIds)
+                ]);
+
+                likesData?.forEach(like => likesCountMap.set(like.post_id, (likesCountMap.get(like.post_id) || 0) + 1));
+                commentsData?.forEach(comment => commentsCountMap.set(comment.post_id, (commentsCountMap.get(comment.post_id) || 0) + 1));
+                bookmarksData?.forEach(bookmark => bookmarksCountMap.set(bookmark.post_id, (bookmarksCountMap.get(bookmark.post_id) || 0) + 1));
+
+                if (postTagsData && postTagsData.length > 0) {
+                    const tagIds = [...new Set(postTagsData.map(pt => pt.tag_id))];
+                    const { data: tagsData } = await supabaseAdmin!.from('blog_tags').select('id, name').in('id', tagIds);
+                    
+                    const tagMap = new Map<number, string>();
+                    tagsData?.forEach(tag => tagMap.set(tag.id, tag.name));
+
+                    postTagsData.forEach(pt => {
+                        if (!postTagsMap.has(pt.post_id)) {
+                            postTagsMap.set(pt.post_id, []);
+                        }
+                        const tagName = tagMap.get(pt.tag_id);
+                        if (tagName) {
+                            postTagsMap.get(pt.post_id)!.push(tagName);
+                        }
+                    });
+                }
+            }
+
             // Format results similar to RPC function output
             results = (posts || []).map((post: any) => ({
                 id: post.id,
@@ -196,16 +238,15 @@ export async function GET(request: NextRequest) {
                 avatar_url: post.users?.avatar_url || null,
                 membership_type: post.users?.membership_type || null,
                 published_at: post.published_at,
-                view_count: post.view_count || 0,
-                like_count: 0, // TODO: Get from blog_post_likes
-                comment_count: 0, // TODO: Get from blog_comments
-                bookmark_count: 0, // TODO: Get from blog_bookmarks
+                like_count: likesCountMap.get(post.id) || 0,
+                comment_count: commentsCountMap.get(post.id) || 0,
+                bookmark_count: bookmarksCountMap.get(post.id) || 0,
                 category_names:
                     postCategoryMap
                         .get(post.id)
                         ?.map((c: any) => c.name)
                         .join(", ") || null,
-                tag_names: null, // TODO: Get tags
+                tag_names: postTagsMap.get(post.id)?.join(", ") || null,
             }));
 
             // Get count

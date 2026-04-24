@@ -4,84 +4,23 @@ import {
     ArrowRight,
     CheckCircle,
     Clock,
-    Cloud,
-    Database,
     FolderOpen,
     Layout,
     Map,
-    Server,
-    Smartphone,
     Sparkles,
     Target,
     Users,
     Zap,
+    Terminal,
+    Code2,
+    BookOpen,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { roadmapCatalog } from "@/data/roadmaps";
 
-const roadmaps = [
-    {
-        id: "frontend",
-        title: "Front-end Developer",
-        description:
-            "Tập trung vào giao diện, trải nghiệm người dùng và các công nghệ web hiện đại.",
-        icon: Layout,
-        stats: { courses: 8, duration: "8-12 tháng", students: "45k+" },
-        tags: ["React", "Next.js", "Tailwind"],
-        groups: ["role-based", "web"],
-        fit: "Phù hợp nếu bạn muốn đi từ HTML/CSS đến SPA, SSR và UI system.",
-        badge: "Phổ biến",
-    },
-    {
-        id: "backend",
-        title: "Back-end Developer",
-        description:
-            "Đi sâu vào API, dữ liệu, xác thực và vận hành dịch vụ phía server.",
-        icon: Server,
-        stats: { courses: 10, duration: "10-15 tháng", students: "32k+" },
-        tags: ["Node.js", "MySQL", "Microservices"],
-        groups: ["role-based", "web"],
-        fit: "Phù hợp nếu bạn thích logic hệ thống, hiệu năng và làm việc với dữ liệu.",
-        badge: "Nền tảng vững",
-    },
-    {
-        id: "fullstack",
-        title: "Full-stack Developer",
-        description:
-            "Xây nền tảng toàn diện để tự triển khai sản phẩm từ giao diện đến hệ thống.",
-        icon: Database,
-        stats: { courses: 15, duration: "12-18 tháng", students: "28k+" },
-        tags: ["MERN", "DevOps", "System Design"],
-        groups: ["role-based", "web"],
-        fit: "Phù hợp nếu bạn muốn hiểu toàn bộ vòng đời xây dựng và phát hành sản phẩm.",
-        badge: "Toàn diện",
-    },
-    {
-        id: "mobile",
-        title: "Mobile Developer",
-        description:
-            "Phát triển ứng dụng di động đa nền tảng với tư duy sản phẩm rõ ràng.",
-        icon: Smartphone,
-        stats: { courses: 12, duration: "8-12 tháng", students: "22k+" },
-        tags: ["React Native", "iOS", "Android"],
-        groups: ["role-based", "mobile"],
-        fit: "Phù hợp nếu bạn muốn build app thực tế cho mobile và triển khai đa nền tảng.",
-        badge: "Ứng dụng thực tế",
-    },
-    {
-        id: "devops",
-        title: "DevOps Engineer",
-        description:
-            "Kết nối phát triển phần mềm với triển khai, giám sát và tự động hóa hạ tầng.",
-        icon: Cloud,
-        stats: { courses: 14, duration: "10-15 tháng", students: "18k+" },
-        tags: ["AWS", "Docker", "Kubernetes"],
-        groups: ["role-based", "devops"],
-        fit: "Phù hợp nếu bạn muốn làm chủ CI/CD, cloud và độ ổn định của hệ thống.",
-        badge: "Hạ tầng & vận hành",
-    },
-];
+const roadmaps = roadmapCatalog;
 
 const quickActions = [
     {
@@ -90,7 +29,7 @@ const quickActions = [
             "Sinh lộ trình theo mục tiêu nghề nghiệp, thời gian học và nền tảng hiện tại.",
         href: "/roadmap/generate",
         icon: Sparkles,
-        cta: "Bắt đầu ngay",
+        cta: "$ generate --ai",
     },
     {
         title: "Mở roadmap của tôi",
@@ -98,7 +37,7 @@ const quickActions = [
             "Quay lại lộ trình đã lưu và tiếp tục phần đang học mà không phải tìm lại từ đầu.",
         href: "/roadmap/my",
         icon: FolderOpen,
-        cta: "Xem tiến độ",
+        cta: "$ ls ~/saved",
     },
     {
         title: "Duyệt roadmap chuẩn",
@@ -106,7 +45,7 @@ const quickActions = [
             "Xem các lộ trình đã biên soạn sẵn theo vai trò để so sánh các hướng đi phổ biến.",
         href: "#roadmap-catalog",
         icon: Map,
-        cta: "Mở thư viện",
+        cta: "$ browse --all",
     },
 ];
 
@@ -161,38 +100,58 @@ const features = [
 const roadmapGroups = [
     {
         id: "all",
-        label: "Tất cả",
+        label: "all",
         description:
             "Xem toàn bộ lộ trình hiện có để so sánh nhanh các hướng đi phổ biến.",
     },
     {
         id: "role-based",
-        label: "Role-based",
+        label: "role-based",
         description:
             "Các lộ trình theo vai trò nghề nghiệp, phù hợp khi bạn đã có mục tiêu công việc rõ ràng.",
     },
     {
         id: "web",
-        label: "Web",
+        label: "web",
         description:
             "Tập trung vào các kỹ năng xây dựng sản phẩm web từ giao diện đến hệ thống phía sau.",
     },
     {
         id: "mobile",
-        label: "Mobile",
+        label: "mobile",
         description:
             "Dành cho người muốn phát triển ứng dụng di động với trải nghiệm native hoặc đa nền tảng.",
     },
     {
         id: "devops",
-        label: "DevOps",
+        label: "devops",
         description:
             "Nhóm lộ trình về hạ tầng, tự động hóa triển khai và vận hành hệ thống ổn định.",
+    },
+    {
+        id: "python",
+        label: "python",
+        description:
+            "Lộ trình chuyên sâu cho ngôn ngữ Python: web backend, khoa học dữ liệu và AI/ML.",
     },
 ];
 
 export default function RoadmapPage() {
     const [activeGroup, setActiveGroup] = useState("all");
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const heroRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (heroRef.current) {
+                const rect = heroRef.current.getBoundingClientRect();
+                setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+            }
+        };
+        const el = heroRef.current;
+        el?.addEventListener("mousemove", handleMouseMove);
+        return () => el?.removeEventListener("mousemove", handleMouseMove);
+    }, []);
 
     const filteredRoadmaps =
         activeGroup === "all"
@@ -218,23 +177,57 @@ export default function RoadmapPage() {
 
     return (
         <div className="roadmap-route">
-            <section className="roadmap-shell__hero">
+            {/* ═══════ HERO ═══════ */}
+            <section className="roadmap-shell__hero" ref={heroRef}>
+                {/* Spotlight */}
+                <div
+                    className="pointer-events-none absolute inset-0 z-[1]"
+                    style={{
+                        background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(var(--primary-rgb), 0.04), transparent 60%)`,
+                    }}
+                />
                 <div className="roadmap-shell roadmap-shell__hero-grid">
                     <div>
-                        <span className="roadmap-shell__eyebrow">
-                            <Map className="h-4 w-4" />
-                            Lộ trình học tập
-                        </span>
-                        <h1 className="roadmap-shell__title">
-                            Thư viện roadmap cho từng vai trò kỹ thuật
-                        </h1>
-                        <p className="roadmap-shell__description">
+                        {/* Terminal prompt */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <span className="roadmap-shell__eyebrow">
+                                <Terminal className="h-3.5 w-3.5" />
+                                $ cd ~/roadmap
+                            </span>
+                        </motion.div>
+
+                        <motion.h1
+                            className="roadmap-shell__title"
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                        >
+                            Thư viện roadmap
+                            <br />
+                            <span className="text-muted-foreground">cho từng vai trò kỹ thuật</span>
+                        </motion.h1>
+
+                        <motion.p
+                            className="roadmap-shell__description"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4, delay: 0.2 }}
+                        >
                             Chọn roadmap chuẩn để vào học ngay hoặc dùng AI để
                             dựng phiên bản cá nhân hóa theo mục tiêu, quỹ thời
                             gian và nền tảng hiện tại.
-                        </p>
+                        </motion.p>
 
-                        <div className="roadmap-shell__actions">
+                        <motion.div
+                            className="roadmap-shell__actions"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                        >
                             <Link
                                 href="/roadmap/generate"
                                 className="roadmap-button roadmap-button--primary"
@@ -249,15 +242,21 @@ export default function RoadmapPage() {
                                 <FolderOpen className="h-4 w-4" />
                                 Mở roadmap của tôi
                             </Link>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div className="roadmap-shell__panel">
+                    {/* Side panel */}
+                    <motion.div
+                        className="roadmap-shell__panel"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.2 }}
+                    >
                         <div>
                             <h2 className="roadmap-shell__panel-title">
-                                Cùng một ngôn ngữ UI cho toàn bộ section roadmap
+                                // Hệ thống roadmap thống nhất
                             </h2>
-                            <p className="roadmap-shell__panel-copy">
+                            <p className="roadmap-shell__panel-copy" style={{ marginTop: 10 }}>
                                 Catalog, overview, AI generator và viewer đều
                                 dùng chung shell, card density và detail panel
                                 theo tinh thần roadmap.sh.
@@ -266,28 +265,30 @@ export default function RoadmapPage() {
 
                         <div className="roadmap-shell__meta">
                             <span className="roadmap-shell__meta-item">
-                                <Layout className="h-4 w-4" />
-                                Tree-first viewer
+                                <Layout className="h-3.5 w-3.5" />
+                                tree_viewer
                             </span>
                             <span className="roadmap-shell__meta-item">
-                                <Sparkles className="h-4 w-4" />
-                                AI roadmap cá nhân hóa
+                                <Sparkles className="h-3.5 w-3.5" />
+                                ai_roadmap
                             </span>
                             <span className="roadmap-shell__meta-item">
-                                <CheckCircle className="h-4 w-4" />
-                                Theo dõi tiến độ theo node
+                                <CheckCircle className="h-3.5 w-3.5" />
+                                node_tracking
                             </span>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
+            {/* ═══════ BODY ═══════ */}
             <div className="roadmap-shell roadmap-shell__body">
+                {/* Quick Actions */}
                 <section className="roadmap-surface p-6 md:p-8">
                     <div className="roadmap-section-heading">
                         <div>
                             <h2 className="roadmap-section-heading__title">
-                                Bắt đầu từ đúng cửa vào
+                                {"> "} Bắt đầu từ đúng cửa vào
                             </h2>
                             <p className="roadmap-section-heading__body">
                                 Tạo roadmap với AI, quay lại roadmap đã lưu hoặc
@@ -306,7 +307,7 @@ export default function RoadmapPage() {
                                 transition={{ delay: index * 0.06 }}
                             >
                                 <Link href={action.href} className="roadmap-card">
-                                    <span className="roadmap-card__icon text-slate-900">
+                                    <span className="roadmap-card__icon">
                                         <action.icon className="h-5 w-5" />
                                     </span>
                                     <h3 className="roadmap-card__title">
@@ -325,11 +326,12 @@ export default function RoadmapPage() {
                     </div>
                 </section>
 
+                {/* Roadmap Catalog */}
                 <section className="mt-6" id="roadmap-catalog">
                     <div className="roadmap-section-heading">
                         <div>
                             <h2 className="roadmap-section-heading__title">
-                                Danh mục roadmap phổ biến
+                                {"> "} Danh mục roadmap
                             </h2>
                             <p className="roadmap-section-heading__body">
                                 Chọn theo nhóm vai trò hoặc domain để thu hẹp
@@ -337,16 +339,16 @@ export default function RoadmapPage() {
                             </p>
                         </div>
                         <span className="roadmap-pill">
-                            {filteredRoadmaps.length} roadmap
+                            [{filteredRoadmaps.length}] roadmap
                         </span>
                     </div>
 
                     <div className="roadmap-surface p-6 md:p-8">
                         <div className="mb-5">
-                            <p className="text-sm font-bold text-roadmap-ink">
-                                Bộ lọc hiện tại
+                            <p className="text-xs font-mono font-bold text-muted-foreground uppercase tracking-widest">
+                                // Bộ lọc hiện tại
                             </p>
-                            <p className="mt-2 text-sm leading-6 text-roadmap-muted">
+                            <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                 {activeGroupMeta.description}
                             </p>
                         </div>
@@ -368,7 +370,7 @@ export default function RoadmapPage() {
                                         onClick={() => setActiveGroup(group.id)}
                                         className="roadmap-filter-chip"
                                     >
-                                        <span>{group.label}</span>
+                                        <span>--{group.label}</span>
                                         <span className="roadmap-pill">
                                             {groupCounts[group.id]}
                                         </span>
@@ -391,7 +393,7 @@ export default function RoadmapPage() {
                                         className="roadmap-card"
                                     >
                                         <div className="flex items-start justify-between gap-4">
-                                            <span className="roadmap-card__icon text-slate-900">
+                                            <span className="roadmap-card__icon">
                                                 <roadmap.icon className="h-5 w-5" />
                                             </span>
                                             <span className="roadmap-pill roadmap-pill--accent">
@@ -403,10 +405,10 @@ export default function RoadmapPage() {
                                             <h3 className="roadmap-card__title">
                                                 {roadmap.title}
                                             </h3>
-                                            <p className="mt-2 text-sm leading-6 text-roadmap-muted">
+                                            <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                                 {roadmap.description}
                                             </p>
-                                            <p className="mt-3 text-sm leading-6 text-roadmap-ink">
+                                            <p className="mt-3 text-sm leading-6 text-foreground">
                                                 {roadmap.fit}
                                             </p>
                                         </div>
@@ -417,7 +419,7 @@ export default function RoadmapPage() {
                                                 {roadmap.stats.duration}
                                             </span>
                                             <span className="roadmap-pill">
-                                                <FolderOpen className="h-3.5 w-3.5" />
+                                                <Code2 className="h-3.5 w-3.5" />
                                                 {roadmap.stats.courses} khóa học
                                             </span>
                                         </div>
@@ -441,12 +443,13 @@ export default function RoadmapPage() {
                     </div>
                 </section>
 
+                {/* How It Works + Benefits */}
                 <section className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
                     <div className="roadmap-surface p-6 md:p-8">
                         <div className="roadmap-section-heading">
                             <div>
                                 <h2 className="roadmap-section-heading__title">
-                                    Cách section roadmap vận hành
+                                    {"> "} Cách vận hành
                                 </h2>
                                 <p className="roadmap-section-heading__body">
                                     Luồng học được rút gọn về ba bước để người
@@ -460,17 +463,17 @@ export default function RoadmapPage() {
                             {flowSteps.map((step, index) => (
                                 <div key={step.title} className="roadmap-stat-card">
                                     <div className="flex items-center justify-between">
-                                        <span className="roadmap-card__icon text-slate-900">
+                                        <span className="roadmap-card__icon">
                                             <step.icon className="h-5 w-5" />
                                         </span>
-                                        <span className="text-sm font-bold text-slate-300">
-                                            0{index + 1}
+                                        <span className="text-xs font-mono font-bold text-muted-foreground">
+                                            [{String(index + 1).padStart(2, "0")}]
                                         </span>
                                     </div>
-                                    <div className="roadmap-stat-card__value !text-[1.12rem]">
+                                    <div className="roadmap-stat-card__value !text-[1.05rem]">
                                         {step.title}
                                     </div>
-                                    <p className="mt-2 text-sm leading-6 text-roadmap-muted">
+                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
                                         {step.description}
                                     </p>
                                 </div>
@@ -482,7 +485,7 @@ export default function RoadmapPage() {
                         <div className="roadmap-section-heading">
                             <div>
                                 <h2 className="roadmap-section-heading__title">
-                                    Lợi ích cho người học
+                                    {"> "} Lợi ích
                                 </h2>
                                 <p className="roadmap-section-heading__body">
                                     UI ưu tiên định hướng, mật độ vừa phải và ít
@@ -498,11 +501,11 @@ export default function RoadmapPage() {
                                     className="roadmap-simple-list__item"
                                 >
                                     <div className="flex items-start gap-3">
-                                        <span className="roadmap-card__icon !h-11 !w-11 text-slate-900">
-                                            <feature.icon className="h-4.5 w-4.5" />
+                                        <span className="roadmap-card__icon !h-11 !w-11">
+                                            <feature.icon className="h-4 w-4" />
                                         </span>
                                         <div>
-                                            <p className="font-bold text-roadmap-ink">
+                                            <p className="font-bold font-mono text-foreground text-sm">
                                                 {feature.title}
                                             </p>
                                             <p className="roadmap-simple-list__copy">
@@ -510,19 +513,20 @@ export default function RoadmapPage() {
                                             </p>
                                         </div>
                                     </div>
-                                    <CheckCircle className="h-4 w-4 shrink-0 text-green-600" />
+                                    <CheckCircle className="h-4 w-4 shrink-0 text-foreground" />
                                 </div>
                             ))}
                         </div>
 
-                        <div className="mt-6 rounded-[24px] bg-slate-950 p-6 text-white">
-                            <p className="text-xs font-bold uppercase tracking-[0.12em] text-slate-300">
-                                Chưa rõ nên học roadmap nào?
+                        {/* CTA block */}
+                        <div className="mt-6 border border-border p-6 bg-secondary">
+                            <p className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">
+                                // Chưa rõ nên học roadmap nào?
                             </p>
-                            <h3 className="mt-3 !text-[1.48rem] font-bold tracking-[-0.04em] text-white">
+                            <h3 className="mt-3 text-lg font-bold font-mono tracking-tight text-foreground">
                                 Bắt đầu bằng AI rồi quay lại thư viện để đối chiếu với roadmap chuẩn.
                             </h3>
-                            <p className="mt-3 text-sm leading-7 text-slate-300">
+                            <p className="mt-3 text-sm leading-7 text-muted-foreground">
                                 Đây là cách ít ma sát nhất để đi từ nhu cầu mơ
                                 hồ đến một kế hoạch học tập có thứ tự rõ ràng.
                             </p>

@@ -35,6 +35,8 @@
     "@types/nodemailer": "^7.0.3",
     "@uiw/react-markdown-preview": "^5.1.5",
     "@uiw/react-md-editor": "^4.0.8",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.37.0",
     "ai": "^5.0.86",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",

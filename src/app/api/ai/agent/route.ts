@@ -148,6 +148,7 @@ ${String(code.javascript || "").slice(0, 3000)}
             }
             throw streamErr;
         }
+        }
 
         const encoder = new TextEncoder();
         const toSSE = (obj: object) =>

@@ -289,7 +289,7 @@ export default function UserProfilePage() {
                                 fullName={publicProfile.displayName}
                                 isPro={false}
                                 isRegistered={false}
-                                size="full"
+                                size="3xl"
                                 className="w-full h-full rounded-full border border-slate-200 shadow-sm"
                             />
                         </div>

@@ -11,9 +11,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { queryOneBuilder, update, db as supabaseAdmin } from "@/lib/db";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, unlink } from "fs/promises";
 import { resolve } from "path";
 import { uploadImage } from "@/lib/cloudinary";
+import { verifyToken, extractTokenFromHeader } from "@/lib/auth";
+import cloudinary from "@/lib/cloudinary";
 
 interface Params {
     lessonId: string;
@@ -59,8 +61,27 @@ export async function POST(
             course_id: (lessonData.chapters as any).course_id,
         };
 
-        // TODO: Verify user is course instructor or admin
-        // For now, allowing all uploads for testing
+        // Verify user is course instructor or admin
+        const authHeader = request.headers.get("Authorization");
+        const token = extractTokenFromHeader(authHeader);
+        if (!token) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const payload = verifyToken(token);
+        if (!payload || !payload.userId) {
+            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+        }
+
+        const { data: roles } = await supabaseAdmin!.from('user_roles').select('role').eq('user_id', payload.userId);
+        const { data: course } = await supabaseAdmin!.from('courses').select('instructor_id').eq('id', lesson.course_id).single();
+        
+        const isInstructor = course?.instructor_id === payload.userId;
+        const isAdmin = roles?.some((r: any) => r.role === 'admin');
+        
+        if (!isInstructor && !isAdmin) {
+            return NextResponse.json({ error: "Forbidden: You don't have permission to edit this course" }, { status: 403 });
+        }
 
         let videoUrl: string;
         let videoDuration: number | null = null;
@@ -465,23 +486,67 @@ export async function DELETE(
     try {
         const { lessonId } = await params;
 
-        // Verify lesson exists
-        const lesson = await queryOneBuilder<{ video_url: string | null }>(
-            "lessons",
-            {
-                select: "video_url",
-                filters: { id: lessonId },
-            },
-        );
+        // Verify lesson exists and get course_id
+        const { data: lessonData, error: lessonError } = await supabaseAdmin!
+            .from("lessons")
+            .select("video_url, chapters!inner(course_id)")
+            .eq("id", lessonId)
+            .single();
 
-        if (!lesson || !lesson.video_url) {
+        if (lessonError || !lessonData || !lessonData.video_url) {
             return NextResponse.json(
                 { error: "Video not found" },
                 { status: 404 },
             );
         }
 
-        // TODO: Delete from storage (local file or Cloudinary)
+        const lesson = {
+            video_url: lessonData.video_url,
+            course_id: (lessonData.chapters as any).course_id,
+        };
+
+        // Verify user is course instructor or admin
+        const authHeader = request.headers.get("Authorization");
+        const token = extractTokenFromHeader(authHeader);
+        if (!token) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const payload = verifyToken(token);
+        if (!payload || !payload.userId) {
+            return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+        }
+
+        const { data: roles } = await supabaseAdmin!.from('user_roles').select('role').eq('user_id', payload.userId);
+        const { data: course } = await supabaseAdmin!.from('courses').select('instructor_id').eq('id', lesson.course_id).single();
+        
+        const isInstructor = course?.instructor_id === payload.userId;
+        const isAdmin = roles?.some((r: any) => r.role === 'admin');
+        
+        if (!isInstructor && !isAdmin) {
+            return NextResponse.json({ error: "Forbidden: You don't have permission to delete this video" }, { status: 403 });
+        }
+
+        // Delete from storage (local file or Cloudinary)
+        try {
+            if (lesson.video_url.includes("cloudinary.com")) {
+                // Extract public_id from Cloudinary URL
+                const parts = lesson.video_url.split('/');
+                const filenameWithExt = parts[parts.length - 1];
+                const filename = filenameWithExt.split('.')[0];
+                const folderIndex = parts.indexOf("codemind");
+                if (folderIndex !== -1) {
+                    const publicId = parts.slice(folderIndex, parts.length - 1).join("/") + "/" + filename;
+                    await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
+                }
+            } else if (lesson.video_url.startsWith("/videos/")) {
+                const publicDir = resolve(process.cwd(), "public");
+                const fullPath = resolve(publicDir, lesson.video_url.slice(1));
+                await unlink(fullPath);
+            }
+        } catch (storageError) {
+            console.error("Storage delete error:", storageError);
+        }
 
         // Update lesson to remove video URL
         await update(

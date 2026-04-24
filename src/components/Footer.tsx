@@ -11,6 +11,7 @@ import {
     Volume2,
 } from "lucide-react";
 import Link from "next/link";
+import Logo from "./Logo";
 import { toolLinks } from "@/lib/tool-catalog";
 
 const footerLinks = {
@@ -64,26 +65,7 @@ export default function Footer() {
                 <div className="block md:block lg:hidden space-y-8">
                     {/* Company Info - Full width on tablet */}
                     <div className="space-y-4 text-center md:text-left">
-                        <div className="flex items-center gap-3 justify-center md:justify-start">
-                            <Link
-                                href="/"
-                                className="flex items-center justify-center cursor-pointer"
-                                style={{ transition: "all .2s ease" }}
-                            >
-                                    <span className="text-xl font-bold tracking-tight text-white">Code<span className="text-indigo-400">Mind</span></span>
-                            </Link>
-                            <div className="hidden sm:block">
-                                <Link
-                                    href="/"
-                                    className="hover:opacity-80"
-                                    style={{ transition: "all .2s ease" }}
-                                >
-                                    <p className="text-sm font-medium text-gray-300">
-                                        Học lập trình cùng AI
-                                    </p>
-                                </Link>
-                            </div>
-                        </div>
+                        <Logo dark={true} size="md" className="justify-center md:justify-start" />
 
                         <p className="text-gray-400 text-sm leading-relaxed">
                             Nền tảng học lập trình tích hợp AI hàng đầu.
@@ -202,26 +184,7 @@ export default function Footer() {
                 <div className="hidden lg:grid lg:grid-cols-6 gap-8">
                     {/* Company Info */}
                     <div className="space-y-4 lg:col-span-2">
-                        <div className="flex items-center gap-3">
-                            <Link
-                                href="/"
-                                className="flex items-center justify-center cursor-pointer"
-                                style={{ transition: "all .2s ease" }}
-                            >
-                                <span className="text-xl font-bold tracking-tight text-white">Code<span className="text-indigo-400">Mind</span></span>
-                            </Link>
-                            <div className="hidden sm:block">
-                                <Link
-                                    href="/"
-                                    className="hover:opacity-80"
-                                    style={{ transition: "all .2s ease" }}
-                                >
-                                    <p className="text-sm font-medium text-gray-300">
-                                        Học lập trình cùng AI
-                                    </p>
-                                </Link>
-                            </div>
-                        </div>
+                        <Logo dark={true} size="md" />
 
                         <p className="text-gray-400 text-sm leading-relaxed">
                             Nền tảng học lập trình tích hợp AI hàng đầu.

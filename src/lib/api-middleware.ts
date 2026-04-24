@@ -25,6 +25,8 @@ interface WithAuthOptions {
     rateLimit?: { maxAttempts: number; windowMs: number };
     /** Custom rate limit key prefix. Defaults to pathname. */
     rateLimitKeyPrefix?: string;
+    /** The specific rate limit category to use for Redis */
+    rateLimitType?: "login" | "register" | "forgotPassword" | "changePassword" | "general" | "upload" | "ai" | "contentCreate";
     /** Skip CSRF check for this route. Defaults to false. */
     skipCSRF?: boolean;
 }
@@ -57,9 +59,10 @@ export function withAuth(
             if (options.rateLimit) {
                 const clientIP = getClientIP(request);
                 const prefix = options.rateLimitKeyPrefix || request.nextUrl.pathname;
-                const rateCheck: RateLimitResult = checkRateLimit(
+                const rateCheck: RateLimitResult = await checkRateLimit(
                     `${prefix}:${clientIP}`,
                     options.rateLimit,
+                    options.rateLimitType
                 );
 
                 if (!rateCheck.allowed) {

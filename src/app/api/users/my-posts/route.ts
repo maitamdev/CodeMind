@@ -128,6 +128,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Fetch likes count
+    let likesCountMap = new Map<number, number>();
+    if (postIds.length > 0) {
+      const { data: likesData } = await supabaseAdmin!.from('blog_post_likes').select('post_id').in('post_id', postIds);
+      likesData?.forEach(like => likesCountMap.set(like.post_id, (likesCountMap.get(like.post_id) || 0) + 1));
+    }
+
     // Format results
     const formattedPosts = (posts || []).map((post: any) => ({
       id: post.id.toString(),
@@ -138,7 +145,7 @@ export async function GET(request: NextRequest) {
       cover_image: post.cover_image || null,
       status: post.status,
       views_count: post.view_count || 0,
-      likes_count: 0, // TODO: Get from blog_post_likes table if needed
+      likes_count: likesCountMap.get(post.id) || 0,
       created_at: post.created_at,
       updated_at: post.updated_at,
       published_at: post.published_at || null,

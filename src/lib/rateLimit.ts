@@ -1,38 +1,11 @@
 /**
- * In-memory rate limiter for auth and API routes.
- *
- * ⚠️ LIMITATION: This uses process-level Map storage.
- * On Vercel serverless, each function invocation may run in a different
- * instance — rate limiting is best-effort, not guaranteed.
- *
- * For production scale, migrate to Redis-based solution (e.g. Upstash Redis):
- *   import { Ratelimit } from "@upstash/ratelimit";
- *   import { Redis } from "@upstash/redis";
+ * Rate limiter for auth and API routes.
+ * Support Upstash Redis for serverless deployment, fallback to in-memory map.
  */
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
-interface RateLimitEntry {
-    count: number;
-    resetAt: number;
-}
-
-const store = new Map<string, RateLimitEntry>();
-
-// Cleanup expired entries every 5 minutes
-if (typeof setInterval !== "undefined") {
-    setInterval(
-        () => {
-            const now = Date.now();
-            for (const [key, entry] of store) {
-                if (now > entry.resetAt) {
-                    store.delete(key);
-                }
-            }
-        },
-        5 * 60 * 1000,
-    );
-}
-
-interface RateLimitConfig {
+export interface RateLimitConfig {
     maxAttempts: number;
     windowMs: number;
 }
@@ -43,10 +16,7 @@ export const RATE_LIMITS = {
     /** Register: 3 attempts per 10 minutes */
     register: { maxAttempts: 3, windowMs: 10 * 60 * 1000 } as RateLimitConfig,
     /** Forgot password: 3 attempts per 15 minutes */
-    forgotPassword: {
-        maxAttempts: 3,
-        windowMs: 15 * 60 * 1000,
-    } as RateLimitConfig,
+    forgotPassword: { maxAttempts: 3, windowMs: 15 * 60 * 1000 } as RateLimitConfig,
     /** Password change: 5 attempts per minute */
     changePassword: { maxAttempts: 5, windowMs: 60 * 1000 } as RateLimitConfig,
     /** General API: 60 requests per minute */
@@ -65,15 +35,78 @@ export interface RateLimitResult {
     resetInMs: number;
 }
 
-export function checkRateLimit(
+// ==========================
+// In-Memory Fallback Store
+// ==========================
+interface RateLimitEntry {
+    count: number;
+    resetAt: number;
+}
+const memoryStore = new Map<string, RateLimitEntry>();
+
+if (typeof setInterval !== "undefined") {
+    setInterval(() => {
+        const now = Date.now();
+        for (const [key, entry] of memoryStore) {
+            if (now > entry.resetAt) {
+                memoryStore.delete(key);
+            }
+        }
+    }, 5 * 60 * 1000);
+}
+
+// ==========================
+// Redis Store Setup
+// ==========================
+let redisLimiters = new Map<string, Ratelimit>();
+const hasRedis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN;
+
+if (hasRedis) {
+    const redis = new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
+
+    for (const [key, config] of Object.entries(RATE_LIMITS)) {
+        const windowInSeconds = Math.max(1, Math.floor(config.windowMs / 1000));
+        redisLimiters.set(key, new Ratelimit({
+            redis,
+            limiter: Ratelimit.slidingWindow(config.maxAttempts, `${windowInSeconds} s`),
+            analytics: true,
+            prefix: `ratelimit:${key}`,
+        }));
+    }
+}
+
+/**
+ * Check if the request is allowed under the rate limit
+ */
+export async function checkRateLimit(
     key: string,
     config: RateLimitConfig,
-): RateLimitResult {
+    limitType?: keyof typeof RATE_LIMITS
+): Promise<RateLimitResult> {
+    
+    // 1. Try Redis first if available
+    if (hasRedis && limitType && redisLimiters.has(limitType)) {
+        try {
+            const { success, limit, remaining, reset } = await redisLimiters.get(limitType)!.limit(key);
+            return {
+                allowed: success,
+                remaining,
+                resetInMs: Math.max(0, reset - Date.now())
+            };
+        } catch (error) {
+            console.error("Redis Rate Limiter Error (falling back to memory):", error);
+        }
+    }
+
+    // 2. Fallback to Memory
     const now = Date.now();
-    const entry = store.get(key);
+    const entry = memoryStore.get(key);
 
     if (!entry || now > entry.resetAt) {
-        store.set(key, { count: 1, resetAt: now + config.windowMs });
+        memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
         return {
             allowed: true,
             remaining: config.maxAttempts - 1,
@@ -106,5 +139,3 @@ export function getClientIP(request: Request): string {
     if (realIp) return realIp;
     return "unknown";
 }
-
-export type { RateLimitConfig };
