@@ -22,6 +22,27 @@ export type OllamaUIModel = GroqUIModel;
 
 export const APPROVED_GROQ_MODELS: GroqUIModel[] = [
     {
+        id: "meta-llama/llama-3-8b-instruct:free",
+        name: "Llama 3 8B (Free)",
+        provider: "OpenRouter",
+        providerSlug: "meta",
+        description: "Hoàn toàn miễn phí, phản hồi nhanh và thông minh",
+    },
+    {
+        id: "google/gemma-2-9b-it:free",
+        name: "Gemma 2 9B (Free)",
+        provider: "OpenRouter",
+        providerSlug: "google",
+        description: "Model miễn phí từ Google qua OpenRouter",
+    },
+    {
+        id: "mistralai/mistral-7b-instruct:free",
+        name: "Mistral 7B (Free)",
+        provider: "OpenRouter",
+        providerSlug: "mistral",
+        description: "Model miễn phí từ Mistral cực nhẹ",
+    },
+    {
         id: DEFAULT_GROQ_TUTOR_MODEL,
         name: "Llama 3.3 70B",
         provider: "Groq",
@@ -29,25 +50,11 @@ export const APPROVED_GROQ_MODELS: GroqUIModel[] = [
         description: "Tối ưu cho AI Tutor và giải thích bài học",
     },
     {
-        id: "llama-3.1-70b-versatile",
-        name: "Llama 3.1 70B",
-        provider: "Groq",
-        providerSlug: "meta",
-        description: "Chuyên cho chat code và tác vụ lập trình",
-    },
-    {
         id: DEFAULT_GROQ_COMPLETION_MODEL,
         name: "Llama 3.1 8B Instant",
         provider: "Groq",
         providerSlug: "meta",
         description: "Phản hồi nhanh, nhẹ",
-    },
-    {
-        id: "gemma2-9b-it",
-        name: "Gemma 2 9B",
-        provider: "Groq",
-        providerSlug: "google",
-        description: "Mô hình nhẹ của Google",
     },
 ];
 

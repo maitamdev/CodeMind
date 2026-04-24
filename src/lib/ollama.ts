@@ -122,7 +122,7 @@ export async function getCodeCompletion(
             messages: [
                 {
                     role: "system",
-                    content: "You are a code completion assistant. Output ONLY the code that fills the gap. No explanations, no markdown.",
+                    content: "Code completion engine. Output ONLY the missing code. No explanations. No markdown. No comments. Match the surrounding code style exactly.",
                 },
                 { role: "user", content: prompt },
             ],
