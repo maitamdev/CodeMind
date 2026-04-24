@@ -5,24 +5,27 @@ import {
 } from "@/lib/ollama";
 import { PLAYGROUND_TOOLS } from "@/lib/agent-tools";
 
-const AGENT_SYSTEM_PROMPT = `Bạn là AI Agent lập trình trong hệ thống CodeMind. Bạn có thể ĐỌC và SỬA code trực tiếp.
+const AGENT_SYSTEM_PROMPT = `Bạn là AI Code Agent trên CodeMind. Bạn CÓ QUYỀN đọc và sửa code trực tiếp trong Playground.
 
-CÔNG CỤ (tools):
-- edit_code: Thay thế toàn bộ nội dung một tab (html, css, javascript). Dùng khi cần sửa code cho học viên.
+CÔNG CỤ:
+- edit_code(tab, content): Ghi đè toàn bộ nội dung một tab. tab = "html" | "css" | "javascript". content = source code đầy đủ.
 
-QUY TRÌNH:
-1. Đọc yêu cầu của học viên và phân tích code hiện tại được đính kèm bên dưới.
-2. Trả lời bằng TIẾNG VIỆT, giải thích chi tiết nhưng ngắn gọn và dễ hiểu.
-3. Nếu học viên yêu cầu sửa code hoặc thêm tính năng, hãy giải thích cách làm, sau đó gọi tool \`edit_code\` để cập nhật code trực tiếp cho họ.
+QUY TRÌNH XỬ LÝ:
+1. Phân tích code hiện tại và yêu cầu của người dùng.
+2. Nếu cần sửa code: Giải thích ngắn gọn thay đổi (2-3 dòng), sau đó gọi tool. KHÔNG giải thích dài dòng trước khi hành động.
+3. Nếu chỉ cần giải thích: Trả lời bằng văn bản thuần, đi thẳng vào vấn đề.
 
-ĐỊNH DẠNG KHI GỌI TOOL - trả lời DUY NHẤT bằng JSON (nếu muốn sửa code):
-- edit_code: {"name":"edit_code","arguments":{"tab":"html","content":"nội dung đầy đủ của tab html"}}
-LƯU Ý: KHÔNG thêm text trước/sau JSON khi gọi tool. Nếu bạn chỉ muốn giải thích, hãy trả lời bằng văn bản bình thường.
+GỌI TOOL — JSON thuần, KHÔNG markdown, KHÔNG text trước/sau:
+{"name":"edit_code","arguments":{"tab":"html","content":"<!DOCTYPE html>..."}}
 
-QUY TẮC SỬA CODE:
-- Luôn gọi edit_code với nội dung đầy đủ của tab, không dùng dạng viết tắt.
-- Giữ nguyên các phần code không liên quan.
-- Giữ cấu trúc code hợp lệ.`;
+QUY TẮC:
+- Trả lời bằng TIẾNG VIỆT. Dùng thuật ngữ kỹ thuật gốc tiếng Anh.
+- content trong edit_code phải là SOURCE CODE ĐẦY ĐỦ của tab, không viết tắt, không dùng "// ...phần còn lại".
+- Giữ nguyên các phần code không liên quan đến yêu cầu.
+- KHÔNG mở đầu bằng lời chào. KHÔNG kết thúc bằng câu hỏi. KHÔNG lặp lại yêu cầu.
+- Khi giải thích code: chỉ ra WHY chứ không chỉ WHAT. Nêu root cause nếu debug.`;
+
+import { getOpenRouterChatWithToolsStream } from "@/lib/openrouter";
 
 export async function POST(request: NextRequest) {
     try {
@@ -54,9 +57,9 @@ export async function POST(request: NextRequest) {
             | { role: "tool"; tool_name: string; content: string }
         > = [{ role: "system", content: AGENT_SYSTEM_PROMPT }];
 
-        // Inject current code so model can edit directly; also instruct to use read_code if unsure
+        // Inject current code so model can edit directly
         if (code && typeof code === "object") {
-            const codeCtx = `[CODE HIỆN TẠI TRONG PLAYGROUND - dùng read_code để đọc hoặc edit_code để sửa]
+            const codeCtx = `[CODE HIỆN TẠI TRONG PLAYGROUND - dùng edit_code để sửa]
 HTML:
 \`\`\`
 ${String(code.html || "").slice(0, 3000)}
@@ -72,7 +75,7 @@ ${String(code.javascript || "").slice(0, 3000)}
             ollamaMessages.push({ role: "system", content: codeCtx });
         }
 
-        // Map incoming messages to Ollama format
+        // Map incoming messages
         for (const msg of messages) {
             if (msg.role === "user" && msg.content) {
                 ollamaMessages.push({ role: "user", content: msg.content });
@@ -98,8 +101,6 @@ ${String(code.javascript || "").slice(0, 3000)}
             }
         }
 
-        // Agent tools require a model that supports tool calling.
-        // Qwen 2.5 Coder outputs tool calls as text (we parse them).
         const agentModel = modelId || "llama-3.3-70b-versatile";
 
         const opts = {
@@ -108,15 +109,23 @@ ${String(code.javascript || "").slice(0, 3000)}
             temperature: 0.2,
         };
 
-        // Prefer streaming for lower latency; fallback to non-streaming on failure
-        let stream: ReadableStream<import("@/lib/ollama").ToolsStreamChunk>;
-        try {
-            stream = await getChatCompletionWithToolsStream(
+        // --- Model Provider Switching ---
+        let stream: ReadableStream<any>;
+        
+        if (agentModel.includes("/")) {
+            stream = await getOpenRouterChatWithToolsStream(
                 ollamaMessages,
                 PLAYGROUND_TOOLS,
                 opts,
             );
-        } catch (streamErr) {
+        } else {
+            try {
+                stream = await getChatCompletionWithToolsStream(
+                    ollamaMessages,
+                    PLAYGROUND_TOOLS,
+                    opts,
+                );
+            } catch (streamErr) {
             const errMsg =
                 streamErr instanceof Error
                     ? streamErr.message
