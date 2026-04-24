@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, Share2, ArrowLeft, Settings } from "lucide-react";
+import { Sun, Moon, Share2, ArrowLeft, Settings, GitCommit } from "lucide-react";
 import type { LanguageType } from "./useIDEState";
 
 const FILE_NAMES: Record<LanguageType, string> = {
@@ -16,6 +16,7 @@ interface TitleBarProps {
     onToggleTheme: () => void;
     autoSaveStatus: string;
     onBack?: () => void;
+    onCommitAndPush?: () => void;
 }
 
 export default function TitleBar({
@@ -24,6 +25,7 @@ export default function TitleBar({
     onToggleTheme,
     autoSaveStatus,
     onBack,
+    onCommitAndPush,
 }: TitleBarProps) {
     const handleBack = () => {
         if (onBack) {
@@ -78,7 +80,18 @@ export default function TitleBar({
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-1 flex-1 justify-end">
+            <div className="flex items-center gap-2 flex-1 justify-end pr-2">
+                {onCommitAndPush && (
+                    <button
+                        onClick={onCommitAndPush}
+                        className="flex items-center gap-1.5 px-3 py-1 bg-green-600 hover:bg-green-500 text-white text-[12px] font-medium rounded transition-colors"
+                        title="Commit and Push to your Profile"
+                    >
+                        <GitCommit className="w-3.5 h-3.5" />
+                        <span>Commit & Push</span>
+                    </button>
+                )}
+                <div className="w-px h-4 bg-[var(--ide-border)] mx-1" />
                 <button
                     onClick={onToggleTheme}
                     className="w-7 h-7 flex items-center justify-center rounded text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] transition-colors"

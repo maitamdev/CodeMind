@@ -7,6 +7,7 @@ import {
     BookOpen,
     Calendar,
     CheckCircle2,
+    Code,
     FileText,
     Globe,
     GraduationCap,
@@ -294,6 +295,12 @@ export default function UserProfileContent({ username }: { username: string }) {
             icon: <BookOpen className="h-4 w-4" />,
         },
         {
+            id: "projects",
+            label: "Dự án & Code",
+            count: profile.projects?.length || 0,
+            icon: <Code className="h-4 w-4" />,
+        },
+        {
             id: "articles",
             label: "Bài viết đã đăng",
             count: stats.totalArticlesPublished,
@@ -468,7 +475,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                 {/* ═══════════════ RIGHT CONTENT ═══════════════ */}
                 <main className="min-w-0 space-y-6">
                     {/* Activity Heatmap */}
-                    <ActivityHeatmap username={username} />
+                    <ActivityHeatmap username={username} projects={profile.projects} />
 
                     {/* Tab Navigation (F8 style) */}
                     <div className="border-b border-gray-200">
@@ -524,6 +531,55 @@ export default function UserProfileContent({ username }: { username: string }) {
                                     : "Chưa đăng bài viết nào."
                             }
                         />
+                    )}
+
+                    {activeTab === "projects" && (
+                        <>
+                            {profile.projects && profile.projects.length > 0 ? (
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    {profile.projects.map((project: any) => {
+                                        const commitsCount = project.commits?.length || 0;
+                                        return (
+                                        <div key={project.id} className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-gray-300 shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <BookOpen className="h-4 w-4 text-gray-400" />
+                                                    <a href="#" className="font-semibold text-blue-600 hover:underline truncate text-base">
+                                                        {project.name}
+                                                    </a>
+                                                    <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-500">Public</span>
+                                                </div>
+                                                <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                                                    {project.description || "Dự án code thực hành trên CodeMind IDE."}
+                                                </p>
+                                            </div>
+                                            <div className="mt-5 flex items-center gap-4 text-[13px] font-medium text-gray-500">
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-yellow-500/20"></div>
+                                                    <span>Web App</span>
+                                                </div>
+                                                {commitsCount > 0 && (
+                                                    <div className="flex items-center gap-1 hover:text-blue-600 cursor-pointer">
+                                                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                                                        </svg>
+                                                        <span>{commitsCount} commits</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center gap-1.5 ml-auto text-gray-400 text-xs">
+                                                    <span>Updated {new Date(project.updated_at).toLocaleDateString('vi-VN')}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )})}
+                                </div>
+                            ) : (
+                                <EmptyState
+                                    icon={<Code className="h-10 w-10 text-gray-300" />}
+                                    message="Chưa có dự án code nào."
+                                />
+                            )}
+                        </>
                     )}
 
                     {activeTab === "created" && (

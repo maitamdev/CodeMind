@@ -95,6 +95,7 @@ export interface UnifiedProfileResponse {
     courses: ProfileCourse[];
     enrolledCourses: EnrolledCourse[];
     stats: ProfileStats;
+    projects?: any[];
 }
 
 export interface ProfessionalProfileEditorResponse extends UnifiedProfileResponse {

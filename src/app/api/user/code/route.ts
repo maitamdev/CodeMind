@@ -1,78 +1,106 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { checkAuth } from "@/lib/auth";
+import { getAuthUserId } from "@/lib/auth-helpers";
 
 export async function GET(request: NextRequest) {
     try {
-        const { user, error: authError } = await checkAuth(request);
+        const userId = await getAuthUserId();
         
-        if (authError || !user) {
+        if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const url = new URL(request.url);
         const lessonId = url.searchParams.get("lessonId");
-
-        if (!lessonId) {
-            return NextResponse.json({ error: "lessonId is required" }, { status: 400 });
-        }
+        const slug = url.searchParams.get("slug") || lessonId || "scratch";
 
         const { data, error } = await supabaseAdmin!
-            .from("user_code_snippets")
-            .select("html, css, javascript, cpp")
-            .eq("user_id", user.id)
-            .eq("lesson_id", lessonId)
+            .from("user_projects")
+            .select("*")
+            .eq("user_id", userId)
+            .eq("slug", slug)
             .single();
 
-        if (error && error.code !== "PGRST116") { // Ignore 'no rows found' error
+        if (error && error.code !== "PGRST116") { 
             throw error;
         }
 
         return NextResponse.json({ data: data || null });
     } catch (error) {
-        console.error("Error fetching user code:", error);
+        console.error("Error fetching user project:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
 export async function POST(request: NextRequest) {
     try {
-        const { user, error: authError } = await checkAuth(request);
+        const userId = await getAuthUserId();
         
-        if (authError || !user) {
+        if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const body = await request.json();
-        const { lessonId, html, css, javascript, cpp } = body;
+        const { lessonId, html, css, javascript, cpp, action, message, isPublic, projectName } = body;
+        const slug = lessonId || "scratch";
+        const name = projectName || (lessonId ? `Lesson ${lessonId}` : "Scratchpad");
 
-        if (!lessonId) {
-            return NextResponse.json({ error: "lessonId is required" }, { status: 400 });
+        // First, check if project exists to get current commits
+        const { data: existingProject, error: fetchError } = await supabaseAdmin!
+            .from("user_projects")
+            .select("commits")
+            .eq("user_id", userId)
+            .eq("slug", slug)
+            .single();
+
+        if (fetchError && fetchError.code !== "PGRST116") {
+            throw fetchError;
+        }
+
+        let commits = existingProject?.commits || [];
+
+        // If action is commit, add a new commit
+        if (action === "commit") {
+            commits.push({
+                id: Math.random().toString(36).substring(2, 9),
+                message: message || "Update code",
+                timestamp: new Date().toISOString(),
+                stats: {
+                    html: html?.length || 0,
+                    css: css?.length || 0,
+                    js: javascript?.length || 0,
+                }
+            });
+        }
+
+        const updateData: any = {
+            user_id: userId,
+            slug: slug,
+            name: name,
+            lesson_id: lessonId || null,
+            html: html || "",
+            css: css || "",
+            javascript: javascript || "",
+            cpp: cpp || "",
+            commits: commits,
+            updated_at: new Date().toISOString()
+        };
+
+        if (action === "publish" || isPublic !== undefined) {
+            updateData.is_public = true;
         }
 
         const { data, error } = await supabaseAdmin!
-            .from("user_code_snippets")
-            .upsert({
-                user_id: user.id,
-                lesson_id: lessonId,
-                html: html || "",
-                css: css || "",
-                javascript: javascript || "",
-                cpp: cpp || "",
-                updated_at: new Date().toISOString()
-            }, {
-                onConflict: "user_id, lesson_id"
-            })
+            .from("user_projects")
+            .upsert(updateData, { onConflict: "user_id, slug" })
             .select()
             .single();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         return NextResponse.json({ data, success: true });
     } catch (error) {
-        console.error("Error saving user code:", error);
+        console.error("Error saving user project:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

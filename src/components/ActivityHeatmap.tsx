@@ -61,11 +61,12 @@ interface ActivityResponse {
 
 interface Props {
     username: string;
+    projects?: any[];
 }
 
 /* ─── Component ─── */
 
-export default function ActivityHeatmap({ username }: Props) {
+export default function ActivityHeatmap({ username, projects }: Props) {
     const [dailyCounts, setDailyCounts] = useState<Record<string, number>>({});
     const [totalActivities, setTotalActivities] = useState(0);
     const [joinedYear, setJoinedYear] = useState<number | null>(null);
@@ -90,8 +91,30 @@ export default function ActivityHeatmap({ username }: Props) {
             .then((r) => r.json())
             .then((json: ActivityResponse) => {
                 if (json.success) {
-                    setDailyCounts(json.data);
-                    setTotalActivities(json.totalActivities);
+                    const combinedCounts = { ...json.data };
+                    let additionalActivities = 0;
+                    
+                    // Merge commits from projects
+                    if (projects && Array.isArray(projects)) {
+                        projects.forEach((project) => {
+                            if (project.commits && Array.isArray(project.commits)) {
+                                project.commits.forEach((commit: any) => {
+                                    if (!commit.timestamp) return;
+                                    const d = new Date(commit.timestamp);
+                                    if (isNaN(d.getTime())) return;
+                                    
+                                    if (selectedYear && d.getFullYear() !== selectedYear) return;
+                                    
+                                    const dateStr = d.toISOString().split("T")[0];
+                                    combinedCounts[dateStr] = (combinedCounts[dateStr] || 0) + 1;
+                                    additionalActivities++;
+                                });
+                            }
+                        });
+                    }
+
+                    setDailyCounts(combinedCounts);
+                    setTotalActivities(json.totalActivities + additionalActivities);
                     if (json.joinedAt && !joinedYear) {
                         setJoinedYear(new Date(json.joinedAt).getFullYear());
                     }
@@ -100,7 +123,7 @@ export default function ActivityHeatmap({ username }: Props) {
             .catch(() => {})
             .finally(() => setLoaded(true));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [username, selectedYear]);
+    }, [username, selectedYear, projects]);
 
     // Build year list from joinedYear to current year
     const yearList = useMemo(() => {
