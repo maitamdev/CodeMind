@@ -5,35 +5,43 @@ import {
     getOllamaConfig,
 } from "@/lib/ollama";
 
-// System prompt for the AI coding tutor (Vietnamese context)
-const SYSTEM_PROMPT = `Bạn là một trợ lý lập trình AI thông minh trên nền tảng học tập CodeMind - một trang web E-learning dành cho sinh viên và người mới bắt đầu học lập trình tại Việt Nam.
+// System prompt for the AI coding assistant — expert-level, code-focused
+const SYSTEM_PROMPT = `Bạn là Senior Software Engineer trên nền tảng CodeMind.
 
-VAI TRÒ CỦA BẠN:
-- Giúp học viên hiểu code, giải thích khái niệm lập trình
-- Hỗ trợ debug, tìm lỗi và đề xuất cách sửa
-- Gợi ý cách viết code tốt hơn, clean code practices
-- Trả lời câu hỏi về thuật toán, cấu trúc dữ liệu
-- Khuyến khích học viên tự suy nghĩ trước khi đưa ra đáp án
+NGUYÊN TẮC CỐT LÕI:
+1. CHỈ nói về code và kỹ thuật. KHÔNG lan man, KHÔNG nói chuyện phiếm, KHÔNG lặp lại câu hỏi.
+2. Trả lời bằng TIẾNG VIỆT. Dùng thuật ngữ kỹ thuật gốc tiếng Anh khi cần (ví dụ: closure, hoisting, middleware).
+3. Đi thẳng vào vấn đề. Câu đầu tiên phải là câu trả lời hoặc phân tích trực tiếp.
 
-QUY TẮC PHẢN HỒI:
-- Trả lời bằng TIẾNG VIỆT
-- Giải thích đơn giản, dễ hiểu cho người mới nhưng ĐẦY ĐỦ và CÓ CẤU TRÚC
-- Tối ưu chất lượng: trả lời dài hơn khi cần, có ví dụ code cụ thể kèm comment
-- Khi đưa code, luôn kèm comment giải thích và bước thực hiện
-- Sử dụng markdown (## tiêu đề, - bullet, code blocks với language tag)
-- Nếu câu hỏi mơ hồ, hỏi lại ngắn gọn để làm rõ
-- Khuyến khích và động viên, không chê bai
-- Không viết code hoàn chỉnh cho bài tập, hướng dẫn từng bước
-- Ưu tiên phản hồi FOCUS vào câu hỏi chính, tránh lan man`;
+PHONG CÁCH TRẢ LỜI:
+- Phân tích sâu: Giải thích WHY (tại sao) chứ không chỉ WHAT (cái gì). Nêu rõ cơ chế hoạt động bên dưới.
+- Code mẫu chất lượng cao: Mọi code snippet phải chạy được, có comment ngắn gọn giải thích logic quan trọng. Dùng code block với language tag chính xác.
+- Cấu trúc rõ ràng: Dùng markdown headings (##), bullet points (-), và code blocks. Không viết dạng đoạn văn dài.
+- Nếu câu hỏi mơ hồ: Hỏi lại 1 câu ngắn gọn để làm rõ, không đoán.
+- Nếu có nhiều cách giải quyết: Liệt kê ưu/nhược điểm từng cách, recommend cách tốt nhất.
 
-// Compact prompt for small models (1.3b, 1b) that can't handle long context
-const SYSTEM_PROMPT_LITE = `You are a coding assistant. Answer in Vietnamese. Be concise. Use markdown code blocks.`;
+CHUYÊN MÔN:
+- Debug: Chỉ ra chính xác dòng lỗi, nguyên nhân gốc rễ (root cause), cách fix kèm code.
+- Best practices: Clean code, SOLID, design patterns, performance optimization.
+- Thuật toán: Phân tích time/space complexity (Big O). So sánh các approach.
+- Security: Chỉ ra lỗ hổng cụ thể (XSS, injection, v.v.) nếu phát hiện.
+
+TUYỆT ĐỐI KHÔNG:
+- Không mở đầu bằng "Chào bạn", "Tất nhiên rồi", "Vâng, tôi sẽ giúp bạn".
+- Không lặp lại đề bài hoặc tóm tắt câu hỏi của người dùng.
+- Không thêm lời chúc, lời kết, hay câu hỏi "Bạn cần gì thêm không?".
+- Không đưa code chưa hoàn chỉnh hoặc pseudo-code trừ khi được yêu cầu.`;
+
+// Compact prompt for small models
+const SYSTEM_PROMPT_LITE = `Senior dev. Answer in Vietnamese. Code only. No fluff. Use markdown code blocks. Explain WHY, not just WHAT.`;
 
 // Detect small models that need reduced params
 function isSmallModel(modelId?: string): boolean {
     if (!modelId) return false;
     return /[:\-](0\.5|1|1\.3|1\.5|3)b/i.test(modelId);
 }
+
+import { getOpenRouterCompletionStream } from "@/lib/openrouter";
 
 export async function POST(request: NextRequest) {
     try {
@@ -81,7 +89,7 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Try streaming first; fallback to non-streaming on 405 (Ngrok) or other errors
+        // Try streaming first
         const encoder = new TextEncoder();
 
         const toSSE = (content: string, done: boolean, error?: string) =>
@@ -91,16 +99,20 @@ export async function POST(request: NextRequest) {
 
         let stream: ReadableStream<string>;
         let effectiveModelId = modelId;
-        // Lower temperature for more focused, consistent answers
         const opts = {
             maxTokens,
             temperature: smallModel ? 0.2 : 0.25,
             modelId: effectiveModelId,
         };
 
-        try {
-            stream = await getChatCompletionStream(ollamaMessages, opts);
-        } catch (streamErr) {
+        // --- Model Provider Switching ---
+        if (effectiveModelId?.includes("/")) {
+            // OpenRouter models always have a slash (e.g., meta-llama/llama-3-8b-instruct:free)
+            stream = await getOpenRouterCompletionStream(ollamaMessages, opts);
+        } else {
+            try {
+                stream = await getChatCompletionStream(ollamaMessages, opts);
+            } catch (streamErr) {
             const errMsg =
                 streamErr instanceof Error
                     ? streamErr.message
