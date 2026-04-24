@@ -123,3 +123,11 @@ vectordb/
 # Ignore Log files specific to AI
 *.log
 celerybeat-schedule
+
+# ==========================
+# 6. DATABASE FILES
+# ==========================
+*.sql
+*.sqlite
+*.sqlite3
+*.db
