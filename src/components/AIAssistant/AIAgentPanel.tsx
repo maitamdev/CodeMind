@@ -88,6 +88,9 @@ export default function AIAgentPanel({
     );
     const [selectedModel, setSelectedModel] = useState<AIModel>(() => chatModel);
 
+    // Removed: The hardcoded override that forced Llama 3.3 70B in Agent mode.
+    // This allows users to select OpenRouter or other models freely.
+    /*
     useEffect(() => {
         if (
             hasAgentContext &&
@@ -97,15 +100,14 @@ export default function AIAgentPanel({
             setSelectedModel(chatModel);
         }
     }, [chatModel, hasAgentContext, mode, selectedModel.id]);
+    */
 
     const handleModeChange = useCallback(
         (newMode: AIAgentMode) => {
             setMode(newMode);
-            if (newMode === "agent" && selectedModel.id !== chatModel.id) {
-                setSelectedModel(chatModel);
-            }
+            // Removed model reset logic to allow persistent model selection
         },
-        [chatModel, selectedModel.id],
+        [],
     );
 
     const {
@@ -211,7 +213,7 @@ export default function AIAgentPanel({
     return (
         <div
             className={cn(
-                "relative flex h-full flex-col overflow-hidden rounded-2xl border",
+                "relative flex h-full flex-col overflow-hidden",
                 themed.shell,
                 themed.chrome,
                 className,
