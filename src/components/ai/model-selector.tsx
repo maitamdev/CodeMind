@@ -217,39 +217,32 @@ import { Button } from "@/components/ui/button";
 
 const models = [
     {
-        id: "gpt-4o",
-        name: "GPT-4o",
-        chef: "OpenAI",
-        chefSlug: "openai",
-        providers: ["openai", "azure"],
+        id: "llama-3.3-70b-versatile",
+        name: "Llama 3.3 70B",
+        chef: "Groq",
+        chefSlug: "meta",
+        providers: ["groq"],
     },
     {
-        id: "gpt-4o-mini",
-        name: "GPT-4o Mini",
-        chef: "OpenAI",
-        chefSlug: "openai",
-        providers: ["openai"],
+        id: "llama-3.1-8b-instant",
+        name: "Llama 3.1 8B",
+        chef: "Groq",
+        chefSlug: "meta",
+        providers: ["groq"],
     },
     {
-        id: "claude-sonnet-4-20250514",
-        name: "Claude 4 Sonnet",
-        chef: "Anthropic",
-        chefSlug: "anthropic",
-        providers: ["anthropic"],
-    },
-    {
-        id: "gemini-2.0-flash",
-        name: "Gemini 2.0 Flash",
-        chef: "Google",
+        id: "gemma2-9b-it",
+        name: "Gemma 2 9B",
+        chef: "Groq",
         chefSlug: "google",
-        providers: ["google"],
+        providers: ["groq"],
     },
 ];
 
 /** Demo component for preview */
 export default function ModelSelectorDemo() {
     const [open, setOpen] = useState(false);
-    const [selectedModel, setSelectedModel] = useState<string>("gpt-4o");
+    const [selectedModel, setSelectedModel] = useState<string>("llama-3.3-70b-versatile");
 
     const selectedModelData = models.find(
         (model) => model.id === selectedModel,

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,9 +19,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Code is required" }, { status: 400 })
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: `Bạn là một chuyên gia đánh giá code chuyên nghiệp trên nền tảng học lập trình trực tuyến CodeMind - một trang web học lập trình cho sinh viên và người mới bắt đầu tại Việt Nam.
+    const { getChatCompletion } = await import("@/lib/ollama");
+
+    const systemPrompt = `Bạn là một chuyên gia đánh giá code chuyên nghiệp trên nền tảng học lập trình trực tuyến CodeMind - một trang web học lập trình cho sinh viên và người mới bắt đầu tại Việt Nam.
 
 NGỮ CẢNH:
 - Đây là code được viết bởi học viên đang học lập trình
@@ -76,8 +74,12 @@ LƯU Ý:
 - Nếu code quá đơn giản, gợi ý thêm tính năng mới
 - Nếu code phức tạp, khen ngợi và gợi ý cải thiện nhỏ
 
-Hãy trả về JSON format chính xác như trên.`,
-    })
+Hãy trả về JSON format chính xác như trên.`;
+
+    const { content: text } = await getChatCompletion(
+      [{ role: "system", content: systemPrompt }],
+      { maxTokens: 2048, temperature: 0.3 }
+    );
 
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -103,11 +105,11 @@ Hãy trả về JSON format chính xác như trên.`,
     
     // Provide more helpful error messages
     if (error instanceof Error) {
-      if (error.message.includes("API key")) {
+      if (error.message.includes("API key") || error.message.includes("groq")) {
         return NextResponse.json(
           { 
-            error: "OpenAI API key issue",
-            details: "Please check your OPENAI_API_KEY in .env.local file"
+            error: "AI API key issue",
+            details: "Please check your GROQ_API_KEY in .env.local file"
           },
           { status: 500 }
         )

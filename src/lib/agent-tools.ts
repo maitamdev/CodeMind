@@ -29,24 +29,6 @@ export const PLAYGROUND_TOOLS: OllamaTool[] = [
     {
         type: "function",
         function: {
-            name: "read_code",
-            description:
-                "Đọc nội dung code hiện tại trong playground. Trả về HTML, CSS và JavaScript.",
-            parameters: {
-                type: "object",
-                properties: {
-                    tab: {
-                        type: "string",
-                        description:
-                            "Chỉ đọc một tab: 'html', 'css', hoặc 'javascript'. Để trống hoặc 'all' để đọc tất cả.",
-                    },
-                },
-            },
-        },
-    },
-    {
-        type: "function",
-        function: {
             name: "edit_code",
             description:
                 "Thay thế toàn bộ nội dung của một tab (html, css hoặc javascript) trong playground.",

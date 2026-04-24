@@ -9,6 +9,8 @@ import TabBar from "./TabBar";
 import EditorPanel, { type MonacoEditor } from "./EditorPanel";
 import BottomPanel from "./BottomPanel";
 import StatusBar from "./StatusBar";
+import ExplorerPanel from "./ExplorerPanel";
+import SearchPanel from "./SearchPanel";
 import { AIAgentPanel, AIErrorBoundary } from "../AIAssistant";
 import type { ConsoleLog } from "./useIDEState";
 import "./ide.css";
@@ -57,10 +59,11 @@ export default function IDELayout({
         addConsoleLog,
         clearConsoleLogs,
         resetCode,
+        isCodeLoaded,
     } = useIDEState(lessonId, initialLanguage);
 
     const editorRef = useRef<MonacoEditor | null>(null);
-    const autoSaveStatus = useAutoSave(code, lessonId);
+    const autoSaveStatus = useAutoSave(code, lessonId, isCodeLoaded);
     const [aiServerStatus, setAiServerStatus] = useState<
         "connected" | "checking" | "disconnected"
     >("checking");
@@ -130,7 +133,7 @@ export default function IDELayout({
 
     return (
         <div className={`ide-root ${theme === "light" ? "light" : ""}`}>
-            <div className={`ide-grid ${panels.agent ? "agent-open" : ""}`}>
+            <div className={`ide-grid ${panels.agent ? "agent-open" : ""} ${(activeView === "explorer" || activeView === "search") ? "sidebar-open" : ""}`}>
                 {/* Title Bar */}
                 <TitleBar
                     activeTab={activeTab}
@@ -147,6 +150,27 @@ export default function IDELayout({
                     agentOpen={panels.agent}
                     hideAIAgent={hideAIAgent}
                 />
+
+                {/* Sidebar Panel */}
+                {(activeView === "explorer" || activeView === "search") && (
+                    <div className="ide-sidebar">
+                        {activeView === "explorer" && (
+                            <ExplorerPanel
+                                activeTab={activeTab}
+                                onTabChange={setActiveTab}
+                            />
+                        )}
+                        {activeView === "search" && (
+                            <SearchPanel
+                                code={code}
+                                onResultClick={(tab, line, column) => {
+                                    setActiveTab(tab);
+                                    setCursorPosition({ line, column });
+                                }}
+                            />
+                        )}
+                    </div>
+                )}
 
                 {/* Editor Area */}
                 <div className="ide-editor flex flex-col overflow-hidden bg-[var(--ide-bg)]">

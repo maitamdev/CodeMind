@@ -5,27 +5,24 @@ import {
 } from "@/lib/ollama";
 import { PLAYGROUND_TOOLS } from "@/lib/agent-tools";
 
-const AGENT_SYSTEM_PROMPT = `Bạn là AI Agent lập trình trong playground CodeMind. Bạn có thể ĐỌC và SỬA code trực tiếp bằng các tools.
+const AGENT_SYSTEM_PROMPT = `Bạn là AI Agent lập trình trong hệ thống CodeMind. Bạn có thể ĐỌC và SỬA code trực tiếp.
 
 CÔNG CỤ (tools):
-- read_code: Đọc code HTML, CSS, JavaScript hiện tại. Gọi trước khi cần biết code hiện có.
-- edit_code: Thay thế toàn bộ nội dung một tab (html, css, javascript). Dùng khi cần sửa code.
+- edit_code: Thay thế toàn bộ nội dung một tab (html, css, javascript). Dùng khi cần sửa code cho học viên.
 
 QUY TRÌNH:
-1. Đọc yêu cầu của học viên
-2. LUÔN gọi read_code trước để xem code hiện tại (trừ khi đã có kết quả từ round trước)
-3. Sửa code bằng edit_code khi cần thay đổi
-4. Trả lời bằng TIẾNG VIỆT, giải thích ngắn gọn những gì đã làm
+1. Đọc yêu cầu của học viên và phân tích code hiện tại được đính kèm bên dưới.
+2. Trả lời bằng TIẾNG VIỆT, giải thích chi tiết nhưng ngắn gọn và dễ hiểu.
+3. Nếu học viên yêu cầu sửa code hoặc thêm tính năng, hãy giải thích cách làm, sau đó gọi tool \`edit_code\` để cập nhật code trực tiếp cho họ.
 
-ĐỊNH DẠNG KHI GỌI TOOL - trả lời DUY NHẤT bằng JSON:
-- read_code: {"name":"read_code","arguments":{}}
-- edit_code: {"name":"edit_code","arguments":{"tab":"css","content":"nội dung đầy đủ"}}
-KHÔNG thêm text trước/sau JSON khi gọi tool.
+ĐỊNH DẠNG KHI GỌI TOOL - trả lời DUY NHẤT bằng JSON (nếu muốn sửa code):
+- edit_code: {"name":"edit_code","arguments":{"tab":"html","content":"nội dung đầy đủ của tab html"}}
+LƯU Ý: KHÔNG thêm text trước/sau JSON khi gọi tool. Nếu bạn chỉ muốn giải thích, hãy trả lời bằng văn bản bình thường.
 
-QUY TẮC:
-- Ưu tiên dùng tools để sửa code thay vì chỉ đưa code mẫu
-- Khi sửa CSS/HTML/JS, gọi edit_code với tab và content đầy đủ
-- Giữ cấu trúc code hợp lệ (HTML đóng thẻ, CSS đóng ngoặc, JS cú pháp đúng)`;
+QUY TẮC SỬA CODE:
+- Luôn gọi edit_code với nội dung đầy đủ của tab, không dùng dạng viết tắt.
+- Giữ nguyên các phần code không liên quan.
+- Giữ cấu trúc code hợp lệ.`;
 
 export async function POST(request: NextRequest) {
     try {
@@ -103,10 +100,7 @@ ${String(code.javascript || "").slice(0, 3000)}
 
         // Agent tools require a model that supports tool calling.
         // Qwen 2.5 Coder outputs tool calls as text (we parse them).
-        const agentModel =
-            modelId && String(modelId).includes("qwen")
-                ? modelId
-                : "qwen2.5-coder:7b-instruct";
+        const agentModel = modelId || "llama-3.3-70b-versatile";
 
         const opts = {
             modelId: agentModel,

@@ -14,6 +14,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Create Supabase admin client for server-side operations (uses service role key)
 // This bypasses Row Level Security (RLS) policies
+// Falls back to anon key if service role key is not set (dev mode)
 export const supabaseAdmin = supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
@@ -21,7 +22,14 @@ export const supabaseAdmin = supabaseServiceKey
         persistSession: false,
       },
     })
-  : null;
+  : (supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      })
+    : null);
 
 // Test connection
 export async function testConnection() {

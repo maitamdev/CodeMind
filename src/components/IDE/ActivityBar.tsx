@@ -2,6 +2,7 @@
 
 import { Files, Search, Bot, Settings } from "lucide-react";
 import type { ActivityView } from "./useIDEState";
+import { useToast } from "@/contexts/ToastContext";
 
 interface ActivityBarProps {
     activeView: ActivityView;
@@ -16,6 +17,8 @@ export default function ActivityBar({
     agentOpen,
     hideAIAgent,
 }: ActivityBarProps) {
+    const { info } = useToast();
+
     const allItems: { id: ActivityView; icon: typeof Files; label: string }[] =
         [
             { id: "explorer", icon: Files, label: "Explorer" },
@@ -51,6 +54,7 @@ export default function ActivityBar({
             </div>
             <div className="pb-2">
                 <button
+                    onClick={() => info("Cài đặt IDE đang được phát triển.", 3000)}
                     className="w-[48px] h-[48px] flex items-center justify-center text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] transition-colors"
                     title="Settings"
                 >

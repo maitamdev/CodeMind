@@ -22,10 +22,10 @@ export async function GET() {
     return NextResponse.json({
       status: "error",
       models: [],
-      baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
-      completionModel: process.env.OLLAMA_COMPLETION_MODEL || "deepseek-coder:1.3b",
-      chatModel: process.env.OLLAMA_CHAT_MODEL || "qwen2.5-coder:7b-instruct",
-      tutorModel: process.env.OLLAMA_TUTOR_MODEL || "qwen2.5:7b-instruct",
+      baseUrl: process.env.GROQ_BASE_URL || "https://api.groq.com/openai/v1",
+      completionModel: process.env.GROQ_COMPLETION_MODEL || "llama-3.1-8b-instant",
+      chatModel: process.env.GROQ_CHAT_MODEL || "llama-3.3-70b-versatile",
+      tutorModel: process.env.GROQ_TUTOR_MODEL || "llama-3.3-70b-versatile",
       latencyMs: 0,
       error: error instanceof Error ? error.message : "Unknown error",
     })

@@ -50,7 +50,7 @@ YÊU CẦU:
           explanation: parsed.explanation || result.content,
           suggestion: parsed.suggestion || "",
           fixedCode: parsed.fixedCode || undefined,
-          model: process.env.OLLAMA_CHAT_MODEL || "qwen2.5-coder:7b-instruct",
+          model: process.env.GROQ_CHAT_MODEL || "llama-3.3-70b-versatile",
           durationMs: result.durationMs,
         })
       } catch {
@@ -63,7 +63,7 @@ YÊU CẦU:
       explanation: result.content,
       suggestion: "",
       fixedCode: undefined,
-      model: process.env.OLLAMA_CHAT_MODEL || "qwen2.5-coder:7b-instruct",
+      model: process.env.GROQ_CHAT_MODEL || "llama-3.3-70b-versatile",
       durationMs: result.durationMs,
     })
   } catch (error) {

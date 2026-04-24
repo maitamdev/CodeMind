@@ -246,17 +246,20 @@ export async function GET(request: NextRequest) {
         });
     } catch (error: any) {
         console.error("Get blog posts error:", error);
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Không thể lấy danh sách bài viết",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.message
-                        : undefined,
+        // Fallback to empty results instead of 500 to prevent UI from breaking
+        return NextResponse.json({
+            success: true,
+            data: {
+                posts: [],
+                pagination: {
+                    total: 0,
+                    limit: 10,
+                    offset: 0,
+                    hasMore: false,
+                },
             },
-            { status: 500 },
-        );
+            message: "Chưa có bài viết hoặc bảng dữ liệu chưa được tạo"
+        });
     }
 }
 

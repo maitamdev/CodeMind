@@ -42,6 +42,7 @@ export default function DevModeIDE({
         updateCode,
         setBottomTab,
         addConsoleLog,
+        isCodeLoaded,
     } = useIDEState(lessonId, initialLanguage);
 
     const editorRef = useRef<MonacoEditor | null>(null);
@@ -49,7 +50,7 @@ export default function DevModeIDE({
     const executionRef = useRef(0);
     const [showHelp, setShowHelp] = useState(false);
 
-    const autoSaveStatus = useAutoSave(code, lessonId);
+    const autoSaveStatus = useAutoSave(code, lessonId, isCodeLoaded);
 
     // Live preview update
     useEffect(() => {

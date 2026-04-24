@@ -53,6 +53,33 @@ export function useIDEState(
         }
     });
 
+    const [isCodeLoaded, setIsCodeLoaded] = useState(false);
+
+    // Fetch code from cloud
+    useEffect(() => {
+        const fetchCloudCode = async () => {
+            try {
+                const res = await fetch(`/api/user/code?lessonId=${lessonId || "scratch"}`);
+                if (res.ok) {
+                    const { data } = await res.json();
+                    if (data) {
+                        setCode({
+                            html: data.html || DEFAULT_CODE.html,
+                            css: data.css || DEFAULT_CODE.css,
+                            javascript: data.javascript || DEFAULT_CODE.javascript,
+                            cpp: data.cpp || DEFAULT_CODE.cpp,
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch cloud code:", error);
+            } finally {
+                setIsCodeLoaded(true);
+            }
+        };
+        fetchCloudCode();
+    }, [lessonId]);
+
     // Active tab (file)
     const [activeTab, setActiveTab] = useState<LanguageType>(initialLanguage);
 
@@ -186,5 +213,6 @@ export function useIDEState(
         clearConsoleLogs,
         resetCode,
         setCode,
+        isCodeLoaded,
     };
 }

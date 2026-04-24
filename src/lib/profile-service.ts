@@ -392,7 +392,8 @@ async function fetchPublicCoursesByInstructor(
         .order("created_at", { ascending: false });
 
     if (error) {
-        throw error;
+        console.error("Error fetching instructor courses:", error);
+        return [];
     }
 
     return ((data ?? []) as DbCourseRow[]).map(mapCourseRow);
@@ -409,7 +410,8 @@ async function fetchEnrolledCourses(userId: string): Promise<EnrolledCourse[]> {
         .order("enrolled_at", { ascending: false });
 
     if (error) {
-        throw error;
+        console.error("Error fetching enrolled courses:", error);
+        return [];
     }
 
     return ((data ?? []) as any[]).map((row) => {
@@ -462,6 +464,7 @@ async function fetchLegacyProfileStats(userId: string) {
             .eq("user_id", userId),
     ]);
 
+    // Log errors but do not throw, returning 0 instead to keep the profile page functional
     for (const result of [
         enrollmentsResult,
         completedEnrollmentsResult,
@@ -470,18 +473,17 @@ async function fetchLegacyProfileStats(userId: string) {
         forumRepliesResult,
     ]) {
         if (result.error) {
-            throw result.error;
+            console.error("Error fetching legacy stats:", result.error);
         }
     }
 
     return {
-        totalCoursesEnrolled: (enrollmentsResult as DbCountResult).count ?? 0,
-        totalCoursesCompleted:
-            (completedEnrollmentsResult as DbCountResult).count ?? 0,
-        totalArticlesPublished: (blogPostsResult as DbCountResult).count ?? 0,
+        totalCoursesEnrolled: enrollmentsResult.error ? 0 : ((enrollmentsResult as DbCountResult).count ?? 0),
+        totalCoursesCompleted: completedEnrollmentsResult.error ? 0 : ((completedEnrollmentsResult as DbCountResult).count ?? 0),
+        totalArticlesPublished: blogPostsResult.error ? 0 : ((blogPostsResult as DbCountResult).count ?? 0),
         totalForumPosts:
-            ((forumTopicsResult as DbCountResult).count ?? 0) +
-            ((forumRepliesResult as DbCountResult).count ?? 0),
+            (forumTopicsResult.error ? 0 : ((forumTopicsResult as DbCountResult).count ?? 0)) +
+            (forumRepliesResult.error ? 0 : ((forumRepliesResult as DbCountResult).count ?? 0)),
     };
 }
 
