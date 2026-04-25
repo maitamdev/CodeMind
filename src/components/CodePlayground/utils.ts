@@ -27,8 +27,8 @@ export interface ValidationResult {
  * Validate HTML syntax and return validation result (VSCode-style with line/column info)
  * Detects incomplete tags (like <p without >), unclosed tags, and other syntax errors
  */
-export function validateHTML(html: string): ValidationResult {
-  if (!html.trim()) return { isValid: true, errors: [] }
+export function validateHTML(html: string | undefined | null): ValidationResult {
+  if (!html || !html.trim()) return { isValid: true, errors: [] }
 
   const errors: ValidationError[] = []
   const lines = html.split('\n')
@@ -188,8 +188,8 @@ export function validateHTML(html: string): ValidationResult {
 /**
  * Validate CSS syntax (VSCode-style with line/column info)
  */
-export function validateCSS(css: string): ValidationResult {
-  if (!css.trim()) return { isValid: true, errors: [] }
+export function validateCSS(css: string | undefined | null): ValidationResult {
+  if (!css || !css.trim()) return { isValid: true, errors: [] }
 
   const errors: ValidationError[] = []
   const lines = css.split('\n')
@@ -330,8 +330,8 @@ export function validateCSS(css: string): ValidationResult {
 /**
  * Sanitize HTML to prevent breaking the document structure
  */
-export function sanitizeHTML(html: string): string {
-  if (!html.trim()) return ""
+export function sanitizeHTML(html: string | undefined | null): string {
+  if (!html || !html.trim()) return ""
 
   try {
     // Wrap user HTML in a safe container
@@ -360,9 +360,9 @@ export function generatePreviewHTML(
   code: CodeState,
   executionId: number
 ): string {
-  const htmlCode = code.html
-  const cssCode = code.css
-  const jsCode = code.javascript
+  const htmlCode = code.html || ""
+  const cssCode = code.css || ""
+  const jsCode = code.javascript || ""
 
   // Validate HTML and CSS
   const htmlValidation = validateHTML(htmlCode)
