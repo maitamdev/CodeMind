@@ -34,14 +34,14 @@ export default function AIAgentHeader({
     return (
         <div
             className={cn(
-                "flex items-center justify-between border-b px-4 py-3",
+                "flex flex-wrap items-center justify-between gap-y-2 gap-x-2 border-b px-3 py-2.5",
                 themed.chrome,
                 themed.headerSurface,
             )}
         >
             {/* Left: Title + status */}
-            <div className="flex items-center gap-2.5">
-                <h2 className={cn("text-sm font-semibold", themed.textStrong)}>
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+                <h2 className={cn("text-sm font-semibold whitespace-nowrap", themed.textStrong)}>
                     Trợ lý AI
                 </h2>
                 <span
@@ -73,15 +73,15 @@ export default function AIAgentHeader({
                             size="sm"
                             onClick={() => onModeChange(item)}
                             className={cn(
-                                "h-7 rounded-lg px-2.5 text-xs",
+                                "h-7 rounded-lg px-2.5 text-xs flex-shrink-0",
                                 active
                                     ? itemAccent.softStrong
                                     : themed.textMuted,
                             )}
                             title={AI_MODE_CONFIG[item].description}
                         >
-                            <Icon className="size-3.5" />
-                            {AI_MODE_CONFIG[item].label}
+                            <Icon className="size-3.5 shrink-0" />
+                            <span className="whitespace-nowrap">{AI_MODE_CONFIG[item].label}</span>
                         </Button>
                     );
                 })}
