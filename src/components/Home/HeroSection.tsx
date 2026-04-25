@@ -315,8 +315,8 @@ export default function HeroSection() {
                     <motion.div
                         key={i}
                         initial={{ 
-                            x: Math.random() * 100 + "%", 
-                            y: Math.random() * 100 + "%",
+                            x: ((i * 37) % 100) + "%", 
+                            y: ((i * 13) % 100) + "%",
                             opacity: 0 
                         }}
                         animate={{ 
@@ -324,9 +324,9 @@ export default function HeroSection() {
                             opacity: [0, 1, 0]
                         }}
                         transition={{ 
-                            duration: 10 + Math.random() * 20, 
+                            duration: 10 + ((i * 7) % 20), 
                             repeat: Infinity, 
-                            delay: Math.random() * 5 
+                            delay: ((i * 3) % 5) 
                         }}
                         className="absolute font-mono text-4xl select-none"
                     >
@@ -334,6 +334,7 @@ export default function HeroSection() {
                     </motion.div>
                 ))}
             </div>
+
 
             {/* 4. Moving Gradient Blobs (Glassmorphism feel) */}
             <motion.div
