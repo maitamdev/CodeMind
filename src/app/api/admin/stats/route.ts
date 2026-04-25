@@ -85,28 +85,28 @@ export async function GET(request: NextRequest) {
         ] = await Promise.all([
             queryBuilder<UserRow>("users", {
                 select: "id, full_name, role, is_active, is_verified, created_at, last_login",
-            }),
+            }).catch(() => [] as UserRow[]),
             queryBuilder<CourseRow>("courses", {
                 select: "id, title, is_published, rating, rating_count, total_students, price, is_free",
-            }),
+            }).catch(() => [] as CourseRow[]),
             queryBuilder<EnrollmentRow>("enrollments", {
                 select: "id, user_id, course_id, enrolled_at, progress_percentage",
-            }),
+            }).catch(() => [] as EnrollmentRow[]),
             queryBuilder<ReviewRow>("course_reviews", {
                 select: "id, course_id, user_id, rating, comment, created_at",
-            }),
+            }).catch(() => [] as ReviewRow[]),
             queryBuilder<BlogPostRow>("blog_posts", {
                 select: "id, title, status, view_count, created_at",
-            }),
+            }).catch(() => [] as BlogPostRow[]),
             queryBuilder<LessonRow>("lessons", {
                 select: "id, chapter_id, title, content, is_published",
-            }),
+            }).catch(() => [] as LessonRow[]),
             queryBuilder<ChapterRow>("chapters", {
                 select: "id, course_id, title",
-            }),
+            }).catch(() => [] as ChapterRow[]),
             queryBuilder<PaymentRow>("payments", {
                 select: "id, amount, status, created_at",
-            }),
+            }).catch(() => [] as PaymentRow[]),
         ]);
 
         // ==========================================
