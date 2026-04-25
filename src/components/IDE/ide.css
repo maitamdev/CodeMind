@@ -1,118 +1,101 @@
 /* ============================================
-   CodeMind IDE — Premium Design System
+   CodeMind IDE — Premium Minimalist Design
+   Aligned with Project Design System (Linear/Vercel Style)
    ============================================ */
 
-/* --- Design Tokens (Dark) --- */
+/* --- IDE Theme Variables --- */
 .ide-root {
-    --ide-bg: #0c0c0c;
-    --ide-bg-alt: #111113;
-    --ide-bg-active: #1a1a1f;
-    --ide-bg-hover: #161619;
-    --ide-bg-elevated: #18181c;
-    --ide-border: #222228;
-    --ide-border-subtle: #1a1a1f;
-    --ide-text: #e4e4e8;
-    --ide-text-muted: #6e6e7a;
-    --ide-text-faint: #44444f;
+    /* Using project globals */
+    --ide-bg: var(--background);
+    --ide-bg-alt: #0a0a0c;
+    --ide-bg-active: #121216;
+    --ide-bg-hover: #111114;
+    --ide-border: #1a1a1e;
+    --ide-border-active: #27272a;
+    --ide-text: var(--foreground);
+    --ide-text-muted: #71717a;
+    --ide-text-faint: #3f3f46;
+    
+    /* Project Indigo Accent */
     --ide-accent: #6366f1;
     --ide-accent-hover: #818cf8;
-    --ide-accent-glow: rgba(99, 102, 241, 0.15);
-    --ide-accent-subtle: rgba(99, 102, 241, 0.08);
-    --ide-success: #34d399;
-    --ide-warning: #fbbf24;
-    --ide-error: #f87171;
-    --ide-titlebar: #0c0c0c;
-    --ide-activitybar: #0c0c0c;
+    --ide-accent-subtle: rgba(99, 102, 241, 0.1);
+    
+    --ide-titlebar: #000000;
+    --ide-activitybar: #000000;
     --ide-statusbar: #6366f1;
-    --ide-statusbar-text: #fff;
-    --ide-tab-active: #0c0c0c;
-    --ide-tab-inactive: #111113;
-    --ide-scrollbar: #2a2a32;
-    --ide-scrollbar-hover: #3a3a44;
-    --ide-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 8px 32px rgba(0,0,0,.4);
-    --ide-radius: 8px;
-    --ide-transition: 150ms cubic-bezier(.4,0,.2,1);
-    font-family:
-        "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    --ide-statusbar-text: #ffffff;
+    
+    --ide-tab-active: var(--background);
+    --ide-tab-inactive: #0a0a0c;
+    
+    --ide-scrollbar: #1a1a1e;
+    --ide-scrollbar-hover: #27272a;
+    
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
 }
 
-/* --- Design Tokens (Light) --- */
 .ide-root.light {
-    --ide-bg: #fafafa;
-    --ide-bg-alt: #f4f4f5;
-    --ide-bg-active: #ebebef;
-    --ide-bg-hover: #ededf0;
-    --ide-bg-elevated: #ffffff;
-    --ide-border: #e0e0e5;
-    --ide-border-subtle: #eaeaef;
-    --ide-text: #18181b;
+    --ide-bg: #ffffff;
+    --ide-bg-alt: #f8f8f9;
+    --ide-bg-active: #f1f1f4;
+    --ide-bg-hover: #f4f4f7;
+    --ide-border: #e4e4e7;
+    --ide-border-active: #d4d4d8;
+    --ide-text: #09090b;
     --ide-text-muted: #71717a;
     --ide-text-faint: #a1a1aa;
+    
     --ide-accent: #4f46e5;
     --ide-accent-hover: #6366f1;
-    --ide-accent-glow: rgba(79, 70, 229, 0.10);
     --ide-accent-subtle: rgba(79, 70, 229, 0.05);
-    --ide-success: #10b981;
-    --ide-warning: #f59e0b;
-    --ide-error: #ef4444;
-    --ide-titlebar: #fafafa;
-    --ide-activitybar: #f4f4f5;
+    
+    --ide-titlebar: #ffffff;
+    --ide-activitybar: #f8f8f9;
     --ide-statusbar: #4f46e5;
-    --ide-statusbar-text: #fff;
-    --ide-tab-active: #fafafa;
-    --ide-tab-inactive: #f4f4f5;
-    --ide-scrollbar: #d4d4d8;
-    --ide-scrollbar-hover: #a1a1aa;
-    --ide-shadow: 0 0 0 1px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+    
+    --ide-tab-active: #ffffff;
+    --ide-tab-inactive: #f8f8f9;
 }
 
-/* ============================================
-   Grid Layout
-   ============================================ */
+/* --- Layout Structure --- */
 .ide-grid {
     display: grid;
     grid-template-areas:
         "titlebar   titlebar   titlebar   titlebar"
         "activity   sidebar    editor     agent"
         "statusbar  statusbar  statusbar  statusbar";
-    grid-template-rows: 40px 1fr 26px;
+    grid-template-rows: 40px 1fr 24px;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     background: var(--ide-bg);
 }
 
-/* ============================================
-   Title Bar
-   ============================================ */
+/* --- Title Bar: Sleek & Dark --- */
 .ide-titlebar {
     grid-area: titlebar;
     background: var(--ide-titlebar);
     border-bottom: 1px solid var(--ide-border);
     display: flex;
     align-items: center;
-    padding: 0 14px;
+    padding: 0 12px;
     user-select: none;
     -webkit-app-region: drag;
-    gap: 8px;
-    z-index: 10;
+    z-index: 100;
 }
 
-/* ============================================
-   Activity Bar
-   ============================================ */
+/* --- Activity Bar: Minimalist --- */
 .ide-activitybar {
     grid-area: activity;
     background: var(--ide-activitybar);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 2px;
+    padding-top: 4px;
     border-right: 1px solid var(--ide-border);
-    z-index: 5;
+    z-index: 50;
 }
 
 .ide-activitybar button {
@@ -123,35 +106,29 @@
     justify-content: center;
     color: var(--ide-text-muted);
     position: relative;
-    transition: color var(--ide-transition), background var(--ide-transition);
-    border-radius: 6px;
-    margin: 2px 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ide-activitybar button:hover {
     color: var(--ide-text);
-    background: var(--ide-bg-hover);
 }
 
 .ide-activitybar button.active {
-    color: var(--ide-text);
+    color: var(--ide-accent);
 }
 
-.ide-activitybar button.active::before {
+.ide-activitybar button.active::after {
     content: "";
     position: absolute;
     left: 0;
-    top: 25%;
-    bottom: 25%;
+    top: 12px;
+    bottom: 12px;
     width: 2px;
     background: var(--ide-accent);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 8px var(--ide-accent-glow);
+    box-shadow: 0 0 10px var(--ide-accent);
 }
 
-/* ============================================
-   Sidebar Panel
-   ============================================ */
+/* --- Sidebar: High Density --- */
 .ide-sidebar {
     position: relative;
     grid-area: sidebar;
@@ -160,88 +137,81 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: ide-fade-in 0.15s ease-out;
 }
 
-/* ============================================
-   Editor Area
-   ============================================ */
+/* --- Editor: Clean Slate --- */
 .ide-editor {
     grid-area: editor;
+    background: var(--ide-bg);
+    display: flex;
+    flex-direction: column;
     min-width: 0;
 }
 
-/* ============================================
-   Agent Panel
-   ============================================ */
+/* --- Agent: Modern Sidebar --- */
 .ide-agent {
     position: relative;
     grid-area: agent;
     border-left: 1px solid var(--ide-border);
-    animation: ide-slide-in-right 0.2s ease-out;
     background: var(--ide-bg);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
 }
 
-/* ============================================
-   Status Bar — Branded accent background
-   ============================================ */
+/* --- Status Bar: High Contrast --- */
 .ide-statusbar {
     grid-area: statusbar;
     background: var(--ide-statusbar);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
-    font-size: 12px;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--ide-statusbar-text);
     user-select: none;
-    z-index: 10;
+    z-index: 100;
 }
 
 .ide-statusbar .status-item {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 0 8px;
+    gap: 6px;
+    padding: 0 10px;
     height: 100%;
     cursor: default;
-    transition: background var(--ide-transition);
-    border-radius: 3px;
+    transition: background 0.15s ease;
 }
 
 .ide-statusbar .status-item:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-/* ============================================
-   Tab Bar
-   ============================================ */
+/* --- Tab Bar: Professional Tabs --- */
 .ide-tabbar {
     display: flex;
     background: var(--ide-bg-alt);
     border-bottom: 1px solid var(--ide-border);
+    height: 36px;
     overflow-x: auto;
     scrollbar-width: none;
 }
 
-.ide-tabbar::-webkit-scrollbar {
-    display: none;
-}
+.ide-tabbar::-webkit-scrollbar { display: none; }
 
 .ide-tab {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 0 16px;
-    height: 36px;
-    font-size: 13px;
+    height: 100%;
+    font-size: 12px;
     color: var(--ide-text-muted);
     background: var(--ide-tab-inactive);
-    border-right: 1px solid var(--ide-border-subtle);
+    border-right: 1px solid var(--ide-border);
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
-    transition: all var(--ide-transition);
+    transition: all 0.15s ease;
     position: relative;
 }
 
@@ -258,24 +228,22 @@
 .ide-tab.active::after {
     content: "";
     position: absolute;
-    top: 0;
+    bottom: -1px;
     left: 0;
     right: 0;
     height: 2px;
     background: var(--ide-accent);
-    border-radius: 0 0 2px 2px;
-    box-shadow: 0 2px 8px var(--ide-accent-glow);
 }
 
 .ide-tab .tab-close {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 2px;
     opacity: 0;
-    transition: all var(--ide-transition);
+    transition: all 0.15s ease;
 }
 
 .ide-tab:hover .tab-close,
@@ -285,12 +253,10 @@
 
 .ide-tab .tab-close:hover {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--ide-bg-active);
 }
 
-/* ============================================
-   Bottom Panel (Terminal / Preview / Problems)
-   ============================================ */
+/* --- Bottom Panel --- */
 .ide-bottom-panel {
     border-top: 1px solid var(--ide-border);
     display: flex;
@@ -301,160 +267,64 @@
 .ide-bottom-tabs {
     display: flex;
     align-items: center;
-    gap: 0;
     background: var(--ide-bg-alt);
     border-bottom: 1px solid var(--ide-border);
     padding: 0 8px;
     height: 36px;
-    flex-shrink: 0;
 }
 
 .ide-bottom-tab {
-    padding: 0 14px;
+    padding: 0 16px;
     height: 100%;
     display: flex;
     align-items: center;
     font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    font-weight: 500;
+    letter-spacing: 0.05em;
     color: var(--ide-text-muted);
     cursor: pointer;
+    transition: all 0.15s ease;
     border-bottom: 2px solid transparent;
-    transition: all var(--ide-transition);
 }
 
-.ide-bottom-tab:hover {
-    color: var(--ide-text);
-}
+.ide-bottom-tab:hover { color: var(--ide-text); }
 
 .ide-bottom-tab.active {
     color: var(--ide-text);
     border-bottom-color: var(--ide-accent);
 }
 
-/* ============================================
-   Resize Handles
-   ============================================ */
-.ide-resize-handle {
-    height: 4px;
-    cursor: ns-resize;
-    background: transparent;
-    transition: background var(--ide-transition);
-    flex-shrink: 0;
-    position: relative;
-}
-
-.ide-resize-handle::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 32px;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--ide-border);
-    opacity: 0;
-    transition: opacity var(--ide-transition);
-}
-
-.ide-resize-handle:hover::after {
-    opacity: 1;
-}
-
-.ide-resize-handle:hover,
-.ide-resize-handle.dragging {
-    background: var(--ide-accent);
-    box-shadow: 0 0 8px var(--ide-accent-glow);
-}
-
-/* Column resize handles (sidebar / agent) */
+/* --- Resizing & Utilities --- */
 .ide-grid-resize-handle {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 5px;
     background: transparent;
-    cursor: col-resize;
-    z-index: 50;
-    transition: background var(--ide-transition);
+    z-index: 1000;
+    transition: background 0.2s ease;
 }
 
 .ide-grid-resize-handle:hover,
 .ide-grid-resize-handle.dragging {
     background: var(--ide-accent);
-    box-shadow: 0 0 8px var(--ide-accent-glow);
 }
 
-.ide-grid-resize-handle.sidebar-handle {
-    right: -2px;
-}
+.sidebar-handle { top: 0; bottom: 0; right: -2px; width: 4px; cursor: col-resize; }
+.agent-handle { top: 0; bottom: 0; left: -2px; width: 4px; cursor: col-resize; }
+.ide-resize-handle { height: 3px; cursor: ns-resize; width: 100%; }
 
-.ide-grid-resize-handle.agent-handle {
-    left: -2px;
-}
-
-/* ============================================
-   Scrollbars
-   ============================================ */
-.ide-root ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.ide-root ::-webkit-scrollbar-track {
-    background: transparent;
-}
-
+/* --- Scrollbars --- */
+.ide-root ::-webkit-scrollbar { width: 10px; height: 10px; }
+.ide-root ::-webkit-scrollbar-track { background: transparent; }
 .ide-root ::-webkit-scrollbar-thumb {
-    background: var(--ide-scrollbar);
-    border-radius: 4px;
-    border: 2px solid transparent;
+    background: var(--ide-border);
+    border: 3px solid transparent;
     background-clip: padding-box;
+    border-radius: 10px;
 }
+.ide-root ::-webkit-scrollbar-thumb:hover { background-color: var(--ide-text-faint); }
 
-.ide-root ::-webkit-scrollbar-thumb:hover {
-    background: var(--ide-scrollbar-hover);
-    background-clip: padding-box;
-}
-
-.ide-root ::-webkit-scrollbar-corner {
-    background: transparent;
-}
-
-/* ============================================
-   Animations
-   ============================================ */
-@keyframes ide-slide-in-right {
-    from {
-        transform: translateX(16px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes ide-fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-@keyframes ide-pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 var(--ide-accent-glow); }
-    50%      { box-shadow: 0 0 12px 2px var(--ide-accent-glow); }
-}
-
-/* ============================================
-   Utility Classes
-   ============================================ */
-.ide-glass {
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-}
-
-.ide-glow-border {
-    box-shadow: inset 0 0 0 1px var(--ide-accent-glow);
+/* --- Typography Helpers --- */
+.font-mono-ide {
+    font-family: var(--font-mono);
+    font-variant-ligatures: contextual;
 }
