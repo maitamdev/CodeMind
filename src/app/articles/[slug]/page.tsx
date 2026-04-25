@@ -19,6 +19,7 @@ import PageContainer from "@/components/PageContainer";
 import ArticleCodeBlock, {
     normalizeArticleCodeLanguage,
 } from "@/components/articles/ArticleCodeBlock";
+import ArticleComments from "@/components/articles/ArticleComments";
 import {
     Heart,
     Bookmark,
@@ -129,6 +130,14 @@ export default function ArticlePage() {
     >([]);
     const [activeHeading, setActiveHeading] = useState<string>("");
     const [showTOC, setShowTOC] = useState(false);
+    
+    // Interactions state
+    const [interactions, setInteractions] = useState({
+        likeCount: 0,
+        shareCount: 0,
+        commentCount: 0
+    });
+    const [isLiking, setIsLiking] = useState(false);
 
     const parsedArticleContent = useMemo(() => {
         if (!post?.content) {
@@ -190,6 +199,20 @@ export default function ArticlePage() {
                 router.push("/articles");
             })
             .finally(() => setIsLoading(false));
+            
+        // Fetch interactions
+        fetch(`/api/blog/posts/${slug}/interactions`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setInteractions({
+                        likeCount: data.data.likeCount,
+                        shareCount: data.data.shareCount,
+                        commentCount: data.data.commentCount
+                    });
+                    setIsLiked(data.data.isLiked);
+                }
+            });
     }, [slug, toast, router]);
 
     // Check bookmark status when post is loaded and user is authenticated
@@ -254,7 +277,7 @@ export default function ArticlePage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [post]);
 
-    const handleShare = (platform: string) => {
+    const handleShare = async (platform: string) => {
         const url = window.location.href;
         const title = post?.title || "";
 
@@ -274,6 +297,70 @@ export default function ArticlePage() {
         }
 
         setShowShareMenu(false);
+        
+        // Record share in DB if authenticated
+        if (isAuthenticated && slug) {
+            try {
+                const res = await fetch(`/api/blog/posts/${slug}/share`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ platform })
+                });
+                if (res.ok) {
+                    setInteractions(prev => ({ ...prev, shareCount: prev.shareCount + 1 }));
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+
+    const handleLike = async () => {
+        if (!isAuthenticated) {
+            toast.error("Vui lòng đăng nhập để thích bài viết");
+            router.push("/auth/login");
+            return;
+        }
+
+        if (isLiking || !slug) return;
+        setIsLiking(true);
+
+        // Optimistic update
+        const newIsLiked = !isLiked;
+        setIsLiked(newIsLiked);
+        setInteractions(prev => ({
+            ...prev,
+            likeCount: newIsLiked ? prev.likeCount + 1 : Math.max(0, prev.likeCount - 1)
+        }));
+
+        try {
+            const res = await fetch(`/api/blog/posts/${slug}/like`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: "like" })
+            });
+            const data = await res.json();
+            
+            if (!data.success) {
+                // Revert optimistic update
+                setIsLiked(!newIsLiked);
+                setInteractions(prev => ({
+                    ...prev,
+                    likeCount: !newIsLiked ? prev.likeCount + 1 : Math.max(0, prev.likeCount - 1)
+                }));
+                toast.error("Lỗi khi thích bài viết");
+            }
+        } catch (error) {
+            // Revert
+            setIsLiked(!newIsLiked);
+            setInteractions(prev => ({
+                ...prev,
+                likeCount: !newIsLiked ? prev.likeCount + 1 : Math.max(0, prev.likeCount - 1)
+            }));
+            toast.error("Lỗi khi thích bài viết");
+        } finally {
+            setIsLiking(false);
+        }
     };
 
     const scrollToTop = () => {
@@ -433,8 +520,6 @@ export default function ArticlePage() {
         },
     ];
 
-    const likeCount = post.like_count + (isLiked ? 1 : 0);
-
     return (
         <div className="min-h-screen bg-[#fafafa] text-slate-800 antialiased selection:bg-indigo-500/20">
             <motion.div
@@ -510,13 +595,14 @@ export default function ArticlePage() {
                     <aside className="hidden lg:block col-span-2">
                         <div className="sticky top-24 flex flex-col items-end pr-8 gap-6 text-slate-400">
                             <button
-                                onClick={() => setIsLiked((prev) => !prev)}
+                                onClick={handleLike}
+                                disabled={isLiking}
                                 className={`flex items-center gap-2 transition-colors group ${
                                     isLiked ? "text-indigo-600" : "hover:text-indigo-600"
                                 }`}
                             >
                                 <span className="text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {likeCount}
+                                    {interactions.likeCount}
                                 </span>
                                 <Heart className={`w-7 h-7 ${isLiked ? "fill-current" : ""}`} />
                             </button>
@@ -535,8 +621,11 @@ export default function ArticlePage() {
 
                             <button
                                 onClick={() => setShowShareMenu((prev) => !prev)}
-                                className="transition-colors hover:text-indigo-600"
+                                className="flex items-center gap-2 transition-colors group hover:text-indigo-600"
                             >
+                                <span className="text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {interactions.shareCount}
+                                </span>
                                 <Share2 className="w-7 h-7" />
                             </button>
                         </div>
@@ -616,18 +705,7 @@ export default function ArticlePage() {
                         </div>
                     )}
 
-                    <div className="border border-slate-200 rounded-2xl p-10 text-center mb-20 bg-white/50">
-                        <h3 className="text-3xl text-slate-900 mb-4 [font-family:system-ui]">
-                            Tham gia thảo luận
-                        </h3>
-                        <p className="text-slate-600 mb-8 max-w-md mx-auto">
-                            Cùng chia sẻ góc nhìn của bạn hoặc đặt câu hỏi cho tác giả và cộng đồng AIOT.
-                        </p>
-                        <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-full font-medium transition-all shadow-sm inline-flex items-center gap-2">
-                            <MessageCircle className="w-4 h-4" />
-                            Viết bình luận
-                        </button>
-                    </div>
+                    <ArticleComments slug={slug} />
 
                     <div>
                         <h3 className="text-2xl text-slate-900 mb-8 [font-family:system-ui]">

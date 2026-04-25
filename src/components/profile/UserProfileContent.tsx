@@ -24,6 +24,7 @@ import ActivityHeatmap from "@/components/ActivityHeatmap";
 import { formatUsernameHandle } from "@/lib/profile-url";
 import type { EnrolledCourse, UnifiedProfileResponse } from "@/types/profile";
 import { Progress } from "@/components/ui/progress";
+import { Share2 } from "lucide-react";
 
 /* ─────────────────── Helpers ─────────────────── */
 
@@ -303,8 +304,14 @@ export default function UserProfileContent({ username }: { username: string }) {
         {
             id: "articles",
             label: "Bài viết đã đăng",
-            count: stats.totalArticlesPublished,
+            count: profile.articles?.length || 0,
             icon: <FileText className="h-4 w-4" />,
+        },
+        {
+            id: "shared",
+            label: "Bài viết đã chia sẻ",
+            count: profile.sharedArticles?.length || 0,
+            icon: <Share2 className="h-4 w-4" />,
         },
     ];
 
@@ -521,16 +528,93 @@ export default function UserProfileContent({ username }: { username: string }) {
                     )}
 
                     {activeTab === "articles" && (
-                        <EmptyState
-                            icon={
-                                <FileText className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-                            }
-                            message={
-                                stats.totalArticlesPublished > 0
-                                    ? "Hiện chưa hiển thị danh sách bài viết trên hồ sơ công khai."
-                                    : "Chưa đăng bài viết nào."
-                            }
-                        />
+                        <>
+                            {profile.articles && profile.articles.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    {profile.articles.map((article: any) => (
+                                        <Link key={article.id} href={`/articles/${article.slug}`} className="group block h-full">
+                                            <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all hover:shadow-md">
+                                                {article.cover_image && (
+                                                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-slate-800">
+                                                        <Image
+                                                            src={article.cover_image}
+                                                            alt={article.title}
+                                                            fill
+                                                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="flex flex-1 flex-col p-5">
+                                                    <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                                        {article.title}
+                                                    </h3>
+                                                    <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                                                        {article.excerpt}
+                                                    </p>
+                                                    <div className="mt-auto pt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                        <span>{new Date(article.published_at).toLocaleDateString('vi-VN')}</span>
+                                                        <span>{article.view_count || 0} lượt xem</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <EmptyState
+                                    icon={<FileText className="h-10 w-10 text-gray-300 dark:text-gray-600" />}
+                                    message="Chưa đăng bài viết nào."
+                                />
+                            )}
+                        </>
+                    )}
+
+                    {activeTab === "shared" && (
+                        <>
+                            {profile.sharedArticles && profile.sharedArticles.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    {profile.sharedArticles.map((article: any) => (
+                                        <Link key={article.id} href={`/articles/${article.slug}`} className="group block h-full">
+                                            <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all hover:shadow-md">
+                                                {article.cover_image && (
+                                                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-slate-800">
+                                                        <Image
+                                                            src={article.cover_image}
+                                                            alt={article.title}
+                                                            fill
+                                                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="flex flex-1 flex-col p-5">
+                                                    <div className="mb-2 flex items-center gap-2">
+                                                        {article.users?.avatar_url ? (
+                                                            <Image src={article.users.avatar_url} alt="author" width={20} height={20} className="rounded-full" />
+                                                        ) : (
+                                                            <div className="h-5 w-5 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-bold text-indigo-700">
+                                                                {article.users?.full_name?.charAt(0) || 'U'}
+                                                            </div>
+                                                        )}
+                                                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{article.users?.full_name}</span>
+                                                    </div>
+                                                    <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                                        {article.title}
+                                                    </h3>
+                                                    <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                                                        {article.excerpt}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <EmptyState
+                                    icon={<Share2 className="h-10 w-10 text-gray-300 dark:text-gray-600" />}
+                                    message="Chưa chia sẻ bài viết nào."
+                                />
+                            )}
+                        </>
                     )}
 
                     {activeTab === "projects" && (

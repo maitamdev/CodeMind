@@ -32,11 +32,38 @@ export async function GET(
             .eq("is_public", true)
             .order("updated_at", { ascending: false });
 
+        // Fetch published articles
+        const { data: articles } = await supabaseAdmin!
+            .from("blog_posts")
+            .select("id, title, slug, excerpt, cover_image, published_at, view_count")
+            .eq("user_id", profile.user.id)
+            .eq("status", "published")
+            .order("published_at", { ascending: false });
+
+        // Fetch shared articles
+        const { data: shared } = await supabaseAdmin!
+            .from("blog_shares")
+            .select(`
+                id,
+                created_at,
+                blog_posts (
+                    id, title, slug, excerpt, cover_image, published_at, view_count,
+                    users (id, full_name, username, avatar_url)
+                )
+            `)
+            .eq("user_id", profile.user.id)
+            .order("created_at", { ascending: false });
+
+        // Format shared articles
+        const sharedArticles = shared?.map(s => s.blog_posts).filter(Boolean) || [];
+
         return NextResponse.json({
             success: true,
             data: {
                 ...profile,
                 projects: projects || [],
+                articles: articles || [],
+                sharedArticles: sharedArticles,
             },
         });
     } catch (error) {
