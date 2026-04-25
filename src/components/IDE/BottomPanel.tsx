@@ -139,6 +139,46 @@ export default function BottomPanel({
         [height, onHeightChange],
     );
 
+    // ─── Execute JavaScript in-browser (instant, no server needed) ───
+    const runJavaScriptInBrowser = useCallback((source: string, fileName: string) => {
+        const logs: RunOutput[] = [];
+        const originalConsole = { ...console };
+        
+        // Capture console output
+        const mockConsole = {
+            log: (...args: any[]) => logs.push({ type: "stdout" as const, text: args.map(a => typeof a === "object" ? JSON.stringify(a, null, 2) : String(a)).join(" "), timestamp: Date.now() }),
+            error: (...args: any[]) => logs.push({ type: "stderr" as const, text: args.map(a => String(a)).join(" "), timestamp: Date.now() }),
+            warn: (...args: any[]) => logs.push({ type: "stdout" as const, text: "⚠ " + args.map(a => String(a)).join(" "), timestamp: Date.now() }),
+            info: (...args: any[]) => logs.push({ type: "stdout" as const, text: "ℹ " + args.map(a => String(a)).join(" "), timestamp: Date.now() }),
+            table: (...args: any[]) => logs.push({ type: "stdout" as const, text: JSON.stringify(args[0], null, 2), timestamp: Date.now() }),
+        };
+
+        try {
+            // Execute using Function constructor (sandboxed from module scope)
+            const fn = new Function("console", "setTimeout", "setInterval", "Math", "Date", "JSON", "Array", "Object", "String", "Number", "Boolean", "Map", "Set", "RegExp", "parseInt", "parseFloat", "isNaN", "isFinite", "Error", "Promise",
+                source
+            );
+            const result = fn(mockConsole, setTimeout, setInterval, Math, Date, JSON, Array, Object, String, Number, Boolean, Map, Set, RegExp, parseInt, parseFloat, isNaN, isFinite, Error, Promise);
+
+            // If the script returns a value and nothing was logged, show the result
+            if (result !== undefined && logs.length === 0) {
+                logs.push({ type: "stdout", text: typeof result === "object" ? JSON.stringify(result, null, 2) : String(result), timestamp: Date.now() });
+            }
+
+            return {
+                logs,
+                exitCode: 0,
+                error: null,
+            };
+        } catch (err: any) {
+            return {
+                logs,
+                exitCode: 1,
+                error: err.message || String(err),
+            };
+        }
+    }, []);
+
     // ─── Run Code ───
     const handleRunCode = useCallback(async () => {
         if (!activeFile || isRunning) return;
@@ -162,6 +202,39 @@ export default function BottomPanel({
             { type: "system", text: `▶ Đang chạy ${activeFile.name}...`, timestamp: Date.now() },
         ]);
 
+        // ─── JavaScript: Run in browser instantly (no server round-trip) ───
+        if (lang === "javascript") {
+            const startTime = performance.now();
+            const result = runJavaScriptInBrowser(source, activeFile.name);
+            const elapsed = (performance.now() - startTime).toFixed(1);
+
+            const outputs: RunOutput[] = [
+                { type: "system", text: `✓ JavaScript (Browser) • ${elapsed}ms`, timestamp: Date.now() },
+            ];
+
+            // Add captured logs
+            outputs.push(...result.logs);
+
+            // Add error if any
+            if (result.error) {
+                outputs.push({ type: "stderr", text: result.error, timestamp: Date.now() });
+            }
+
+            // Exit status
+            outputs.push({
+                type: result.exitCode === 0 ? "system" : "stderr",
+                text: result.exitCode === 0
+                    ? `\n✓ Hoàn thành (exit code: 0)`
+                    : `\n✗ Lỗi (exit code: ${result.exitCode})`,
+                timestamp: Date.now(),
+            });
+
+            setRunOutput(prev => [...prev, ...outputs]);
+            setIsRunning(false);
+            return;
+        }
+
+        // ─── Other languages: Call server API ───
         const controller = new AbortController();
         abortRef.current = controller;
 
@@ -177,7 +250,6 @@ export default function BottomPanel({
             });
 
             const data = await res.json();
-
             const outputs: RunOutput[] = [];
 
             if (data.error) {
@@ -187,36 +259,29 @@ export default function BottomPanel({
                     timestamp: Date.now(),
                 });
             } else {
-                // Show language/version info
+                // Language/version header
+                const langLabel = data.language || lang;
+                const verLabel = data.version || "";
+                const phaseLabel = data.phase === "compile" ? "Biên dịch" : "Thực thi";
                 outputs.push({
                     type: "system",
-                    text: `✓ ${data.language} v${data.version} • ${data.phase === "compile" ? "Biên dịch" : "Thực thi"}`,
+                    text: `✓ ${langLabel}${verLabel ? ` ${verLabel}` : ""} • ${phaseLabel}`,
                     timestamp: Date.now(),
                 });
 
                 if (data.output) {
-                    outputs.push({
-                        type: "stdout",
-                        text: data.output,
-                        timestamp: Date.now(),
-                    });
+                    outputs.push({ type: "stdout", text: data.output, timestamp: Date.now() });
                 }
-
                 if (data.stderr) {
-                    outputs.push({
-                        type: "stderr",
-                        text: data.stderr,
-                        timestamp: Date.now(),
-                    });
+                    outputs.push({ type: "stderr", text: data.stderr, timestamp: Date.now() });
                 }
 
-                // Exit code
                 const exitCode = data.exitCode ?? 0;
                 outputs.push({
                     type: exitCode === 0 ? "system" : "stderr",
                     text: exitCode === 0
-                        ? `\n✓ Chương trình kết thúc thành công (exit code: 0)`
-                        : `\n✗ Chương trình kết thúc với lỗi (exit code: ${exitCode})`,
+                        ? `\n✓ Hoàn thành (exit code: 0)`
+                        : `\n✗ Lỗi (exit code: ${exitCode})`,
                     timestamp: Date.now(),
                 });
             }
@@ -302,33 +367,55 @@ export default function BottomPanel({
                     </button>
                 ))}
 
-                {/* Right-side actions */}
+                {/* Right-side actions — ALWAYS VISIBLE */}
                 <div className="ml-auto flex items-center gap-1.5">
-                    {/* Run Code Button */}
-                    {activeTab === "console" && isRunnable && (
+                    {/* ▶ Run / Preview Button — always shown */}
+                    {activeFile && (
                         isRunning ? (
                             <button
                                 onClick={handleStopCode}
-                                className="flex items-center gap-1.5 px-3 py-1 rounded-md cursor-pointer text-red-400 hover:bg-red-500/10 transition-all text-[11px] font-semibold uppercase tracking-wider"
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md cursor-pointer bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-all text-[11px] font-semibold uppercase tracking-wider border border-red-500/20"
                                 title="Dừng chương trình"
                             >
                                 <StopCircle className="w-3.5 h-3.5" />
                                 <span>Dừng</span>
                             </button>
-                        ) : (
+                        ) : isRunnable ? (
                             <button
-                                onClick={handleRunCode}
-                                className="flex items-center gap-1.5 px-3 py-1 rounded-md cursor-pointer text-emerald-400 hover:bg-emerald-500/10 transition-all text-[11px] font-semibold uppercase tracking-wider"
-                                title="Chạy code (F5)"
+                                onClick={() => {
+                                    onTabChange("console");
+                                    // Small delay so tab switches first
+                                    setTimeout(() => handleRunCode(), 50);
+                                }}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md cursor-pointer bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-all text-[11px] font-semibold uppercase tracking-wider border border-emerald-500/20"
+                                title={`Chạy ${activeFile.name}`}
                             >
                                 <Play className="w-3.5 h-3.5" />
                                 <span>Run</span>
                             </button>
+                        ) : (
+                            <button
+                                onClick={() => onTabChange("preview")}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md cursor-pointer transition-all text-[11px] font-semibold uppercase tracking-wider border ${
+                                    activeTab === "preview"
+                                        ? "bg-blue-500/15 text-blue-400 border-blue-500/20"
+                                        : "bg-blue-500/10 text-blue-400/70 hover:bg-blue-500/15 border-blue-500/10"
+                                }`}
+                                title="Xem Preview"
+                            >
+                                <Globe className="w-3.5 h-3.5" />
+                                <span>Preview</span>
+                            </button>
                         )
                     )}
 
+                    {/* Separator */}
+                    {activeFile && (
+                        <div className="w-px h-4 bg-[var(--ide-border)] mx-0.5" />
+                    )}
+
                     {/* Copy output */}
-                    {activeTab === "console" && runOutput.length > 0 && (
+                    {runOutput.length > 0 && (
                         <button
                             onClick={handleCopyOutput}
                             className="p-1.5 text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] rounded-md transition-all"
@@ -338,33 +425,15 @@ export default function BottomPanel({
                         </button>
                     )}
 
-                    {activeTab === "console" && (
-                        <>
-                            <button
-                                type="button"
-                                role="checkbox"
-                                aria-checked={clearLogsOnUpdate}
-                                onClick={() => onClearLogsOnUpdateChange(!clearLogsOnUpdate)}
-                                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md cursor-pointer text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] transition-all text-[11px]"
-                                title="Xóa log cũ khi code thay đổi"
-                            >
-                                {clearLogsOnUpdate ? (
-                                    <CheckSquare className="w-3.5 h-3.5 text-[var(--ide-accent)]" />
-                                ) : (
-                                    <Square className="w-3.5 h-3.5" />
-                                )}
-                                <span className="uppercase tracking-wider font-medium hidden lg:inline">Tự động xóa</span>
-                            </button>
-                            {(consoleLogs.length > 0 || runOutput.length > 0) && (
-                                <button
-                                    onClick={() => { onClearLogs(); setRunOutput([]); }}
-                                    className="p-1.5 text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] rounded-md transition-all"
-                                    title="Xóa tất cả"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                            )}
-                        </>
+                    {/* Clear logs */}
+                    {(consoleLogs.length > 0 || runOutput.length > 0) && (
+                        <button
+                            onClick={() => { onClearLogs(); setRunOutput([]); }}
+                            className="p-1.5 text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] rounded-md transition-all"
+                            title="Xóa tất cả"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                     )}
                 </div>
             </div>
