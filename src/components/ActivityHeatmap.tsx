@@ -2,14 +2,24 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 
+import { useTheme } from "next-themes";
+
 /* ─── Constants ─── */
 
-const LEVEL_COLORS = [
+const LIGHT_LEVEL_COLORS = [
     "#ebedf0", // 0 — no activity
     "#9be9a8", // 1
     "#40c463", // 2
     "#30a14e", // 3
     "#216e39", // 4
+] as const;
+
+const DARK_LEVEL_COLORS = [
+    "#161b22", // 0 — no activity
+    "#0e4429", // 1
+    "#006d32", // 2
+    "#26a641", // 3
+    "#39d353", // 4
 ] as const;
 
 const MONTH_LABELS = [
@@ -79,7 +89,10 @@ export default function ActivityHeatmap({ username, projects }: Props) {
         y: number;
     } | null>(null);
 
+    const { theme } = useTheme();
     const currentYear = new Date().getFullYear();
+    const isDark = theme === "dark";
+    const LEVEL_COLORS = isDark ? DARK_LEVEL_COLORS : LIGHT_LEVEL_COLORS;
 
     // Fetch activity data
     useEffect(() => {
@@ -253,14 +266,14 @@ export default function ActivityHeatmap({ username, projects }: Props) {
         : `${totalActivities.toLocaleString("vi-VN")} hoạt động trong 12 tháng qua`;
 
     return (
-        <div className="w-full rounded-xl border border-gray-200 bg-white p-5">
+        <div className="w-full rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
             {/* Header */}
             <div className="mb-3 flex items-center justify-between gap-2 flex-wrap">
-                <h3 className="text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-600">
                     {loaded ? (
                         headerText
                     ) : (
-                        <span className="inline-block h-4 w-56 animate-pulse rounded bg-gray-200" />
+                        <span className="inline-block h-4 w-56 animate-pulse rounded bg-gray-200 dark:bg-slate-700" />
                     )}
                 </h3>
             </div>
@@ -295,7 +308,7 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                                 return (
                                     <span
                                         key={`${m.label}-${m.colIndex}`}
-                                        className="absolute text-[11px] text-gray-500 select-none"
+                                        className="absolute text-[11px] text-gray-500 dark:text-gray-400 dark:text-gray-500 select-none"
                                         style={{ left: m.colIndex * COL_W }}
                                     >
                                         {m.label}
@@ -319,7 +332,7 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                                     return (
                                         <div
                                             key={i}
-                                            className="text-[11px] text-gray-500 select-none flex items-center"
+                                            className="text-[11px] text-gray-500 dark:text-gray-400 dark:text-gray-500 select-none flex items-center"
                                             style={{ height: CELL }}
                                         >
                                             {label}
@@ -391,9 +404,9 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                     </div>
 
                     {/* Footer legend */}
-                    <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-100">
+                    <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-100 dark:border-slate-800">
                         <div className="flex items-center gap-[3px]">
-                            <span className="text-[11px] text-gray-500 mr-1">
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-1">
                                 Ít hơn
                             </span>
                             {LEVEL_COLORS.map((color, i) => (
@@ -407,7 +420,7 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                                     }}
                                 />
                             ))}
-                            <span className="text-[11px] text-gray-500 ml-1">
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400 dark:text-gray-500 ml-1">
                                 Nhiều hơn
                             </span>
                         </div>
@@ -436,8 +449,8 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                                     px-2 py-0.5 text-[13px] font-medium rounded transition-colors
                                     ${
                                         isActive
-                                            ? "text-blue-700 bg-blue-50"
-                                            : "text-gray-400 hover:text-gray-700"
+                                            ? "text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                                            : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:text-gray-600"
                                     }
                                 `}
                             >
@@ -460,7 +473,7 @@ export default function ActivityHeatmap({ username, projects }: Props) {
                 >
                     <div className="bg-gray-800 text-white text-[11px] px-3 py-2 rounded-md shadow-xl whitespace-nowrap">
                         <div className="font-semibold">{tooltip.text}</div>
-                        <div className="text-gray-300 text-[10px] mt-0.5">
+                        <div className="text-gray-300 dark:text-gray-600 text-[10px] mt-0.5">
                             {tooltip.sub}
                         </div>
                     </div>

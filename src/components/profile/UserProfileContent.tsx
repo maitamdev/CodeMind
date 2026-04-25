@@ -123,7 +123,7 @@ function CourseCard({
         <Link href={`/learn/${course.slug}`} className="group block pb-1">
             <div
                 className="rounded-2xl overflow-hidden h-full flex flex-col transform transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-                style={{ backgroundColor: "#f7f7f7" }}
+                
             >
                 <div className="relative aspect-video w-full overflow-hidden flex-shrink-0">
                     {course.thumbnailUrl ? (
@@ -134,8 +134,8 @@ function CourseCard({
                             className="object-cover"
                         />
                     ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                            <BookOpen className="h-10 w-10 text-gray-400" />
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-800 dark:to-slate-700">
+                            <BookOpen className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                         </div>
                     )}
                 </div>
@@ -143,11 +143,11 @@ function CourseCard({
                     className="flex-1 flex flex-col"
                     style={{ padding: "16px 20px" }}
                 >
-                    <h3 className="course-card-title line-clamp-2 text-gray-900 mb-2">
+                    <h3 className="course-card-title line-clamp-2 text-gray-900 dark:text-gray-100 mb-2">
                         {course.title}
                     </h3>
                     {course.shortDescription && (
-                        <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-gray-500">
+                        <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
                             {course.shortDescription}
                         </p>
                     )}
@@ -166,7 +166,7 @@ function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
         <Link href={`/learn/${course.slug}`} className="group block pb-1">
             <div
                 className="rounded-2xl overflow-hidden h-full flex flex-col transform transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-                style={{ backgroundColor: "#f7f7f7" }}
+                
             >
                 <div className="relative aspect-video w-full overflow-hidden flex-shrink-0">
                     {course.thumbnail_url ? (
@@ -177,8 +177,8 @@ function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
                             className="object-cover"
                         />
                     ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                            <BookOpen className="h-10 w-10 text-gray-400" />
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-800 dark:to-slate-700">
+                            <BookOpen className="h-10 w-10 text-gray-400 dark:text-gray-500" />
                         </div>
                     )}
                     {course.is_completed && (
@@ -192,7 +192,7 @@ function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
                     className="flex-1 flex flex-col"
                     style={{ padding: "16px 20px" }}
                 >
-                    <h3 className="course-card-title line-clamp-2 text-gray-900 mb-3">
+                    <h3 className="course-card-title line-clamp-2 text-gray-900 dark:text-gray-100 mb-3">
                         {course.title}
                     </h3>
 
@@ -200,7 +200,7 @@ function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
                     <div className="mt-auto flex items-center gap-2.5">
                         <Progress
                             value={progress}
-                            className="h-1.5 flex-1 bg-gray-200 [&>[data-slot=progress-indicator]]:rounded-full"
+                            className="h-1.5 flex-1 bg-gray-200 dark:bg-slate-700 [&>[data-slot=progress-indicator]]:rounded-full"
                             style={{
                                 // @ts-expect-error CSS custom property for indicator color
                                 "--progress-color": course.is_completed
@@ -208,7 +208,7 @@ function EnrolledCourseCard({ course }: { course: EnrolledCourse }) {
                                     : "#3b82f6",
                             }}
                         />
-                        <span className="shrink-0 text-xs font-medium text-gray-500">
+                        <span className="shrink-0 text-xs font-medium text-gray-500 dark:text-gray-400">
                             {progress}%
                         </span>
                     </div>
@@ -253,14 +253,14 @@ export default function UserProfileContent({ username }: { username: string }) {
     if (error || !profile) {
         return (
             <div className="flex min-h-[60dvh] items-center justify-center px-4">
-                <div className="max-w-md rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
-                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                        <Users className="h-7 w-7 text-gray-400" />
+                <div className="max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-10 text-center shadow-sm">
+                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800">
+                        <Users className="h-7 w-7 text-gray-400 dark:text-gray-500" />
                     </div>
-                    <h1 className="text-xl font-bold text-gray-900">
+                    <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                         Hồ sơ không khả dụng
                     </h1>
-                    <p className="mt-2 text-sm text-gray-500">
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         {error || "Hồ sơ được yêu cầu không tồn tại."}
                     </p>
                     <Link
@@ -338,7 +338,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                     <div>
                         <div className="flex items-center gap-1.5">
                             <p
-                                className="font-bold leading-tight text-gray-900"
+                                className="font-bold leading-tight text-gray-900 dark:text-gray-100"
                                 style={{ fontSize: "24px", fontWeight: "700" }}
                             >
                                 {publicProfile.displayName}
@@ -351,7 +351,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                                 />
                             ))}
                         </div>
-                        <p className="mt-0.5 text-sm text-gray-500">
+                        <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                             {formatUsernameHandle(user.username)}
                         </p>
                     </div>
@@ -362,19 +362,19 @@ export default function UserProfileContent({ username }: { username: string }) {
                     />
 
                     {/* Follow Button (F8 style) */}
-                    <button className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-gray-200 active:scale-[0.98]">
+                    <button className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 transition hover:bg-gray-200 dark:hover:bg-slate-700 dark:bg-slate-700 active:scale-[0.98]">
                         <UserPlus className="h-4 w-4" />
                         Theo dõi
                     </button>
 
                     {/* Stats list */}
-                    <div className="space-y-3 text-[14px] text-gray-600">
+                    <div className="space-y-3 text-[14px] text-gray-600 dark:text-gray-400">
                         {(stats.totalCoursesEnrolled > 0 ||
                             stats.totalForumPosts > 0) && (
                             <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4 shrink-0 text-gray-400" />
+                                <Users className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" />
                                 <span>
-                                    <strong className="font-semibold text-gray-900">
+                                    <strong className="font-semibold text-gray-900 dark:text-gray-100">
                                         {stats.totalCoursesEnrolled}
                                     </strong>{" "}
                                     khóa học
@@ -382,7 +382,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                                         <>
                                             {" "}
                                             ·{" "}
-                                            <strong className="font-semibold text-gray-900">
+                                            <strong className="font-semibold text-gray-900 dark:text-gray-100">
                                                 {stats.totalForumPosts}
                                             </strong>{" "}
                                             bài forum
@@ -394,9 +394,9 @@ export default function UserProfileContent({ username }: { username: string }) {
 
                         {stats.totalArticlesPublished > 0 && (
                             <div className="flex items-center gap-2">
-                                <FileText className="h-4 w-4 shrink-0 text-gray-400" />
+                                <FileText className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" />
                                 <span>
-                                    <strong className="font-semibold text-gray-900">
+                                    <strong className="font-semibold text-gray-900 dark:text-gray-100">
                                         {stats.totalArticlesPublished}
                                     </strong>{" "}
                                     bài viết đã đăng
@@ -406,9 +406,9 @@ export default function UserProfileContent({ username }: { username: string }) {
 
                         {stats.totalCoursesCompleted > 0 && (
                             <div className="flex items-center gap-2">
-                                <Trophy className="h-4 w-4 shrink-0 text-gray-400" />
+                                <Trophy className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" />
                                 <span>
-                                    <strong className="font-semibold text-gray-900">
+                                    <strong className="font-semibold text-gray-900 dark:text-gray-100">
                                         {stats.totalCoursesCompleted}
                                     </strong>{" "}
                                     chứng chỉ
@@ -418,13 +418,13 @@ export default function UserProfileContent({ username }: { username: string }) {
 
                         {publicProfile.location && (
                             <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 shrink-0 text-gray-400" />
+                                <MapPin className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" />
                                 <span>{publicProfile.location}</span>
                             </div>
                         )}
 
                         <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 shrink-0 text-gray-400" />
+                            <Calendar className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-500" />
                             <span>Tham gia nền tảng</span>
                         </div>
                     </div>
@@ -432,13 +432,13 @@ export default function UserProfileContent({ username }: { username: string }) {
                     {/* Social & Website Links */}
                     {(publicProfile.websiteUrl ||
                         Object.keys(publicProfile.socialLinks).length > 0) && (
-                        <div className="space-y-2 border-t border-gray-200 pt-4">
+                        <div className="space-y-2 border-t border-gray-200 dark:border-slate-800 pt-4">
                             {publicProfile.websiteUrl && (
                                 <a
                                     href={publicProfile.websiteUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-blue-600"
+                                    className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 transition hover:text-blue-600"
                                 >
                                     <Globe className="h-4 w-4 shrink-0" />
                                     <span className="truncate">
@@ -456,7 +456,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                                         href={url}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-blue-600"
+                                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 transition hover:text-blue-600"
                                     >
                                         <SocialIcon
                                             platform={key}
@@ -478,7 +478,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                     <ActivityHeatmap username={username} projects={profile.projects} />
 
                     {/* Tab Navigation (F8 style) */}
-                    <div className="border-b border-gray-200">
+                    <div className="border-b border-gray-200 dark:border-slate-800">
                         <nav className="-mb-px flex gap-6 overflow-x-auto">
                             {tabs.map((tab) => (
                                 <button
@@ -486,8 +486,8 @@ export default function UserProfileContent({ username }: { username: string }) {
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`flex items-center gap-1.5 whitespace-nowrap border-b-2 pb-3 pt-1 text-[14px] font-semibold transition-colors ${
                                         activeTab === tab.id
-                                            ? "border-gray-900 text-gray-900"
-                                            : "border-transparent text-gray-500 hover:text-gray-700"
+                                            ? "border-gray-900 text-gray-900 dark:text-gray-100"
+                                            : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-400"
                                     }`}
                                 >
                                     {tab.icon}
@@ -512,7 +512,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                             ) : (
                                 <EmptyState
                                     icon={
-                                        <BookOpen className="h-10 w-10 text-gray-300" />
+                                        <BookOpen className="h-10 w-10 text-gray-300 dark:text-gray-600" />
                                     }
                                     message="Chưa đăng ký khóa học nào."
                                 />
@@ -523,7 +523,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                     {activeTab === "articles" && (
                         <EmptyState
                             icon={
-                                <FileText className="h-10 w-10 text-gray-300" />
+                                <FileText className="h-10 w-10 text-gray-300 dark:text-gray-600" />
                             }
                             message={
                                 stats.totalArticlesPublished > 0
@@ -540,20 +540,20 @@ export default function UserProfileContent({ username }: { username: string }) {
                                     {profile.projects.map((project: any) => {
                                         const commitsCount = project.commits?.length || 0;
                                         return (
-                                        <div key={project.id} className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-gray-300 shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+                                        <div key={project.id} className="flex flex-col justify-between rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 transition-all hover:border-gray-300 dark:border-slate-700 shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <BookOpen className="h-4 w-4 text-gray-400" />
+                                                    <BookOpen className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                                                     <a href="#" className="font-semibold text-blue-600 hover:underline truncate text-base">
                                                         {project.name}
                                                     </a>
-                                                    <span className="rounded-full border border-gray-200 px-2 py-0.5 text-[10px] font-medium text-gray-500">Public</span>
+                                                    <span className="rounded-full border border-gray-200 dark:border-slate-800 px-2 py-0.5 text-[10px] font-medium text-gray-500 dark:text-gray-400">Public</span>
                                                 </div>
-                                                <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                                                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                                                     {project.description || "Dự án code thực hành trên CodeMind IDE."}
                                                 </p>
                                             </div>
-                                            <div className="mt-5 flex items-center gap-4 text-[13px] font-medium text-gray-500">
+                                            <div className="mt-5 flex items-center gap-4 text-[13px] font-medium text-gray-500 dark:text-gray-400">
                                                 <div className="flex items-center gap-1.5">
                                                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-yellow-500/20"></div>
                                                     <span>Web App</span>
@@ -566,7 +566,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                                                         <span>{commitsCount} commits</span>
                                                     </div>
                                                 )}
-                                                <div className="flex items-center gap-1.5 ml-auto text-gray-400 text-xs">
+                                                <div className="flex items-center gap-1.5 ml-auto text-gray-400 dark:text-gray-500 text-xs">
                                                     <span>Updated {new Date(project.updated_at).toLocaleDateString('vi-VN')}</span>
                                                 </div>
                                             </div>
@@ -575,7 +575,7 @@ export default function UserProfileContent({ username }: { username: string }) {
                                 </div>
                             ) : (
                                 <EmptyState
-                                    icon={<Code className="h-10 w-10 text-gray-300" />}
+                                    icon={<Code className="h-10 w-10 text-gray-300 dark:text-gray-600" />}
                                     message="Chưa có dự án code nào."
                                 />
                             )}
@@ -613,7 +613,7 @@ function BioSection({ text }: { text: string }) {
         <div>
             <p
                 ref={textRef}
-                className={`text-[15px] leading-relaxed text-gray-700 ${
+                className={`text-[15px] leading-relaxed text-gray-700 dark:text-gray-400 ${
                     expanded ? "" : "line-clamp-3"
                 }`}
             >
@@ -622,7 +622,7 @@ function BioSection({ text }: { text: string }) {
             {(isClamped || expanded) && (
                 <button
                     onClick={() => setExpanded((v) => !v)}
-                    className="mt-1 text-[13px] font-semibold text-blue-600 transition hover:text-blue-700"
+                    className="mt-1 text-[13px] font-semibold text-blue-600 transition hover:text-blue-700 dark:text-blue-400"
                 >
                     {expanded ? "Thu gọn" : "Xem thêm"}
                 </button>
@@ -635,11 +635,11 @@ function BioSection({ text }: { text: string }) {
 
 function EmptyState({ icon, message }: { icon: ReactNode; message: string }) {
     return (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 px-6 py-12 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
+        <div className="rounded-xl border border-dashed border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/60 px-6 py-12 text-center">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-sm">
                 {icon}
             </div>
-            <p className="text-sm text-gray-500">{message}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{message}</p>
         </div>
     );
 }
