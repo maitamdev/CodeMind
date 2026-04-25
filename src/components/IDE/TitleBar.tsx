@@ -16,6 +16,7 @@ interface TitleBarProps {
     onToggleTheme: () => void;
     autoSaveStatus: string;
     onBack?: () => void;
+    onSave?: () => void;
     onCommitAndPush?: () => void;
 }
 
@@ -25,6 +26,7 @@ export default function TitleBar({
     onToggleTheme,
     autoSaveStatus,
     onBack,
+    onSave,
     onCommitAndPush,
 }: TitleBarProps) {
     const handleBack = () => {
@@ -84,6 +86,17 @@ export default function TitleBar({
 
             {/* Right: Actions */}
             <div className="flex items-center gap-2 flex-1 justify-end">
+                {onSave && (
+                    <button
+                        onClick={onSave}
+                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-[var(--ide-bg-active)] text-[11px] font-bold uppercase tracking-wide transition-all border border-[var(--ide-border)]"
+                        title="Save (Ctrl+S)"
+                    >
+                        <span className="opacity-60 text-[9px]">Ctrl+S</span>
+                        <span>Lưu</span>
+                    </button>
+                )}
+
                 {onCommitAndPush && (
                     <button
                         onClick={onCommitAndPush}

@@ -131,6 +131,30 @@ export default function IDELayout({
         [updateCodeByTab, setActiveTab],
     );
 
+    const handleManualSave = async () => {
+        try {
+            // Save locally
+            const key = `ide_playground_code_${lessonId || "scratch"}`;
+            localStorage.setItem(key, JSON.stringify(code));
+            
+            // Save to cloud
+            const res = await fetch("/api/user/code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    lessonId: lessonId || "scratch",
+                    ...code
+                })
+            });
+
+            if (res.ok) {
+                // We can use a toast or just rely on the autoSaveStatus in TitleBar
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+        }
+    };
+
     const handleCommitAndPush = async () => {
         const msg = window.prompt("Nhập nội dung commit (ví dụ: 'Hoàn thành giao diện đăng nhập'):");
         if (!msg) return;
@@ -226,6 +250,7 @@ export default function IDELayout({
                     onToggleTheme={toggleTheme}
                     autoSaveStatus={autoSaveStatus}
                     onBack={onBack}
+                    onSave={handleManualSave}
                     onCommitAndPush={handleCommitAndPush}
                 />
 
@@ -277,6 +302,7 @@ export default function IDELayout({
                         onCursorChange={(line, col) =>
                             setCursorPosition({ line, column: col })
                         }
+                        onSave={handleManualSave}
                         editorRef={editorRef}
                     />
 

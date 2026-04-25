@@ -16,6 +16,7 @@ interface EditorPanelProps {
     theme: "light" | "dark";
     onChange: (value: string) => void;
     onCursorChange: (line: number, column: number) => void;
+    onSave?: () => void;
     editorRef: React.MutableRefObject<MonacoEditor | null>;
 }
 
@@ -32,6 +33,7 @@ export default function EditorPanel({
     theme,
     onChange,
     onCursorChange,
+    onSave,
     editorRef,
 }: EditorPanelProps) {
     const handleEditorDidMount: OnMount = (editor, monaco) => {
@@ -41,6 +43,11 @@ export default function EditorPanel({
         // Track cursor position
         editor.onDidChangeCursorPosition((e) => {
             onCursorChange(e.position.lineNumber, e.position.column);
+        });
+
+        // Register Ctrl+S / Cmd+S
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+            if (onSave) onSave();
         });
     };
 
