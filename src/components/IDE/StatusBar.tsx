@@ -1,6 +1,6 @@
 "use client";
 
-import { Wifi, WifiOff } from "lucide-react";
+import { Wifi, WifiOff, Circle } from "lucide-react";
 import type { LanguageType } from "./useIDEState";
 
 interface StatusBarProps {
@@ -19,6 +19,13 @@ const LANG_LABELS: Record<LanguageType, string> = {
     cpp: "C++",
 };
 
+const LANG_ICONS: Record<LanguageType, string> = {
+    html: "{ }",
+    css: "# ",
+    javascript: "λ ",
+    cpp: "⟨⟩",
+};
+
 export default function StatusBar({
     language,
     line,
@@ -31,18 +38,19 @@ export default function StatusBar({
         <div className="ide-statusbar">
             {/* Left */}
             <div className="flex items-center">
-                <div className="status-item">
-                    <span>{LANG_LABELS[language]}</span>
+                <div className="status-item gap-1.5">
+                    <span className="font-mono text-[10px] opacity-70">{LANG_ICONS[language]}</span>
+                    <span className="font-medium">{LANG_LABELS[language]}</span>
                 </div>
                 <div className="status-item">
-                    <span>
+                    <span className="font-mono">
                         Ln {line}, Col {column}
                     </span>
                 </div>
-                <div className="status-item">
+                <div className="status-item opacity-70">
                     <span>Spaces: 2</span>
                 </div>
-                <div className="status-item">
+                <div className="status-item opacity-70">
                     <span>UTF-8</span>
                 </div>
             </div>
@@ -50,27 +58,30 @@ export default function StatusBar({
             {/* Right */}
             <div className="flex items-center">
                 {autoSaveStatus === "saving" && (
-                    <div className="status-item">
-                        <span>Saving...</span>
+                    <div className="status-item animate-pulse">
+                        <span>Đang lưu...</span>
                     </div>
                 )}
                 <div className="status-item">
                     {aiStatus === "connected" ? (
                         <>
-                            <Wifi className="w-3 h-3" />
-                            <span>AI Connected</span>
+                            <Circle className="w-2 h-2 fill-emerald-300 text-emerald-300" />
+                            <span>AI Online</span>
                         </>
                     ) : aiStatus === "checking" ? (
                         <>
-                            <Wifi className="w-3 h-3 opacity-50" />
+                            <Circle className="w-2 h-2 fill-amber-300 text-amber-300 animate-pulse" />
                             <span>AI Checking...</span>
                         </>
                     ) : (
                         <>
-                            <WifiOff className="w-3 h-3" />
+                            <Circle className="w-2 h-2 fill-red-400 text-red-400" />
                             <span>AI Offline</span>
                         </>
                     )}
+                </div>
+                <div className="status-item opacity-60">
+                    <span>CodeMind v2.0</span>
                 </div>
             </div>
         </div>

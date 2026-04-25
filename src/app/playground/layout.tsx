@@ -11,7 +11,7 @@ export default function PlaygroundLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="h-screen w-screen overflow-hidden bg-[#1e1e1e]">
+        <div className="h-screen w-screen overflow-hidden bg-[#0c0c0c]">
             {children}
         </div>
     );

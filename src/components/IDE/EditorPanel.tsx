@@ -6,6 +6,7 @@ import {
     getEditorOptions,
 } from "../CodePlayground/monacoConfig";
 import type { LanguageType } from "./useIDEState";
+import { Loader2 } from "lucide-react";
 
 type MonacoEditor = Parameters<OnMount>[0];
 
@@ -44,7 +45,7 @@ export default function EditorPanel({
     };
 
     return (
-        <div className="flex-1 min-h-0 overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-hidden relative">
             <Editor
                 height="100%"
                 language={MONACO_LANG_MAP[language]}
@@ -57,26 +58,42 @@ export default function EditorPanel({
                 onChange={(value) => onChange(value || "")}
                 onMount={handleEditorDidMount}
                 options={{
-                    fontSize: 13,
+                    fontSize: 14,
                     fontFamily:
-                        "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
-                    lineHeight: 20,
-                    minimap: { enabled: true, maxColumn: 80 },
+                        "'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace",
+                    fontLigatures: true,
+                    lineHeight: 22,
+                    letterSpacing: 0.3,
+                    minimap: {
+                        enabled: true,
+                        maxColumn: 80,
+                        renderCharacters: false,
+                        scale: 1,
+                    },
                     scrollBeyondLastLine: false,
                     automaticLayout: true,
                     tabSize: 2,
                     wordWrap: "on",
                     bracketPairColorization: { enabled: true },
-                    guides: { bracketPairs: true, indentation: true },
+                    guides: {
+                        bracketPairs: true,
+                        indentation: true,
+                        highlightActiveIndentation: true,
+                    },
                     renderLineHighlight: "all",
+                    renderLineHighlightOnlyWhenFocus: false,
                     cursorBlinking: "smooth",
                     cursorSmoothCaretAnimation: "on",
+                    cursorWidth: 2,
                     smoothScrolling: true,
-                    padding: { top: 8 },
+                    padding: { top: 12, bottom: 12 },
                     suggest: {
                         showMethods: true,
                         showFunctions: true,
                         showConstructors: true,
+                        showSnippets: true,
+                        showWords: true,
+                        preview: true,
                     },
                     parameterHints: { enabled: true },
                     formatOnPaste: true,
@@ -85,12 +102,21 @@ export default function EditorPanel({
                     autoClosingBrackets: "always",
                     autoClosingQuotes: "always",
                     autoIndent: "full",
+                    stickyScroll: { enabled: true },
+                    overviewRulerBorder: false,
+                    hideCursorInOverviewRuler: true,
+                    scrollbar: {
+                        verticalScrollbarSize: 8,
+                        horizontalScrollbarSize: 8,
+                        useShadows: false,
+                    },
                 }}
                 loading={
-                    <div className="h-full flex items-center justify-center bg-[var(--ide-bg)]">
-                        <div className="text-[var(--ide-text-muted)] text-sm">
-                            Loading editor...
-                        </div>
+                    <div className="h-full flex flex-col items-center justify-center bg-[var(--ide-bg)] gap-3">
+                        <Loader2 className="w-6 h-6 text-[var(--ide-accent)] animate-spin" />
+                        <span className="text-[var(--ide-text-muted)] text-sm font-medium">
+                            Đang tải Editor...
+                        </span>
                     </div>
                 }
             />

@@ -6,9 +6,10 @@ import {
     Terminal,
     AlertTriangle,
     Trash2,
-    GripHorizontal,
     CheckSquare,
     Square,
+    ChevronRight,
+    Maximize2,
 } from "lucide-react";
 import type { BottomTab, ConsoleLog, CodeState } from "./useIDEState";
 import { generatePreviewHTML } from "../CodePlayground/utils";
@@ -44,6 +45,7 @@ export default function BottomPanel({
     const [isDragging, setIsDragging] = useState(false);
     const [consoleInput, setConsoleInput] = useState("");
     const terminalEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Auto-scroll to bottom of console when new logs arrive
     useEffect(() => {
@@ -52,9 +54,7 @@ export default function BottomPanel({
         }
     }, [consoleLogs, activeTab]);
 
-    // Live preview update - ONLY when code changes. Do NOT include activeTab.
-    // Including activeTab caused iframe to reload on tab switch → JS re-runs → duplicate console logs.
-    // Iframe is always mounted (hidden when not preview), so no need to refresh on tab switch.
+    // Live preview update
     useEffect(() => {
         const timer = setTimeout(() => {
             const codeChanged =
@@ -110,8 +110,18 @@ export default function BottomPanel({
     const tabs: { id: BottomTab; label: string; icon: typeof Globe }[] = [
         { id: "console", label: "Terminal", icon: Terminal },
         { id: "preview", label: "Preview", icon: Globe },
-        { id: "problems", label: "Problems", icon: AlertTriangle },
+        { id: "problems", label: "Vấn đề", icon: AlertTriangle },
     ];
+
+    const getLogStyle = (log: ConsoleLog) => {
+        if (log.type === "error")
+            return "text-red-400 bg-red-500/8 border-l-2 border-red-500/60";
+        if (log.type === "warn")
+            return "text-amber-400 bg-amber-500/8 border-l-2 border-amber-500/60";
+        if (log.type === "info" && log.message.startsWith(">"))
+            return "text-indigo-400 font-medium";
+        return "text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)]";
+    };
 
     return (
         <div className="ide-bottom-panel" style={{ height }}>
@@ -132,46 +142,35 @@ export default function BottomPanel({
                         <tab.icon className="w-3.5 h-3.5 mr-1.5" />
                         {tab.label}
                         {tab.id === "console" && consoleLogs.length > 0 && (
-                            <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] bg-[var(--ide-bg-active)] text-[var(--ide-text)]">
+                            <span className="ml-2 px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-[var(--ide-accent-subtle)] text-[var(--ide-accent)] border border-[var(--ide-accent-glow)]">
                                 {consoleLogs.length}
                             </span>
                         )}
                     </button>
                 ))}
+
                 {activeTab === "console" && (
-                    <div className="ml-auto flex items-center gap-2">
+                    <div className="ml-auto flex items-center gap-1.5">
                         <button
                             type="button"
                             role="checkbox"
                             aria-checked={clearLogsOnUpdate}
-                            aria-label="Chỉ hiển thị log từ lần chạy mới nhất"
-                            title="Chỉ lần chạy mới nhất: Bật sẽ xóa log cũ mỗi khi code thay đổi"
-                            onClick={() =>
-                                onClearLogsOnUpdateChange(!clearLogsOnUpdate)
-                            }
-                            className="flex items-center gap-1.5 px-2 py-1 rounded cursor-pointer text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] transition-colors duration-200 border border-transparent hover:border-[var(--ide-border)] focus:outline-none focus:ring-1 focus:ring-[var(--ide-accent)] focus:border-[var(--ide-accent)]"
+                            onClick={() => onClearLogsOnUpdateChange(!clearLogsOnUpdate)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md cursor-pointer text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] transition-all text-[11px]"
+                            title="Xóa log cũ khi code thay đổi"
                         >
                             {clearLogsOnUpdate ? (
-                                <CheckSquare
-                                    className="w-3.5 h-3.5 text-[var(--ide-accent)] flex-shrink-0"
-                                    aria-hidden
-                                />
+                                <CheckSquare className="w-3.5 h-3.5 text-[var(--ide-accent)]" />
                             ) : (
-                                <Square
-                                    className="w-3.5 h-3.5 flex-shrink-0"
-                                    aria-hidden
-                                />
+                                <Square className="w-3.5 h-3.5" />
                             )}
-                            <span className="text-[11px] uppercase tracking-wider whitespace-nowrap">
-                                Chỉ lần chạy mới
-                            </span>
+                            <span className="uppercase tracking-wider font-medium">Tự động xóa</span>
                         </button>
                         {consoleLogs.length > 0 && (
                             <button
                                 onClick={onClearLogs}
-                                className="px-2 py-1 text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] rounded transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--ide-accent)]"
+                                className="p-1.5 text-[var(--ide-text-muted)] hover:text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] rounded-md transition-all"
                                 title="Xóa tất cả log"
-                                aria-label="Xóa tất cả log"
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -182,8 +181,7 @@ export default function BottomPanel({
 
             {/* Content */}
             <div className="flex-1 overflow-auto bg-[var(--ide-bg)] relative">
-                {/* Iframe always mounted so it receives code updates when user edits
-                    CSS/JS while viewing Console. Hidden via CSS when not on preview. */}
+                {/* Preview iframe (always mounted) */}
                 <iframe
                     ref={iframeRef}
                     className={`w-full h-full border-0 absolute inset-0 ${
@@ -193,34 +191,38 @@ export default function BottomPanel({
                     title="Live Preview"
                     style={{
                         background: "#ffffff",
-                        pointerEvents:
-                            activeTab !== "preview" ? "none" : undefined,
+                        pointerEvents: activeTab !== "preview" ? "none" : undefined,
+                        borderRadius: activeTab === "preview" ? "0" : undefined,
                     }}
                 />
 
+                {/* Terminal / Console */}
                 {activeTab === "console" && (
-                    <div className="relative z-10 flex flex-col h-full font-mono text-[13px]">
-                        <div className="flex-1 overflow-auto p-3 space-y-1 scrollbar-thin">
+                    <div
+                        className="relative z-10 flex flex-col h-full font-mono text-[13px]"
+                        onClick={() => inputRef.current?.focus()}
+                    >
+                        <div className="flex-1 overflow-auto p-3 space-y-0.5 scrollbar-thin">
                             {consoleLogs.length === 0 ? (
-                                <div className="text-[var(--ide-text-muted)] italic">
-                                    CodeMind Terminal v1.0.0
+                                <div className="flex flex-col items-center justify-center h-full gap-3 text-[var(--ide-text-faint)]">
+                                    <Terminal className="w-8 h-8 opacity-30" />
+                                    <div className="text-center">
+                                        <p className="text-sm font-medium">CodeMind Terminal v2.0</p>
+                                        <p className="text-xs mt-1 opacity-60">Nhập lệnh JavaScript bên dưới để thực thi</p>
+                                    </div>
                                 </div>
                             ) : (
                                 consoleLogs.map((log, i) => (
                                     <div
                                         key={i}
-                                        className={`flex items-start gap-3 py-1 px-2 rounded-md ${
-                                            log.type === "error"
-                                                ? "text-red-400 bg-red-500/10 border-l-2 border-red-500"
-                                                : log.type === "warn"
-                                                  ? "text-yellow-400 bg-yellow-500/10 border-l-2 border-yellow-500"
-                                                  : log.type === "info" && log.message.startsWith(">")
-                                                  ? "text-[var(--ide-accent)] font-semibold"
-                                                  : "text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)]"
-                                        }`}
+                                        className={`flex items-start gap-3 py-1.5 px-2.5 rounded-md transition-colors ${getLogStyle(log)}`}
                                     >
-                                        <span className="text-[11px] text-[var(--ide-text-muted)] flex-shrink-0 mt-0.5 opacity-60">
-                                            {new Date(log.timestamp).toLocaleTimeString("vi-VN")}
+                                        <span className="text-[10px] text-[var(--ide-text-faint)] flex-shrink-0 mt-1 font-mono tabular-nums">
+                                            {new Date(log.timestamp).toLocaleTimeString("vi-VN", {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                second: "2-digit",
+                                            })}
                                         </span>
                                         <span className="whitespace-pre-wrap break-all leading-relaxed">
                                             {log.message}
@@ -230,17 +232,17 @@ export default function BottomPanel({
                             )}
                             <div ref={terminalEndRef} />
                         </div>
-                        
+
                         {/* Interactive Terminal Input */}
-                        <div className="flex items-center gap-2 p-2 border-t border-[var(--ide-border)] bg-[var(--ide-bg-alt)]">
-                            <span className="text-[var(--ide-accent)] font-bold ml-1">❯</span>
+                        <div className="flex items-center gap-2 p-2.5 border-t border-[var(--ide-border)] bg-[var(--ide-bg-alt)]">
+                            <ChevronRight className="w-4 h-4 text-[var(--ide-accent)] flex-shrink-0" />
                             <input
+                                ref={inputRef}
                                 type="text"
                                 value={consoleInput}
                                 onChange={(e) => setConsoleInput(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter" && consoleInput.trim()) {
-                                        // Send to iframe for evaluation
                                         if (iframeRef.current?.contentWindow) {
                                             iframeRef.current.contentWindow.postMessage({
                                                 type: "eval",
@@ -251,8 +253,8 @@ export default function BottomPanel({
                                         setConsoleInput("");
                                     }
                                 }}
-                                placeholder="Nhập lệnh JavaScript (VD: console.log('Hello'))"
-                                className="flex-1 bg-transparent border-none outline-none text-[var(--ide-text)] placeholder-[var(--ide-text-muted)] font-mono text-[13px]"
+                                placeholder="Nhập lệnh JavaScript..."
+                                className="flex-1 bg-transparent border-none outline-none text-[var(--ide-text)] placeholder-[var(--ide-text-faint)] font-mono text-[13px] caret-[var(--ide-accent)]"
                                 autoComplete="off"
                                 spellCheck="false"
                             />
@@ -260,9 +262,14 @@ export default function BottomPanel({
                     </div>
                 )}
 
+                {/* Problems tab */}
                 {activeTab === "problems" && (
-                    <div className="relative z-10 p-2 text-[12px] text-[var(--ide-text-muted)]">
-                        No problems found
+                    <div className="relative z-10 flex items-center justify-center h-full text-[var(--ide-text-faint)]">
+                        <div className="text-center">
+                            <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                            <p className="text-sm font-medium">Không có vấn đề nào</p>
+                            <p className="text-xs mt-1 opacity-60">Code của bạn đang sạch ✨</p>
+                        </div>
                     </div>
                 )}
             </div>

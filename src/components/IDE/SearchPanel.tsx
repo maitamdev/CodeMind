@@ -61,61 +61,73 @@ export default function SearchPanel({ code, onResultClick }: SearchPanelProps) {
         return matches;
     }, [query, code]);
 
+    const totalResults = results.reduce((sum, m) => sum + m.lines.length, 0);
+
     return (
         <div className="flex flex-col h-full w-full text-[13px]">
-            <div className="px-4 py-2 font-semibold text-[11px] uppercase tracking-wider text-[var(--ide-text-muted)]">
-                Search
+            {/* Header */}
+            <div className="px-4 py-3 font-semibold text-[11px] uppercase tracking-widest text-[var(--ide-text-faint)] border-b border-[var(--ide-border-subtle)]">
+                Tìm kiếm
             </div>
             
-            <div className="px-4 pb-4">
+            {/* Search Input */}
+            <div className="px-3 py-3">
                 <div className="relative">
+                    <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--ide-text-faint)]" />
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Tìm trong dự án..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-full bg-[var(--ide-bg)] border border-[var(--ide-border)] rounded px-2.5 py-1.5 text-[var(--ide-text)] text-[13px] focus:outline-none focus:border-[var(--ide-accent)] placeholder-[var(--ide-text-muted)]"
+                        className="w-full bg-[var(--ide-bg)] border border-[var(--ide-border)] rounded-md pl-8 pr-3 py-2 text-[var(--ide-text)] text-[12.5px] focus:outline-none focus:border-[var(--ide-accent)] focus:ring-1 focus:ring-[var(--ide-accent-glow)] placeholder-[var(--ide-text-faint)] transition-all caret-[var(--ide-accent)]"
                     />
                 </div>
+                {query.trim() && (
+                    <p className="text-[10px] text-[var(--ide-text-faint)] mt-2 px-1">
+                        {totalResults} kết quả trong {results.length} tệp
+                    </p>
+                )}
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            {/* Results */}
+            <div className="flex-1 overflow-y-auto px-1">
                 {query.trim() && results.length === 0 && (
-                    <div className="px-4 text-[var(--ide-text-muted)] text-center mt-4">
-                        No results found.
+                    <div className="flex flex-col items-center justify-center py-12 text-[var(--ide-text-faint)]">
+                        <SearchIcon className="w-8 h-8 opacity-20 mb-2" />
+                        <p className="text-sm">Không tìm thấy kết quả</p>
                     </div>
                 )}
 
                 {results.map(match => (
                     <div key={match.fileId} className="flex flex-col mb-1">
                         <div 
-                            className="flex items-center gap-1.5 px-2 py-1 text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] cursor-pointer select-none"
+                            className="flex items-center gap-2 px-2 py-1.5 text-[var(--ide-text)] hover:bg-[var(--ide-bg-hover)] cursor-pointer select-none rounded-md transition-colors"
                             onClick={() => toggleFile(match.fileId)}
                         >
                             {expandedFiles[match.fileId] ? (
-                                <ChevronDown className="w-3.5 h-3.5 text-[var(--ide-text-muted)]" />
+                                <ChevronDown className="w-3.5 h-3.5 text-[var(--ide-text-faint)]" />
                             ) : (
-                                <ChevronRight className="w-3.5 h-3.5 text-[var(--ide-text-muted)]" />
+                                <ChevronRight className="w-3.5 h-3.5 text-[var(--ide-text-faint)]" />
                             )}
                             <FileText className="w-3.5 h-3.5 text-[var(--ide-text-muted)]" />
                             <span className="font-medium text-[12px]">{match.label}</span>
-                            <span className="ml-auto text-[10px] bg-[var(--ide-bg-active)] px-1.5 rounded-full text-[var(--ide-text-muted)]">
+                            <span className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-[var(--ide-accent-subtle)] text-[var(--ide-accent)]">
                                 {match.lines.length}
                             </span>
                         </div>
 
                         {expandedFiles[match.fileId] && (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col gap-0.5">
                                 {match.lines.map((lineMatch, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex items-start gap-2 pl-8 pr-2 py-1 text-[var(--ide-text-muted)] hover:bg-[var(--ide-bg-hover)] hover:text-[var(--ide-text)] cursor-pointer select-none"
+                                        className="flex items-start gap-2 pl-9 pr-2 py-1.5 text-[var(--ide-text-muted)] hover:bg-[var(--ide-bg-hover)] hover:text-[var(--ide-text)] cursor-pointer select-none rounded-md transition-colors"
                                         onClick={() => onResultClick(match.fileId, lineMatch.line, lineMatch.col)}
                                     >
-                                        <span className="text-[10px] opacity-50 shrink-0 w-6 text-right">
+                                        <span className="text-[10px] text-[var(--ide-text-faint)] shrink-0 w-5 text-right font-mono tabular-nums mt-0.5">
                                             {lineMatch.line}
                                         </span>
-                                        <span className="truncate font-mono text-[12px]">
+                                        <span className="truncate font-mono text-[11.5px] leading-relaxed">
                                             {lineMatch.text}
                                         </span>
                                     </div>

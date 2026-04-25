@@ -1,138 +1,118 @@
-/* ========================
-   VSCode-Style IDE Layout
-   ======================== */
+/* ============================================
+   CodeMind IDE — Premium Design System
+   ============================================ */
 
-/* --- CSS Variables --- */
+/* --- Design Tokens (Dark) --- */
 .ide-root {
-    --ide-bg: #0a0a0a;
-    --ide-bg-alt: #111111;
-    --ide-bg-active: #222222;
-    --ide-bg-hover: #1a1a1a;
-    --ide-border: #262626;
-    --ide-text: #e5e5e5;
-    --ide-text-muted: #a3a3a3;
-    --ide-accent: #3b82f6;
-    --ide-accent-hover: #60a5fa;
-    --ide-titlebar: #0a0a0a;
-    --ide-activitybar: #0a0a0a;
-    --ide-statusbar: #0a0a0a;
-    --ide-statusbar-text: #e5e5e5;
-    --ide-tab-active: #0a0a0a;
-    --ide-tab-inactive: #111111;
-    --ide-scrollbar: #333333;
-    --ide-scrollbar-hover: #4d4d4d;
+    --ide-bg: #0c0c0c;
+    --ide-bg-alt: #111113;
+    --ide-bg-active: #1a1a1f;
+    --ide-bg-hover: #161619;
+    --ide-bg-elevated: #18181c;
+    --ide-border: #222228;
+    --ide-border-subtle: #1a1a1f;
+    --ide-text: #e4e4e8;
+    --ide-text-muted: #6e6e7a;
+    --ide-text-faint: #44444f;
+    --ide-accent: #6366f1;
+    --ide-accent-hover: #818cf8;
+    --ide-accent-glow: rgba(99, 102, 241, 0.15);
+    --ide-accent-subtle: rgba(99, 102, 241, 0.08);
+    --ide-success: #34d399;
+    --ide-warning: #fbbf24;
+    --ide-error: #f87171;
+    --ide-titlebar: #0c0c0c;
+    --ide-activitybar: #0c0c0c;
+    --ide-statusbar: #6366f1;
+    --ide-statusbar-text: #fff;
+    --ide-tab-active: #0c0c0c;
+    --ide-tab-inactive: #111113;
+    --ide-scrollbar: #2a2a32;
+    --ide-scrollbar-hover: #3a3a44;
+    --ide-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 8px 32px rgba(0,0,0,.4);
+    --ide-radius: 8px;
+    --ide-transition: 150ms cubic-bezier(.4,0,.2,1);
     font-family:
-        "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+/* --- Design Tokens (Light) --- */
 .ide-root.light {
-    --ide-bg: #ffffff;
-    --ide-bg-alt: #f9fafb;
-    --ide-bg-active: #f3f4f6;
-    --ide-bg-hover: #f3f4f6;
-    --ide-border: #e5e7eb;
-    --ide-text: #111827;
-    --ide-text-muted: #6b7280;
-    --ide-accent: #2563eb;
-    --ide-titlebar: #ffffff;
-    --ide-activitybar: #f9fafb;
-    --ide-statusbar: #ffffff;
-    --ide-statusbar-text: #111827;
-    --ide-tab-active: #ffffff;
-    --ide-tab-inactive: #f9fafb;
-    --ide-scrollbar: #d1d5db;
-    --ide-scrollbar-hover: #9ca3af;
+    --ide-bg: #fafafa;
+    --ide-bg-alt: #f4f4f5;
+    --ide-bg-active: #ebebef;
+    --ide-bg-hover: #ededf0;
+    --ide-bg-elevated: #ffffff;
+    --ide-border: #e0e0e5;
+    --ide-border-subtle: #eaeaef;
+    --ide-text: #18181b;
+    --ide-text-muted: #71717a;
+    --ide-text-faint: #a1a1aa;
+    --ide-accent: #4f46e5;
+    --ide-accent-hover: #6366f1;
+    --ide-accent-glow: rgba(79, 70, 229, 0.10);
+    --ide-accent-subtle: rgba(79, 70, 229, 0.05);
+    --ide-success: #10b981;
+    --ide-warning: #f59e0b;
+    --ide-error: #ef4444;
+    --ide-titlebar: #fafafa;
+    --ide-activitybar: #f4f4f5;
+    --ide-statusbar: #4f46e5;
+    --ide-statusbar-text: #fff;
+    --ide-tab-active: #fafafa;
+    --ide-tab-inactive: #f4f4f5;
+    --ide-scrollbar: #d4d4d8;
+    --ide-scrollbar-hover: #a1a1aa;
+    --ide-shadow: 0 0 0 1px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
 }
 
-/* --- Grid Layout --- */
+/* ============================================
+   Grid Layout
+   ============================================ */
 .ide-grid {
     display: grid;
     grid-template-areas:
         "titlebar   titlebar   titlebar   titlebar"
         "activity   sidebar    editor     agent"
         "statusbar  statusbar  statusbar  statusbar";
-    grid-template-rows: 38px 1fr 24px;
+    grid-template-rows: 40px 1fr 26px;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
+    background: var(--ide-bg);
 }
 
-/* --- Custom Grid Resizing Handles --- */
-.ide-sidebar {
-    position: relative;
-    grid-area: sidebar;
-    background: var(--ide-bg-alt);
-    border-right: 1px solid var(--ide-border);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.ide-agent {
-    position: relative;
-    grid-area: agent;
-    border-left: 1px solid var(--ide-border);
-}
-
-.ide-grid-resize-handle {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    background: transparent;
-    cursor: col-resize;
-    z-index: 50;
-    transition: background 0.2s ease;
-}
-
-.ide-grid-resize-handle:hover,
-.ide-grid-resize-handle.dragging {
-    background: var(--ide-accent);
-}
-
-/* Sidebar handle stays on the right edge */
-.ide-grid-resize-handle.sidebar-handle {
-    right: -3px;
-}
-
-/* Agent handle stays on the left edge */
-.ide-grid-resize-handle.agent-handle {
-    left: -3px;
-}
-
-.ide-grid .ide-titlebar {
-    grid-area: titlebar;
-}
-.ide-grid .ide-activitybar {
-    grid-area: activity;
-}
-.ide-grid .ide-editor {
-    grid-area: editor;
-}
-.ide-grid .ide-statusbar {
-    grid-area: statusbar;
-}
-
-/* --- Titlebar --- */
+/* ============================================
+   Title Bar
+   ============================================ */
 .ide-titlebar {
+    grid-area: titlebar;
     background: var(--ide-titlebar);
     border-bottom: 1px solid var(--ide-border);
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 14px;
     user-select: none;
     -webkit-app-region: drag;
+    gap: 8px;
+    z-index: 10;
 }
 
-/* --- Activity Bar --- */
+/* ============================================
+   Activity Bar
+   ============================================ */
 .ide-activitybar {
+    grid-area: activity;
     background: var(--ide-activitybar);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 4px;
+    padding-top: 2px;
     border-right: 1px solid var(--ide-border);
+    z-index: 5;
 }
 
 .ide-activitybar button {
@@ -143,11 +123,14 @@
     justify-content: center;
     color: var(--ide-text-muted);
     position: relative;
-    transition: color 0.15s;
+    transition: color var(--ide-transition), background var(--ide-transition);
+    border-radius: 6px;
+    margin: 2px 0;
 }
 
 .ide-activitybar button:hover {
     color: var(--ide-text);
+    background: var(--ide-bg-hover);
 }
 
 .ide-activitybar button.active {
@@ -162,35 +145,77 @@
     bottom: 25%;
     width: 2px;
     background: var(--ide-accent);
-    border-radius: 0 1px 1px 0;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px var(--ide-accent-glow);
 }
 
-/* --- Status Bar --- */
+/* ============================================
+   Sidebar Panel
+   ============================================ */
+.ide-sidebar {
+    position: relative;
+    grid-area: sidebar;
+    background: var(--ide-bg-alt);
+    border-right: 1px solid var(--ide-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: ide-fade-in 0.15s ease-out;
+}
+
+/* ============================================
+   Editor Area
+   ============================================ */
+.ide-editor {
+    grid-area: editor;
+    min-width: 0;
+}
+
+/* ============================================
+   Agent Panel
+   ============================================ */
+.ide-agent {
+    position: relative;
+    grid-area: agent;
+    border-left: 1px solid var(--ide-border);
+    animation: ide-slide-in-right 0.2s ease-out;
+    background: var(--ide-bg);
+}
+
+/* ============================================
+   Status Bar — Branded accent background
+   ============================================ */
 .ide-statusbar {
+    grid-area: statusbar;
     background: var(--ide-statusbar);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 10px;
     font-size: 12px;
     color: var(--ide-statusbar-text);
     user-select: none;
+    z-index: 10;
 }
 
 .ide-statusbar .status-item {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 0 6px;
+    gap: 5px;
+    padding: 0 8px;
     height: 100%;
     cursor: default;
+    transition: background var(--ide-transition);
+    border-radius: 3px;
 }
 
 .ide-statusbar .status-item:hover {
     background: rgba(255, 255, 255, 0.12);
 }
 
-/* --- Tab Bar --- */
+/* ============================================
+   Tab Bar
+   ============================================ */
 .ide-tabbar {
     display: flex;
     background: var(--ide-bg-alt);
@@ -206,23 +231,22 @@
 .ide-tab {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 12px;
-    height: 35px;
+    gap: 8px;
+    padding: 0 16px;
+    height: 36px;
     font-size: 13px;
     color: var(--ide-text-muted);
     background: var(--ide-tab-inactive);
-    border-right: 1px solid var(--ide-border);
+    border-right: 1px solid var(--ide-border-subtle);
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
-    transition:
-        background 0.1s,
-        color 0.1s;
+    transition: all var(--ide-transition);
     position: relative;
 }
 
 .ide-tab:hover {
+    color: var(--ide-text);
     background: var(--ide-bg-hover);
 }
 
@@ -234,36 +258,39 @@
 .ide-tab.active::after {
     content: "";
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: var(--ide-tab-active);
+    height: 2px;
+    background: var(--ide-accent);
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0 2px 8px var(--ide-accent-glow);
 }
 
 .ide-tab .tab-close {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px;
+    border-radius: 4px;
     opacity: 0;
-    transition:
-        opacity 0.1s,
-        background 0.1s;
+    transition: all var(--ide-transition);
 }
 
 .ide-tab:hover .tab-close,
 .ide-tab.active .tab-close {
-    opacity: 1;
+    opacity: 0.6;
 }
 
 .ide-tab .tab-close:hover {
-    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- Bottom Panel --- */
+/* ============================================
+   Bottom Panel (Terminal / Preview / Problems)
+   ============================================ */
 .ide-bottom-panel {
     border-top: 1px solid var(--ide-border);
     display: flex;
@@ -278,22 +305,23 @@
     background: var(--ide-bg-alt);
     border-bottom: 1px solid var(--ide-border);
     padding: 0 8px;
-    height: 35px;
+    height: 36px;
     flex-shrink: 0;
 }
 
 .ide-bottom-tab {
-    padding: 0 12px;
+    padding: 0 14px;
     height: 100%;
     display: flex;
     align-items: center;
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
+    font-weight: 500;
     color: var(--ide-text-muted);
     cursor: pointer;
-    border-bottom: 1px solid transparent;
-    transition: color 0.1s;
+    border-bottom: 2px solid transparent;
+    transition: all var(--ide-transition);
 }
 
 .ide-bottom-tab:hover {
@@ -305,24 +333,74 @@
     border-bottom-color: var(--ide-accent);
 }
 
-/* --- Resize Handle --- */
+/* ============================================
+   Resize Handles
+   ============================================ */
 .ide-resize-handle {
     height: 4px;
     cursor: ns-resize;
     background: transparent;
-    transition: background 0.2s;
+    transition: background var(--ide-transition);
     flex-shrink: 0;
+    position: relative;
+}
+
+.ide-resize-handle::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--ide-border);
+    opacity: 0;
+    transition: opacity var(--ide-transition);
+}
+
+.ide-resize-handle:hover::after {
+    opacity: 1;
 }
 
 .ide-resize-handle:hover,
 .ide-resize-handle.dragging {
     background: var(--ide-accent);
+    box-shadow: 0 0 8px var(--ide-accent-glow);
 }
 
-/* --- Scrollbar --- */
+/* Column resize handles (sidebar / agent) */
+.ide-grid-resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 50;
+    transition: background var(--ide-transition);
+}
+
+.ide-grid-resize-handle:hover,
+.ide-grid-resize-handle.dragging {
+    background: var(--ide-accent);
+    box-shadow: 0 0 8px var(--ide-accent-glow);
+}
+
+.ide-grid-resize-handle.sidebar-handle {
+    right: -2px;
+}
+
+.ide-grid-resize-handle.agent-handle {
+    left: -2px;
+}
+
+/* ============================================
+   Scrollbars
+   ============================================ */
 .ide-root ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 
 .ide-root ::-webkit-scrollbar-track {
@@ -331,17 +409,26 @@
 
 .ide-root ::-webkit-scrollbar-thumb {
     background: var(--ide-scrollbar);
-    border-radius: 5px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
 }
 
 .ide-root ::-webkit-scrollbar-thumb:hover {
     background: var(--ide-scrollbar-hover);
+    background-clip: padding-box;
 }
 
-/* --- Animations --- */
+.ide-root ::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
 @keyframes ide-slide-in-right {
     from {
-        transform: translateX(100%);
+        transform: translateX(16px);
         opacity: 0;
     }
     to {
@@ -350,7 +437,24 @@
     }
 }
 
-.ide-agent {
-    animation: ide-slide-in-right 0.2s ease-out;
-    border-left: 1px solid var(--ide-border);
+@keyframes ide-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes ide-pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 var(--ide-accent-glow); }
+    50%      { box-shadow: 0 0 12px 2px var(--ide-accent-glow); }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.ide-glass {
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+
+.ide-glow-border {
+    box-shadow: inset 0 0 0 1px var(--ide-accent-glow);
 }
