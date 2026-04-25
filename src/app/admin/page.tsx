@@ -107,7 +107,7 @@ interface DashboardData {
 
 function LiveIndicator() {
     return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/15 border border-emerald-500/30 rounded-full text-xs font-medium text-emerald-400">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-widest">
             <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -180,27 +180,27 @@ function StatCard({
     const c = colorMap[color] || colorMap.blue;
 
     return (
-        <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/60 rounded-xl p-5 hover:border-slate-600/80 transition-all duration-300 group backdrop-blur-sm">
+        <div className="bg-[#111] border border-neutral-800 p-5 hover:border-neutral-600 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-3">
                 <div
-                    className={`p-2.5 ${c.bg} ${c.hoverBg} rounded-lg transition-colors duration-300`}
+                    className={`p-2.5 ${c.bg} ${c.hoverBg} transition-colors duration-300`}
                 >
                     <Icon className={`w-5 h-5 ${c.text}`} />
                 </div>
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
+                <span className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-widest">
                     {label}
                 </span>
             </div>
             <div className="space-y-1">
-                <p className="text-3xl font-bold text-slate-100 tracking-tight">
+                <p className="text-3xl font-mono font-bold text-white tracking-tight">
                     {loading ? (
-                        <span className="inline-block w-16 h-8 bg-slate-700/50 rounded animate-pulse" />
+                        <span className="inline-block w-16 h-8 bg-neutral-800 animate-pulse" />
                     ) : (
                         value
                     )}
                 </p>
                 {subtitle && (
-                    <p className="text-xs text-slate-500">{subtitle}</p>
+                    <p className="text-xs font-mono text-neutral-500">{subtitle}</p>
                 )}
             </div>
         </div>

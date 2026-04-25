@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2 } from "lucide-react";
+import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2, Shield, LayoutDashboard } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -96,10 +96,27 @@ export default function Header() {
                         <div className="px-3 py-2 border-b border-border mb-1">
                           <p className="text-sm font-bold text-foreground truncate flex items-center gap-1">
                             {displayName}
-                            {isAdmin && <CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />}
+                            {isAdmin && <Shield className="h-3.5 w-3.5 text-amber-500" />}
                           </p>
                           <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                          {isAdmin && (
+                            <span className="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 bg-amber-500/10 border border-amber-500/30 text-[10px] font-mono font-bold text-amber-500 uppercase tracking-wider">
+                              <Shield className="h-2.5 w-2.5" />
+                              Admin
+                            </span>
+                          )}
                         </div>
+
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors border-b border-border mb-1"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Admin Dashboard
+                          </Link>
+                        )}
 
                         <Link
                           href={profileHref}
