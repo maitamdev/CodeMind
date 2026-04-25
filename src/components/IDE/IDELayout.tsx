@@ -201,6 +201,23 @@ export default function IDELayout({
         }
     };
 
+    // ─── Search & Replace handler ───
+    const handleReplaceInFile = useCallback((fileId: string, search: string, replace: string, all: boolean) => {
+        const node = nodes.find(n => n.id === fileId);
+        if (!node || !node.content) return;
+
+        let newContent: string;
+        if (all) {
+            newContent = node.content.split(search).join(replace);
+        } else {
+            const idx = node.content.indexOf(search);
+            if (idx === -1) return;
+            newContent = node.content.substring(0, idx) + replace + node.content.substring(idx + search.length);
+        }
+
+        updateFileContent(fileId, newContent);
+    }, [nodes, updateFileContent]);
+
     // --- Custom Resizing Logic ---
     const [sidebarWidth, setSidebarWidth] = useState(250);
     const [agentWidth, setAgentWidth] = useState(400);
@@ -296,11 +313,12 @@ export default function IDELayout({
                         )}
                         {activeView === "search" && (
                             <SearchPanel
-                                code={code as any}
+                                nodes={nodes}
                                 onResultClick={(fileId, line, column) => {
-                                    setActiveFileId(fileId);
+                                    openFile(fileId);
                                     setCursorPosition({ line, column });
                                 }}
+                                onReplaceInFile={handleReplaceInFile}
                             />
                         )}
                         {/* Custom Resize Handle for Sidebar */}
@@ -365,6 +383,8 @@ export default function IDELayout({
                             height={bottomHeight}
                             onHeightChange={setBottomHeight}
                             theme={theme}
+                            activeFile={activeFile}
+                            onAddLog={addConsoleLog}
                         />
                     )}
                 </div>

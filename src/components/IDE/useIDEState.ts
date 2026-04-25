@@ -67,29 +67,45 @@ const DEFAULT_NODES: FileNode[] = [
 
 const STORAGE_KEY_PREFIX = "ide_playground_v2_";
 
+/** Helper to safely read from localStorage */
+function readStorage<T>(key: string, fallback: T): T {
+    if (typeof window === "undefined") return fallback;
+    try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+/** Helper to safely write to localStorage */
+function writeStorage(key: string, value: unknown): void {
+    if (typeof window === "undefined") return;
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+        /* storage full — silently ignore */
+    }
+}
+
 export function useIDEState(
     lessonId: string,
     initialFileId: string = "1",
 ) {
-    // Filesystem state
-    const [nodes, setNodes] = useState<FileNode[]>(() => {
-        if (typeof window === "undefined") return DEFAULT_NODES;
-        try {
-            const saved = localStorage.getItem(
-                `${STORAGE_KEY_PREFIX}fs_${lessonId || "scratch"}`,
-            );
-            return saved ? JSON.parse(saved) : DEFAULT_NODES;
-        } catch {
-            return DEFAULT_NODES;
-        }
-    });
+    const storageSlug = lessonId || "scratch";
 
-    // --- VS Code-style open tabs ---
-    const [openTabIds, setOpenTabIds] = useState<string[]>(() => {
-        // Default: open the first file
-        return [initialFileId];
-    });
-    const [activeFileId, setActiveFileIdRaw] = useState<string>(initialFileId);
+    // ────────────── Filesystem state ──────────────
+    const [nodes, setNodes] = useState<FileNode[]>(() =>
+        readStorage(`${STORAGE_KEY_PREFIX}fs_${storageSlug}`, DEFAULT_NODES),
+    );
+
+    // ────────────── Open tabs & active file (PERSISTED) ──────────────
+    const [openTabIds, setOpenTabIds] = useState<string[]>(() =>
+        readStorage(`${STORAGE_KEY_PREFIX}tabs_${storageSlug}`, [initialFileId]),
+    );
+    const [activeFileId, setActiveFileIdRaw] = useState<string>(() =>
+        readStorage(`${STORAGE_KEY_PREFIX}activeFile_${storageSlug}`, initialFileId),
+    );
 
     // Open a file: adds it to open tabs if not already there, and makes it active
     const openFile = useCallback((id: string) => {
@@ -149,12 +165,18 @@ export function useIDEState(
 
     const activeFile = nodes.find(n => n.id === activeFileId);
 
-    // Save to local storage whenever nodes change
+    // ────────────── Persist ALL state to localStorage ──────────────
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            localStorage.setItem(`${STORAGE_KEY_PREFIX}fs_${lessonId || "scratch"}`, JSON.stringify(nodes));
-        }
-    }, [nodes, lessonId]);
+        writeStorage(`${STORAGE_KEY_PREFIX}fs_${storageSlug}`, nodes);
+    }, [nodes, storageSlug]);
+
+    useEffect(() => {
+        writeStorage(`${STORAGE_KEY_PREFIX}tabs_${storageSlug}`, openTabIds);
+    }, [openTabIds, storageSlug]);
+
+    useEffect(() => {
+        writeStorage(`${STORAGE_KEY_PREFIX}activeFile_${storageSlug}`, activeFileId);
+    }, [activeFileId, storageSlug]);
 
     // Theme
     const [theme, setTheme] = useState<"light" | "dark">(() => {
