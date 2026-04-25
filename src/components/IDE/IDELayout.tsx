@@ -44,6 +44,7 @@ export default function IDELayout({
         code,
         activeFileId,
         activeFile,
+        openTabIds,
         theme,
         panels,
         activeView,
@@ -54,6 +55,8 @@ export default function IDELayout({
         setClearLogsOnUpdate,
         cursorPosition,
         setActiveFileId,
+        openFile,
+        closeTab,
         updateFileContent,
         updateCode,
         addFile,
@@ -313,23 +316,41 @@ export default function IDELayout({
                     {/* Tab Bar */}
                     <TabBar 
                         activeFileId={activeFileId} 
+                        openTabIds={openTabIds}
                         nodes={nodes} 
-                        onFileSelect={setActiveFileId} 
-                        onCloseFile={(id) => { /* handle close */ }}
+                        onFileSelect={openFile} 
+                        onCloseTab={closeTab}
                     />
 
-                    {/* Editor */}
-                    <EditorPanel
-                        code={activeFile?.content || ""}
-                        language={activeFile?.language || "javascript"}
-                        theme={theme}
-                        onChange={updateCode}
-                        onCursorChange={(line, col) =>
-                            setCursorPosition({ line, column: col })
-                        }
-                        onSave={handleManualSave}
-                        editorRef={editorRef}
-                    />
+                    {/* Editor or Welcome */}
+                    {activeFile ? (
+                        <EditorPanel
+                            code={activeFile.content || ""}
+                            language={activeFile.language || "javascript"}
+                            theme={theme}
+                            onChange={updateCode}
+                            onCursorChange={(line, col) =>
+                                setCursorPosition({ line, column: col })
+                            }
+                            onSave={handleManualSave}
+                            editorRef={editorRef}
+                        />
+                    ) : (
+                        <div className="flex-1 flex items-center justify-center bg-[var(--ide-bg)]">
+                            <div className="text-center space-y-4 select-none">
+                                <div className="text-6xl opacity-10">⌨️</div>
+                                <p className="text-[var(--ide-text-faint)] text-sm">
+                                    Mở file từ Explorer hoặc tạo file mới để bắt đầu
+                                </p>
+                                <div className="flex gap-3 justify-center text-[11px] text-[var(--ide-text-faint)]">
+                                    <kbd className="px-2 py-1 border border-[var(--ide-border)] bg-[var(--ide-bg-alt)]">Ctrl+S</kbd>
+                                    <span className="opacity-50">Lưu</span>
+                                    <kbd className="px-2 py-1 border border-[var(--ide-border)] bg-[var(--ide-bg-alt)]">Ctrl+N</kbd>
+                                    <span className="opacity-50">Tạo mới</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Bottom Panel */}
                     {panels.bottom && (

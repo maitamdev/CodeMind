@@ -84,15 +84,59 @@ export function useIDEState(
         }
     });
 
-    const [activeFileId, setActiveFileId] = useState<string>(initialFileId);
+    // --- VS Code-style open tabs ---
+    const [openTabIds, setOpenTabIds] = useState<string[]>(() => {
+        // Default: open the first file
+        return [initialFileId];
+    });
+    const [activeFileId, setActiveFileIdRaw] = useState<string>(initialFileId);
+
+    // Open a file: adds it to open tabs if not already there, and makes it active
+    const openFile = useCallback((id: string) => {
+        setOpenTabIds(prev => prev.includes(id) ? prev : [...prev, id]);
+        setActiveFileIdRaw(id);
+    }, []);
+
+    // Close a tab: removes from open tabs. Does NOT delete the file.
+    const closeTab = useCallback((id: string) => {
+        setOpenTabIds(prev => {
+            const newTabs = prev.filter(tid => tid !== id);
+            // If we're closing the active tab, switch to an adjacent one
+            if (id === activeFileId) {
+                const closedIdx = prev.indexOf(id);
+                if (newTabs.length > 0) {
+                    // Prefer the tab to the left, else right
+                    const nextIdx = Math.min(closedIdx, newTabs.length - 1);
+                    setActiveFileIdRaw(newTabs[nextIdx]);
+                } else {
+                    setActiveFileIdRaw("");
+                }
+            }
+            return newTabs;
+        });
+    }, [activeFileId]);
+
+    // Alias for setting active file (also opens the tab)
+    const setActiveFileId = openFile;
+
     const [isCodeLoaded, setIsCodeLoaded] = useState(false);
 
-    // Sync active tab if file is deleted
+    // Sync: if a file is deleted, remove it from open tabs
     useEffect(() => {
-        if (!nodes.find(n => n.id === activeFileId && n.type === "file")) {
-            const firstFile = nodes.find(n => n.type === "file");
-            if (firstFile) setActiveFileId(firstFile.id);
-        }
+        const fileIds = new Set(nodes.filter(n => n.type === "file").map(n => n.id));
+        setOpenTabIds(prev => {
+            const filtered = prev.filter(id => fileIds.has(id));
+            if (filtered.length !== prev.length) {
+                // If active file was deleted, switch
+                if (!fileIds.has(activeFileId) && filtered.length > 0) {
+                    setActiveFileIdRaw(filtered[0]);
+                } else if (filtered.length === 0) {
+                    setActiveFileIdRaw("");
+                }
+                return filtered;
+            }
+            return prev;
+        });
     }, [nodes, activeFileId]);
 
     // Code state for compatibility with legacy components
@@ -162,8 +206,9 @@ export function useIDEState(
     const addFile = useCallback((name: string, parentId: string | null = null) => {
         const ext = name.split('.').pop() || '';
         const langMap: Record<string, LanguageType> = {
-            html: 'html', css: 'css', js: 'javascript', cpp: 'cpp', py: 'python', 
-            json: 'json', md: 'markdown', ts: 'typescript'
+            html: 'html', css: 'css', js: 'javascript', jsx: 'javascript',
+            cpp: 'cpp', c: 'cpp', py: 'python',
+            json: 'json', md: 'markdown', ts: 'typescript', tsx: 'typescript'
         };
         const newNode: FileNode = {
             id: Math.random().toString(36).substr(2, 9),
@@ -174,8 +219,9 @@ export function useIDEState(
             language: langMap[ext] || 'javascript'
         };
         setNodes(prev => [...prev, newNode]);
-        setActiveFileId(newNode.id);
-    }, []);
+        // Auto-open the new file in a tab
+        openFile(newNode.id);
+    }, [openFile]);
 
     const addFolder = useCallback((name: string, parentId: string | null = null) => {
         const newNode: FileNode = {
@@ -207,7 +253,13 @@ export function useIDEState(
     }, []);
 
     const renameNode = useCallback((id: string, newName: string) => {
-        setNodes(prev => prev.map(n => n.id === id ? { ...n, name: newName } : n));
+        const ext = newName.split('.').pop() || '';
+        const langMap: Record<string, LanguageType> = {
+            html: 'html', css: 'css', js: 'javascript', jsx: 'javascript',
+            cpp: 'cpp', c: 'cpp', py: 'python',
+            json: 'json', md: 'markdown', ts: 'typescript', tsx: 'typescript'
+        };
+        setNodes(prev => prev.map(n => n.id === id ? { ...n, name: newName, language: langMap[ext] || n.language } : n));
     }, []);
 
     // --- Compatibility Methods ---
@@ -232,6 +284,8 @@ export function useIDEState(
 
     const resetCode = useCallback(() => {
         setNodes(DEFAULT_NODES);
+        setOpenTabIds(["1"]);
+        setActiveFileIdRaw("1");
         setConsoleLogs([]);
     }, []);
 
@@ -240,6 +294,7 @@ export function useIDEState(
         code,
         activeFileId,
         activeFile,
+        openTabIds,
         theme,
         panels,
         activeView,
@@ -250,6 +305,8 @@ export function useIDEState(
         setClearLogsOnUpdate: setClearLogsOnUpdateWithStorage,
         cursorPosition,
         setActiveFileId,
+        openFile,
+        closeTab,
         updateFileContent,
         addFile,
         addFolder,
@@ -264,6 +321,6 @@ export function useIDEState(
         addConsoleLog: (log: ConsoleLog) => setConsoleLogs(prev => [...prev, log]),
         clearConsoleLogs: () => setConsoleLogs([]),
         resetCode,
-        isCodeLoaded: true, // simplified for now
+        isCodeLoaded: true,
     };
 }

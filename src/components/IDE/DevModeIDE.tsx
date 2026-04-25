@@ -15,6 +15,7 @@ import {
     type LanguageType,
     type BottomTab,
     type ConsoleLog,
+    type FileNode,
 } from "./useIDEState";
 import { useAutoSave } from "./useAutoSave";
 import EditorPanel, { type MonacoEditor } from "./EditorPanel";
@@ -37,10 +38,13 @@ export default function DevModeIDE({
         code,
         activeFileId,
         activeFile,
+        openTabIds,
         theme,
         bottomTab,
         consoleLogs,
         setActiveFileId,
+        openFile,
+        closeTab,
         updateCode,
         setBottomTab,
         addConsoleLog,
@@ -90,10 +94,10 @@ export default function DevModeIDE({
             {/* Top Tab Bar */}
             <div className="flex items-center justify-between bg-[#25252b] border-b border-[#31313a] pl-2 pr-4 h-10 select-none">
                 <div className="flex items-center h-full">
-                    {nodes.filter(n => n.type === "file").map((file) => (
+                    {openTabIds.map(id => nodes.find(n => n.id === id)).filter((n): n is FileNode => n != null && n.type === "file").map((file) => (
                         <button
                             key={file.id}
-                            onClick={() => setActiveFileId(file.id)}
+                            onClick={() => openFile(file.id)}
                             className={`h-full px-5 text-[13px] font-medium transition-colors relative ${
                                 activeFileId === file.id
                                     ? "text-white"
