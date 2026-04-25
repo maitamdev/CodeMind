@@ -3,15 +3,18 @@
 import { Sun, Moon, ArrowLeft, GitCommit, Zap, Command } from "lucide-react";
 import type { LanguageType } from "./useIDEState";
 
-const FILE_NAMES: Record<LanguageType, string> = {
+const FILE_NAMES: Record<string, string> = {
     html: "index.html",
     css: "style.css",
     javascript: "app.js",
     cpp: "main.cpp",
+    python: "main.py",
+    typescript: "index.ts",
 };
 
 interface TitleBarProps {
-    activeTab: LanguageType;
+    activeTab: string; // language
+    fileName: string;
     theme: "light" | "dark";
     onToggleTheme: () => void;
     autoSaveStatus: string;
@@ -22,6 +25,7 @@ interface TitleBarProps {
 
 export default function TitleBar({
     activeTab,
+    fileName,
     theme,
     onToggleTheme,
     autoSaveStatus,
@@ -69,7 +73,7 @@ export default function TitleBar({
                 <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-indigo-400" />
                     <span className="text-[12px] font-mono text-[var(--ide-text)] font-medium">
-                        {FILE_NAMES[activeTab]}
+                        {fileName || "Untitled"}
                     </span>
                 </div>
                 <div className="w-px h-3 bg-[var(--ide-border)]" />

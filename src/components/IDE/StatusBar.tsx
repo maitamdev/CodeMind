@@ -12,11 +12,15 @@ interface StatusBarProps {
     autoSaveStatus: string;
 }
 
-const LANG_LABELS: Record<LanguageType, string> = {
+const LANG_LABELS: Record<string, string> = {
     html: "HTML5",
     css: "CSS3",
     javascript: "ES6+",
     cpp: "C++17",
+    python: "Python 3",
+    json: "JSON",
+    markdown: "Markdown",
+    typescript: "TypeScript",
 };
 
 export default function StatusBar({
@@ -37,7 +41,7 @@ export default function StatusBar({
                 </div>
                 <div className="status-item">
                     <span className="opacity-60">Source:</span>
-                    <span className="font-semibold">{LANG_LABELS[language]}</span>
+                    <span className="font-semibold">{LANG_LABELS[language] || language.toUpperCase()}</span>
                 </div>
                 <div className="status-item font-mono text-[10px]">
                     <span className="opacity-50">Pos</span>

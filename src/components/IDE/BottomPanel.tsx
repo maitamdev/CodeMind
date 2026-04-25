@@ -69,7 +69,7 @@ export default function BottomPanel({
             executionRef.current += 1;
             if (iframeRef.current?.contentWindow) {
                 const previewHTML = generatePreviewHTML(
-                    code,
+                    code as any,
                     executionRef.current,
                 );
                 iframeRef.current.srcdoc = previewHTML;

@@ -33,17 +33,19 @@ export default function DevModeIDE({
     onClose,
 }: DevModeIDEProps) {
     const {
+        nodes,
         code,
-        activeTab,
+        activeFileId,
+        activeFile,
         theme,
         bottomTab,
         consoleLogs,
-        setActiveTab,
+        setActiveFileId,
         updateCode,
         setBottomTab,
         addConsoleLog,
         isCodeLoaded,
-    } = useIDEState(lessonId, initialLanguage);
+    } = useIDEState(lessonId);
 
     const editorRef = useRef<MonacoEditor | null>(null);
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -58,7 +60,7 @@ export default function DevModeIDE({
             executionRef.current += 1;
             if (iframeRef.current?.contentWindow) {
                 const previewHTML = generatePreviewHTML(
-                    code,
+                    code as any,
                     executionRef.current,
                 );
                 iframeRef.current.srcdoc = previewHTML;
@@ -88,22 +90,18 @@ export default function DevModeIDE({
             {/* Top Tab Bar */}
             <div className="flex items-center justify-between bg-[#25252b] border-b border-[#31313a] pl-2 pr-4 h-10 select-none">
                 <div className="flex items-center h-full">
-                    {["html", "css", "javascript"].map((lang) => (
+                    {nodes.filter(n => n.type === "file").map((file) => (
                         <button
-                            key={lang}
-                            onClick={() => setActiveTab(lang as LanguageType)}
+                            key={file.id}
+                            onClick={() => setActiveFileId(file.id)}
                             className={`h-full px-5 text-[13px] font-medium transition-colors relative ${
-                                activeTab === lang
+                                activeFileId === file.id
                                     ? "text-white"
                                     : "text-gray-400 hover:text-gray-200"
                             }`}
                         >
-                            {lang === "html"
-                                ? "HTML"
-                                : lang === "css"
-                                  ? "CSS"
-                                  : "JavaScript"}
-                            {activeTab === lang && (
+                            {file.name}
+                            {activeFileId === file.id && (
                                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-blue-500" />
                             )}
                         </button>
@@ -151,8 +149,8 @@ export default function DevModeIDE({
             {/* Editor Area */}
             <div className="flex-1 min-h-[300px] flex flex-col overflow-hidden bg-[#1e1e24] relative">
                 <EditorPanel
-                    code={code[activeTab]}
-                    language={activeTab}
+                    code={activeFile?.content || ""}
+                    language={activeFile?.language || "javascript"}
                     theme={theme || "dark"}
                     onChange={updateCode}
                     onCursorChange={() => {}}

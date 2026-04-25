@@ -46,7 +46,7 @@ export default function SearchPanel({ code, onResultClick }: SearchPanelProps) {
             const lines = fileCode.split('\n');
             const fileMatches: { line: number; text: string; col: number }[] = [];
 
-            lines.forEach((text, i) => {
+            lines.forEach((text: string, i: number) => {
                 const col = text.toLowerCase().indexOf(lowerQuery);
                 if (col !== -1) {
                     fileMatches.push({ line: i + 1, text: text.trim(), col: col + 1 });

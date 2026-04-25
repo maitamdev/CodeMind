@@ -2,14 +2,18 @@
 
 import { useState, useCallback, useEffect } from "react";
 
-export type LanguageType = "html" | "css" | "javascript" | "cpp";
+export type LanguageType = "html" | "css" | "javascript" | "cpp" | "python" | "json" | "markdown" | "typescript";
 
-export interface CodeState {
-    html: string;
-    css: string;
-    javascript: string;
-    cpp: string;
+export interface FileNode {
+    id: string;
+    name: string;
+    type: "file" | "folder";
+    content?: string;
+    parentId: string | null;
+    language?: LanguageType;
 }
+
+export type CodeState = Record<string, string>;
 
 export interface IDEPanels {
     bottom: boolean;
@@ -26,62 +30,87 @@ export interface ConsoleLog {
     timestamp: number;
 }
 
-const DEFAULT_CODE: CodeState = {
-    html: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello World!</h1>\n</body>\n</html>',
-    css: "body {\n  font-family: sans-serif;\n  margin: 0;\n  padding: 20px;\n  background: #f0f0f0;\n}\n\nh1 {\n  color: #333;\n}",
-    javascript:
-        '// JavaScript\nconsole.log("Hello from JavaScript!");\n\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n\nconsole.log(greet("World"));',
-    cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
-};
+const DEFAULT_NODES: FileNode[] = [
+    {
+        id: "1",
+        name: "index.html",
+        type: "file",
+        content: '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>My Page</title>\n</head>\n<body>\n  <h1>Hello World!</h1>\n</body>\n</html>',
+        parentId: null,
+        language: "html"
+    },
+    {
+        id: "2",
+        name: "style.css",
+        type: "file",
+        content: "body {\n  font-family: sans-serif;\n  margin: 0;\n  padding: 20px;\n  background: #f0f0f0;\n}\n\nh1 {\n  color: #333;\n}",
+        parentId: null,
+        language: "css"
+    },
+    {
+        id: "3",
+        name: "app.js",
+        type: "file",
+        content: '// JavaScript\nconsole.log("Hello from JavaScript!");\n\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n\nconsole.log(greet("World"));',
+        parentId: null,
+        language: "javascript"
+    },
+    {
+        id: "4",
+        name: "main.cpp",
+        type: "file",
+        content: '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, C++!" << endl;\n    return 0;\n}',
+        parentId: null,
+        language: "cpp"
+    }
+];
 
-const STORAGE_KEY_PREFIX = "ide_playground_";
+const STORAGE_KEY_PREFIX = "ide_playground_v2_";
 
 export function useIDEState(
     lessonId: string,
-    initialLanguage: LanguageType = "html",
+    initialFileId: string = "1",
 ) {
-    // Code state
-    const [code, setCode] = useState<CodeState>(() => {
-        if (typeof window === "undefined") return DEFAULT_CODE;
+    // Filesystem state
+    const [nodes, setNodes] = useState<FileNode[]>(() => {
+        if (typeof window === "undefined") return DEFAULT_NODES;
         try {
             const saved = localStorage.getItem(
-                `${STORAGE_KEY_PREFIX}code_${lessonId || "scratch"}`,
+                `${STORAGE_KEY_PREFIX}fs_${lessonId || "scratch"}`,
             );
-            return saved ? JSON.parse(saved) : DEFAULT_CODE;
+            return saved ? JSON.parse(saved) : DEFAULT_NODES;
         } catch {
-            return DEFAULT_CODE;
+            return DEFAULT_NODES;
         }
     });
 
+    const [activeFileId, setActiveFileId] = useState<string>(initialFileId);
     const [isCodeLoaded, setIsCodeLoaded] = useState(false);
 
-    // Fetch code from cloud
+    // Sync active tab if file is deleted
     useEffect(() => {
-        const fetchCloudCode = async () => {
-            try {
-                const res = await fetch(`/api/user/code?lessonId=${lessonId || "scratch"}`);
-                if (res.ok) {
-                    const { data } = await res.json();
-                    if (data) {
-                        setCode({
-                            html: data.html || DEFAULT_CODE.html,
-                            css: data.css || DEFAULT_CODE.css,
-                            javascript: data.javascript || DEFAULT_CODE.javascript,
-                            cpp: data.cpp || DEFAULT_CODE.cpp,
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to fetch cloud code:", error);
-            } finally {
-                setIsCodeLoaded(true);
-            }
-        };
-        fetchCloudCode();
-    }, [lessonId]);
+        if (!nodes.find(n => n.id === activeFileId && n.type === "file")) {
+            const firstFile = nodes.find(n => n.type === "file");
+            if (firstFile) setActiveFileId(firstFile.id);
+        }
+    }, [nodes, activeFileId]);
 
-    // Active tab (file)
-    const [activeTab, setActiveTab] = useState<LanguageType>(initialLanguage);
+    // Code state for compatibility with legacy components
+    const code = nodes.reduce((acc, node) => {
+        if (node.type === "file") {
+            acc[node.id] = node.content || "";
+        }
+        return acc;
+    }, {} as Record<string, string>);
+
+    const activeFile = nodes.find(n => n.id === activeFileId);
+
+    // Save to local storage whenever nodes change
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem(`${STORAGE_KEY_PREFIX}fs_${lessonId || "scratch"}`, JSON.stringify(nodes));
+        }
+    }, [nodes, lessonId]);
 
     // Theme
     const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -95,22 +124,13 @@ export function useIDEState(
     const [panels, setPanels] = useState<IDEPanels>({
         bottom: true,
         agent: true,
-        explorer: false,
+        explorer: true,
     });
 
-    // Active activity bar view
-    const [activeView, setActiveView] = useState<ActivityView>(null);
-
-    // Bottom panel tab
+    const [activeView, setActiveView] = useState<ActivityView>("explorer");
     const [bottomTab, setBottomTab] = useState<BottomTab>("preview");
-
-    // Bottom panel height (for resize)
     const [bottomHeight, setBottomHeight] = useState(220);
-
-    // Console logs
     const [consoleLogs, setConsoleLogs] = useState<ConsoleLog[]>([]);
-
-    // Clear logs on each preview update (don't persist - only show latest run)
     const [clearLogsOnUpdate, setClearLogsOnUpdate] = useState(() => {
         if (typeof window === "undefined") return false;
         try {
@@ -129,29 +149,72 @@ export function useIDEState(
         }
     }, []);
 
-    // Cursor position
     const [cursorPosition, setCursorPosition] = useState({
         line: 1,
         column: 1,
     });
 
-    // Update code for active language
-    const updateCode = useCallback(
-        (value: string) => {
-            setCode((prev) => ({ ...prev, [activeTab]: value }));
-        },
-        [activeTab],
-    );
+    // --- FS Operations ---
+    const updateFileContent = useCallback((id: string, content: string) => {
+        setNodes(prev => prev.map(n => n.id === id ? { ...n, content } : n));
+    }, []);
 
-    // Update code by explicit tab (for AI Agent edit_code tool)
-    const updateCodeByTab = useCallback(
-        (tab: "html" | "css" | "javascript", value: string) => {
-            setCode((prev) => ({ ...prev, [tab]: value }));
-        },
-        [],
-    );
+    const addFile = useCallback((name: string, parentId: string | null = null) => {
+        const ext = name.split('.').pop() || '';
+        const langMap: Record<string, LanguageType> = {
+            html: 'html', css: 'css', js: 'javascript', cpp: 'cpp', py: 'python', 
+            json: 'json', md: 'markdown', ts: 'typescript'
+        };
+        const newNode: FileNode = {
+            id: Math.random().toString(36).substr(2, 9),
+            name,
+            type: "file",
+            content: "",
+            parentId,
+            language: langMap[ext] || 'javascript'
+        };
+        setNodes(prev => [...prev, newNode]);
+        setActiveFileId(newNode.id);
+    }, []);
 
-    // Toggle theme
+    const addFolder = useCallback((name: string, parentId: string | null = null) => {
+        const newNode: FileNode = {
+            id: Math.random().toString(36).substr(2, 9),
+            name,
+            type: "folder",
+            parentId
+        };
+        setNodes(prev => [...prev, newNode]);
+    }, []);
+
+    const deleteNode = useCallback((id: string) => {
+        setNodes(prev => {
+            // Recursive delete for folders
+            const idsToDelete = new Set([id]);
+            const findChildren = (pid: string) => {
+                prev.forEach(n => {
+                    if (n.parentId === pid) {
+                        idsToDelete.add(n.id);
+                        if (n.type === "folder") findChildren(n.id);
+                    }
+                });
+            };
+            const node = prev.find(n => n.id === id);
+            if (node?.type === "folder") findChildren(id);
+            
+            return prev.filter(n => !idsToDelete.has(n.id));
+        });
+    }, []);
+
+    const renameNode = useCallback((id: string, newName: string) => {
+        setNodes(prev => prev.map(n => n.id === id ? { ...n, name: newName } : n));
+    }, []);
+
+    // --- Compatibility Methods ---
+    const updateCode = useCallback((value: string) => {
+        updateFileContent(activeFileId, value);
+    }, [activeFileId, updateFileContent]);
+
     const toggleTheme = useCallback(() => {
         setTheme((prev) => {
             const next = prev === "dark" ? "light" : "dark";
@@ -160,12 +223,6 @@ export function useIDEState(
         });
     }, []);
 
-    // Toggle panel
-    const togglePanel = useCallback((panel: keyof IDEPanels) => {
-        setPanels((prev) => ({ ...prev, [panel]: !prev[panel] }));
-    }, []);
-
-    // Toggle activity bar view
     const toggleActivityView = useCallback((view: ActivityView) => {
         setActiveView((prev) => (prev === view ? null : view));
         if (view === "ai") {
@@ -173,24 +230,16 @@ export function useIDEState(
         }
     }, []);
 
-    // Add console log
-    const addConsoleLog = useCallback((log: ConsoleLog) => {
-        setConsoleLogs((prev) => [...prev, log]);
-    }, []);
-
-    const clearConsoleLogs = useCallback(() => {
-        setConsoleLogs([]);
-    }, []);
-
-    // Reset code
     const resetCode = useCallback(() => {
-        setCode(DEFAULT_CODE);
+        setNodes(DEFAULT_NODES);
         setConsoleLogs([]);
     }, []);
 
     return {
+        nodes,
         code,
-        activeTab,
+        activeFileId,
+        activeFile,
         theme,
         panels,
         activeView,
@@ -200,19 +249,21 @@ export function useIDEState(
         clearLogsOnUpdate,
         setClearLogsOnUpdate: setClearLogsOnUpdateWithStorage,
         cursorPosition,
-        setActiveTab,
+        setActiveFileId,
+        updateFileContent,
+        addFile,
+        addFolder,
+        deleteNode,
+        renameNode,
         updateCode,
-        updateCodeByTab,
         toggleTheme,
-        togglePanel,
         toggleActivityView,
         setBottomTab,
         setBottomHeight,
         setCursorPosition,
-        addConsoleLog,
-        clearConsoleLogs,
+        addConsoleLog: (log: ConsoleLog) => setConsoleLogs(prev => [...prev, log]),
+        clearConsoleLogs: () => setConsoleLogs([]),
         resetCode,
-        setCode,
-        isCodeLoaded,
+        isCodeLoaded: true, // simplified for now
     };
 }

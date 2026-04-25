@@ -20,11 +20,15 @@ interface EditorPanelProps {
     editorRef: React.MutableRefObject<MonacoEditor | null>;
 }
 
-const MONACO_LANG_MAP: Record<LanguageType, string> = {
+const MONACO_LANG_MAP: Record<string, string> = {
     html: "html",
     css: "css",
     javascript: "javascript",
     cpp: "cpp",
+    python: "python",
+    json: "json",
+    markdown: "markdown",
+    typescript: "typescript",
 };
 
 export default function EditorPanel({

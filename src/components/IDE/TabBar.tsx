@@ -1,41 +1,56 @@
 "use client";
 
-import { X } from "lucide-react";
-import type { LanguageType } from "./useIDEState";
+import { X, FileCode2, FileText, FileJson } from "lucide-react";
+import type { FileNode, LanguageType } from "./useIDEState";
 
 interface TabBarProps {
-    activeTab: LanguageType;
-    onTabChange: (tab: LanguageType) => void;
+    activeFileId: string;
+    nodes: FileNode[];
+    onFileSelect: (id: string) => void;
+    onCloseFile: (id: string) => void;
 }
 
-const TABS: { id: LanguageType; label: string; icon: string; color: string }[] =
-    [
-        { id: "html", label: "index.html", icon: "</>", color: "#ef4444" },
-        { id: "css", label: "style.css", icon: "{ }", color: "#3b82f6" },
-        { id: "javascript", label: "app.js", icon: "JS", color: "#eab308" },
-        { id: "cpp", label: "C++", icon: "C+", color: "#06b6d4" },
-    ];
+function TabIcon({ name, language, isActive }: { name: string, language?: LanguageType; isActive: boolean }) {
+    const ext = name.split('.').pop()?.toLowerCase();
+    
+    let Icon = FileText;
+    let color = "var(--ide-text-muted)";
 
-export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
+    if (ext === 'html') { Icon = FileCode2; color = "#ef4444"; }
+    else if (ext === 'css') { Icon = FileCode2; color = "#3b82f6"; }
+    else if (ext === 'js' || ext === 'javascript') { Icon = FileCode2; color = "#eab308"; }
+    else if (ext === 'cpp' || ext === 'c') { Icon = FileCode2; color = "#06b6d4"; }
+    else if (ext === 'py') { Icon = FileCode2; color = "#34d399"; }
+    else if (ext === 'json') { Icon = FileJson; color = "#a78bfa"; }
+    else if (ext === 'md') { Icon = FileText; color = "#fb923c"; }
+
+    return (
+        <Icon 
+            className="w-3.5 h-3.5" 
+            style={{ color: isActive ? color : "inherit", opacity: isActive ? 1 : 0.6 }} 
+        />
+    );
+}
+
+export default function TabBar({ activeFileId, nodes, onFileSelect, onCloseFile }: TabBarProps) {
+    // For now, we'll just show all files as "open" tabs for simplicity, 
+    // or we could filter to show only recently active ones.
+    const openFiles = nodes.filter(n => n.type === "file");
+
     return (
         <div className="ide-tabbar scrollbar-none">
-            {TABS.map((tab) => {
-                const isActive = activeTab === tab.id;
+            {openFiles.map((file) => {
+                const isActive = activeFileId === file.id;
 
                 return (
                     <div
-                        key={tab.id}
+                        key={file.id}
                         className={`ide-tab ${isActive ? "active" : ""}`}
-                        onClick={() => onTabChange(tab.id)}
+                        onClick={() => onFileSelect(file.id)}
                     >
-                        <span
-                            className="text-[10px] font-mono font-bold opacity-60"
-                            style={{ color: isActive ? tab.color : "inherit" }}
-                        >
-                            {tab.icon}
-                        </span>
+                        <TabIcon name={file.name} language={file.language} isActive={isActive} />
                         <span className={`tracking-tight ${isActive ? "font-semibold" : "opacity-70"}`}>
-                            {tab.label}
+                            {file.name}
                         </span>
                         {isActive && (
                             <div className="w-1.5 h-1.5 rounded-full bg-[var(--ide-accent)] ml-1" />
@@ -44,6 +59,7 @@ export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
                             className="tab-close ml-2"
                             onClick={(e) => {
                                 e.stopPropagation();
+                                onCloseFile(file.id);
                             }}
                         >
                             <X className="w-3 h-3" />

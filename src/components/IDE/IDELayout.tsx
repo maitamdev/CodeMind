@@ -15,11 +15,15 @@ import { AIAgentPanel, AIErrorBoundary } from "../AIAssistant";
 import type { ConsoleLog } from "./useIDEState";
 import "./ide.css";
 
-const LANGUAGE_LABELS: Record<LanguageType, string> = {
+const LANGUAGE_LABELS: Record<string, string> = {
     html: "HTML",
     css: "CSS",
     javascript: "JavaScript",
     cpp: "C++",
+    python: "Python",
+    json: "JSON",
+    markdown: "Markdown",
+    typescript: "TypeScript",
 };
 
 interface IDELayoutProps {
@@ -36,8 +40,10 @@ export default function IDELayout({
     onBack,
 }: IDELayoutProps) {
     const {
+        nodes,
         code,
-        activeTab,
+        activeFileId,
+        activeFile,
         theme,
         panels,
         activeView,
@@ -47,11 +53,14 @@ export default function IDELayout({
         clearLogsOnUpdate,
         setClearLogsOnUpdate,
         cursorPosition,
-        setActiveTab,
+        setActiveFileId,
+        updateFileContent,
         updateCode,
-        updateCodeByTab,
+        addFile,
+        addFolder,
+        deleteNode,
+        renameNode,
         toggleTheme,
-        togglePanel,
         toggleActivityView,
         setBottomTab,
         setBottomHeight,
@@ -60,10 +69,11 @@ export default function IDELayout({
         clearConsoleLogs,
         resetCode,
         isCodeLoaded,
-    } = useIDEState(lessonId, initialLanguage);
+    } = useIDEState(lessonId);
 
     const editorRef = useRef<MonacoEditor | null>(null);
-    const autoSaveStatus = useAutoSave(code, lessonId, isCodeLoaded);
+    // Compatibility: useAutoSave needs the full code object which is now derived from nodes
+    const autoSaveStatus = useAutoSave(code as any, lessonId, isCodeLoaded);
     const [aiServerStatus, setAiServerStatus] = useState<
         "connected" | "checking" | "disconnected"
     >("checking");
@@ -115,20 +125,24 @@ export default function IDELayout({
                         },
                     ]);
                 }
-            } else {
-                updateCode(code[activeTab] + "\n" + insertedCode);
+            } else if (activeFile) {
+                updateCode(activeFile.content + "\n" + insertedCode);
             }
         },
-        [activeTab, code, updateCode],
+        [activeFile, updateCode],
     );
 
     // Agent edit_code: update tab content + switch to edited tab so user sees the change
     const handleEditCode = useCallback(
-        (tab: "html" | "css" | "javascript", content: string) => {
-            updateCodeByTab(tab, content);
-            setActiveTab(tab);
+        (tab: string, content: string) => {
+            // Map legacy 'javascript' etc to actual files if possible
+            const node = nodes.find(n => n.language === tab || n.name.toLowerCase().includes(tab));
+            if (node) {
+                updateFileContent(node.id, content);
+                setActiveFileId(node.id);
+            }
         },
-        [updateCodeByTab, setActiveTab],
+        [nodes, updateFileContent, setActiveFileId],
     );
 
     const handleManualSave = async () => {
@@ -245,7 +259,8 @@ export default function IDELayout({
             <div className={`ide-grid ${panels.agent ? "agent-open" : ""} ${(activeView === "explorer" || activeView === "search") ? "sidebar-open" : ""}`} style={gridStyle}>
                 {/* Title Bar */}
                 <TitleBar
-                    activeTab={activeTab}
+                    activeTab={activeFile?.language || "javascript"}
+                    fileName={activeFile?.name || ""}
                     theme={theme}
                     onToggleTheme={toggleTheme}
                     autoSaveStatus={autoSaveStatus}
@@ -267,15 +282,20 @@ export default function IDELayout({
                     <div className="ide-sidebar">
                         {activeView === "explorer" && (
                             <ExplorerPanel
-                                activeTab={activeTab}
-                                onTabChange={setActiveTab}
+                                nodes={nodes}
+                                activeFileId={activeFileId}
+                                onFileSelect={setActiveFileId}
+                                onAddFile={addFile}
+                                onAddFolder={addFolder}
+                                onDeleteNode={deleteNode}
+                                onRenameNode={renameNode}
                             />
                         )}
                         {activeView === "search" && (
                             <SearchPanel
-                                code={code}
-                                onResultClick={(tab, line, column) => {
-                                    setActiveTab(tab);
+                                code={code as any}
+                                onResultClick={(fileId, line, column) => {
+                                    setActiveFileId(fileId);
                                     setCursorPosition({ line, column });
                                 }}
                             />
@@ -291,12 +311,17 @@ export default function IDELayout({
                 {/* Editor Area */}
                 <div className="ide-editor flex flex-col overflow-hidden bg-[var(--ide-bg)]">
                     {/* Tab Bar */}
-                    <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
+                    <TabBar 
+                        activeFileId={activeFileId} 
+                        nodes={nodes} 
+                        onFileSelect={setActiveFileId} 
+                        onCloseFile={(id) => { /* handle close */ }}
+                    />
 
                     {/* Editor */}
                     <EditorPanel
-                        code={code[activeTab]}
-                        language={activeTab}
+                        code={activeFile?.content || ""}
+                        language={activeFile?.language || "javascript"}
                         theme={theme}
                         onChange={updateCode}
                         onCursorChange={(line, col) =>
@@ -333,11 +358,11 @@ export default function IDELayout({
                         />
                         <AIErrorBoundary fallbackMessage="AI Agent tạm thời không hoạt động.">
                             <AIAgentPanel
-                                codeContext={code[activeTab]}
-                                language={LANGUAGE_LABELS[activeTab]}
+                                codeContext={activeFile?.content || ""}
+                                language={activeFile?.language || "javascript"}
                                 onInsertCode={handleInsertCode}
-                                code={code}
-                                onEditCode={handleEditCode}
+                                code={code as any}
+                                onEditCode={handleEditCode as any}
                                 theme={theme}
                                 aiServerStatus={aiServerStatus}
                             />
@@ -347,7 +372,7 @@ export default function IDELayout({
 
                 {/* Status Bar */}
                 <StatusBar
-                    language={activeTab}
+                    language={activeFile?.language || "javascript"}
                     line={cursorPosition.line}
                     column={cursorPosition.column}
                     theme={theme}
