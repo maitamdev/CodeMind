@@ -40,8 +40,14 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const body = await request.json();
-        const { lessonId, html, css, javascript, cpp, action, message, isPublic, projectName } = body;
+        let body;
+        try {
+            body = await request.json();
+        } catch (e) {
+            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+        }
+        
+        const { lessonId, html, css, javascript, cpp, action, message, isPublic, projectName } = body || {};
         const slug = lessonId || "scratch";
         const name = projectName || (lessonId ? `Lesson ${lessonId}` : "Scratchpad");
 
