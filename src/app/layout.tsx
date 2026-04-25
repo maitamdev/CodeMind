@@ -5,10 +5,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { ReactNode } from "react";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
 export const metadata: Metadata = {
     title: "CodeMind — Nền tảng học lập trình tích hợp AI",
@@ -33,7 +34,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="vi" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
+        <html lang="vi" suppressHydrationWarning className={cn("font-sans", inter.variable, jetbrainsMono.variable)}>
             <head>
                 <link
                     rel="stylesheet"

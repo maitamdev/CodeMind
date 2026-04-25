@@ -44,12 +44,11 @@ export default function EditorPanel({
         editorRef.current = editor;
         configureMonacoEditor(monaco, theme);
 
-        // Track cursor position
         editor.onDidChangeCursorPosition((e) => {
             onCursorChange(e.position.lineNumber, e.position.column);
         });
 
-        // Register Ctrl+S / Cmd+S
+        // Ctrl+S / Cmd+S
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
             if (onSave) onSave();
         });
@@ -59,7 +58,7 @@ export default function EditorPanel({
         <div className="flex-1 min-h-0 overflow-hidden relative">
             <Editor
                 height="100%"
-                language={MONACO_LANG_MAP[language]}
+                language={MONACO_LANG_MAP[language] || language}
                 value={code}
                 theme={
                     theme === "dark"
@@ -69,17 +68,19 @@ export default function EditorPanel({
                 onChange={(value) => onChange(value || "")}
                 onMount={handleEditorDidMount}
                 options={{
-                    fontSize: 14,
+                    fontSize: 13.5,
                     fontFamily:
-                        "'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace",
+                        "JetBrains Mono, Fira Code, Cascadia Code, SF Mono, Consolas, monospace",
                     fontLigatures: true,
-                    lineHeight: 22,
-                    letterSpacing: 0.3,
+                    fontWeight: "400",
+                    lineHeight: 20,
+                    letterSpacing: 0.2,
                     minimap: {
                         enabled: true,
                         maxColumn: 80,
                         renderCharacters: false,
                         scale: 1,
+                        showSlider: "mouseover",
                     },
                     scrollBeyondLastLine: false,
                     automaticLayout: true,
@@ -96,8 +97,9 @@ export default function EditorPanel({
                     cursorBlinking: "smooth",
                     cursorSmoothCaretAnimation: "on",
                     cursorWidth: 2,
+                    cursorStyle: "line",
                     smoothScrolling: true,
-                    padding: { top: 12, bottom: 12 },
+                    padding: { top: 8, bottom: 8 },
                     suggest: {
                         showMethods: true,
                         showFunctions: true,
@@ -113,7 +115,7 @@ export default function EditorPanel({
                     autoClosingBrackets: "always",
                     autoClosingQuotes: "always",
                     autoIndent: "full",
-                    stickyScroll: { enabled: true },
+                    stickyScroll: { enabled: false },
                     overviewRulerBorder: false,
                     hideCursorInOverviewRuler: true,
                     scrollbar: {
@@ -121,12 +123,19 @@ export default function EditorPanel({
                         horizontalScrollbarSize: 8,
                         useShadows: false,
                     },
+                    glyphMargin: false,
+                    folding: true,
+                    foldingHighlight: true,
+                    showFoldingControls: "mouseover",
+                    lineDecorationsWidth: 8,
+                    lineNumbersMinChars: 3,
+                    renderWhitespace: "none",
                 }}
                 loading={
                     <div className="h-full flex flex-col items-center justify-center bg-[var(--ide-bg)] gap-3">
-                        <Loader2 className="w-6 h-6 text-[var(--ide-accent)] animate-spin" />
-                        <span className="text-[var(--ide-text-muted)] text-sm font-medium">
-                            Đang tải Editor...
+                        <Loader2 className="w-5 h-5 text-[var(--ide-accent)] animate-spin" />
+                        <span className="text-[var(--ide-text-faint)] text-xs">
+                            Loading editor...
                         </span>
                     </div>
                 }

@@ -1,62 +1,63 @@
 /* ============================================
-   CodeMind IDE — Premium Minimalist Design
-   Aligned with Project Design System (Linear/Vercel Style)
+   CodeMind IDE — Premium Industrial Design
+   Fonts loaded via Next.js (JetBrains Mono + Inter)
    ============================================ */
 
 /* --- IDE Theme Variables --- */
 .ide-root {
-    /* Using project globals */
-    --ide-bg: var(--background);
-    --ide-bg-alt: #0a0a0c;
-    --ide-bg-active: #121216;
-    --ide-bg-hover: #111114;
-    --ide-border: #1a1a1e;
+    --ide-bg: #09090b;
+    --ide-bg-alt: #0c0c0e;
+    --ide-bg-active: #18181b;
+    --ide-bg-hover: #131316;
+    --ide-border: #1e1e22;
     --ide-border-active: #27272a;
-    --ide-text: var(--foreground);
+    --ide-text: #fafafa;
     --ide-text-muted: #71717a;
     --ide-text-faint: #3f3f46;
-    
-    /* Project Indigo Accent */
+
     --ide-accent: #6366f1;
     --ide-accent-hover: #818cf8;
-    --ide-accent-subtle: rgba(99, 102, 241, 0.1);
-    
-    --ide-titlebar: #000000;
-    --ide-activitybar: #000000;
+    --ide-accent-subtle: rgba(99, 102, 241, 0.08);
+
+    --ide-titlebar: #09090b;
+    --ide-activitybar: #09090b;
     --ide-statusbar: #6366f1;
     --ide-statusbar-text: #ffffff;
-    
-    --ide-tab-active: var(--background);
-    --ide-tab-inactive: #0a0a0c;
-    
-    --ide-scrollbar: #1a1a1e;
-    --ide-scrollbar-hover: #27272a;
-    
-    font-family: var(--font-sans);
+
+    --ide-tab-active: #09090b;
+    --ide-tab-inactive: #0c0c0e;
+
+    --ide-font-ui: var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+    --ide-font-mono: var(--font-mono), 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', monospace;
+
+    font-family: var(--ide-font-ui);
     letter-spacing: -0.01em;
+    color: var(--ide-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .ide-root.light {
     --ide-bg: #ffffff;
-    --ide-bg-alt: #f8f8f9;
-    --ide-bg-active: #f1f1f4;
-    --ide-bg-hover: #f4f4f7;
-    --ide-border: #e4e4e7;
-    --ide-border-active: #d4d4d8;
-    --ide-text: #09090b;
-    --ide-text-muted: #71717a;
-    --ide-text-faint: #a1a1aa;
-    
+    --ide-bg-alt: #f9fafb;
+    --ide-bg-active: #f1f5f9;
+    --ide-bg-hover: #f4f4f5;
+    --ide-border: #e2e8f0;
+    --ide-border-active: #cbd5e1;
+    --ide-text: #0f172a;
+    --ide-text-muted: #64748b;
+    --ide-text-faint: #94a3b8;
+
     --ide-accent: #4f46e5;
     --ide-accent-hover: #6366f1;
-    --ide-accent-subtle: rgba(79, 70, 229, 0.05);
-    
+    --ide-accent-subtle: rgba(79, 70, 229, 0.06);
+
     --ide-titlebar: #ffffff;
-    --ide-activitybar: #f8f8f9;
+    --ide-activitybar: #f9fafb;
     --ide-statusbar: #4f46e5;
-    
+
     --ide-tab-active: #ffffff;
-    --ide-tab-inactive: #f8f8f9;
+    --ide-tab-inactive: #f9fafb;
 }
 
 /* --- Layout Structure --- */
@@ -66,69 +67,70 @@
         "titlebar   titlebar   titlebar   titlebar"
         "activity   sidebar    editor     agent"
         "statusbar  statusbar  statusbar  statusbar";
-    grid-template-rows: 40px 1fr 24px;
+    grid-template-rows: 38px 1fr 22px;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     background: var(--ide-bg);
 }
 
-/* --- Title Bar: Sleek & Dark --- */
+/* --- Title Bar --- */
 .ide-titlebar {
     grid-area: titlebar;
     background: var(--ide-titlebar);
     border-bottom: 1px solid var(--ide-border);
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 10px;
+    gap: 8px;
     user-select: none;
     -webkit-app-region: drag;
     z-index: 100;
+    min-width: 0;             /* CRITICAL: prevent overflow */
+    overflow: hidden;
 }
 
-/* --- Activity Bar: Minimalist --- */
+/* --- Activity Bar --- */
 .ide-activitybar {
     grid-area: activity;
     background: var(--ide-activitybar);
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 48px;
+    min-width: 48px;
     padding-top: 4px;
     border-right: 1px solid var(--ide-border);
     z-index: 50;
 }
 
 .ide-activitybar button {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--ide-text-muted);
     position: relative;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 0.15s ease;
+    flex-shrink: 0;
 }
 
-.ide-activitybar button:hover {
-    color: var(--ide-text);
-}
+.ide-activitybar button:hover { color: var(--ide-text); }
 
-.ide-activitybar button.active {
-    color: var(--ide-accent);
-}
+.ide-activitybar button.active { color: var(--ide-accent); }
 
 .ide-activitybar button.active::after {
     content: "";
     position: absolute;
     left: 0;
-    top: 12px;
-    bottom: 12px;
+    top: 10px;
+    bottom: 10px;
     width: 2px;
     background: var(--ide-accent);
-    box-shadow: 0 0 10px var(--ide-accent);
 }
 
-/* --- Sidebar: High Density --- */
+/* --- Sidebar --- */
 .ide-sidebar {
     position: relative;
     grid-area: sidebar;
@@ -137,62 +139,70 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-width: 0;
 }
 
-/* --- Editor: Clean Slate --- */
+/* --- Editor --- */
 .ide-editor {
     grid-area: editor;
     background: var(--ide-bg);
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    min-width: 0;             /* CRITICAL: flexbox/grid overflow fix */
+    overflow: hidden;
 }
 
-/* --- Agent: Modern Sidebar --- */
+/* --- Agent Panel --- */
 .ide-agent {
     position: relative;
     grid-area: agent;
     border-left: 1px solid var(--ide-border);
-    background: var(--ide-bg);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    background: var(--ide-bg-alt);
+    min-width: 0;
+    overflow: hidden;
 }
 
-/* --- Status Bar: High Contrast --- */
+/* --- Status Bar --- */
 .ide-statusbar {
     grid-area: statusbar;
     background: var(--ide-statusbar);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 8px;
+    font-family: var(--ide-font-ui);
     font-size: 11px;
     font-weight: 500;
     color: var(--ide-statusbar-text);
     user-select: none;
     z-index: 100;
+    overflow: hidden;
 }
 
 .ide-statusbar .status-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 10px;
+    gap: 5px;
+    padding: 0 8px;
     height: 100%;
     cursor: default;
+    white-space: nowrap;
     transition: background 0.15s ease;
 }
 
 .ide-statusbar .status-item:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
 }
 
-/* --- Tab Bar: Professional Tabs --- */
+/* --- Tab Bar --- */
 .ide-tabbar {
     display: flex;
     background: var(--ide-bg-alt);
     border-bottom: 1px solid var(--ide-border);
-    height: 36px;
+    height: 35px;
+    min-height: 35px;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
 }
 
@@ -201,9 +211,10 @@
 .ide-tab {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0 16px;
+    gap: 6px;
+    padding: 0 12px;
     height: 100%;
+    font-family: var(--ide-font-ui);
     font-size: 12px;
     color: var(--ide-text-muted);
     background: var(--ide-tab-inactive);
@@ -211,8 +222,9 @@
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
-    transition: all 0.15s ease;
+    transition: color 0.12s, background 0.12s;
     position: relative;
+    flex-shrink: 0;
 }
 
 .ide-tab:hover {
@@ -228,27 +240,27 @@
 .ide-tab.active::after {
     content: "";
     position: absolute;
-    bottom: -1px;
+    top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 1px;
     background: var(--ide-accent);
 }
 
 .ide-tab .tab-close {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 2px;
     opacity: 0;
-    transition: all 0.15s ease;
+    transition: opacity 0.12s, background 0.12s;
+    flex-shrink: 0;
 }
 
 .ide-tab:hover .tab-close,
 .ide-tab.active .tab-close {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .ide-tab .tab-close:hover {
@@ -262,6 +274,7 @@
     display: flex;
     flex-direction: column;
     background: var(--ide-bg);
+    min-height: 0;
 }
 
 .ide-bottom-tabs {
@@ -270,22 +283,25 @@
     background: var(--ide-bg-alt);
     border-bottom: 1px solid var(--ide-border);
     padding: 0 8px;
-    height: 36px;
+    height: 32px;
+    min-height: 32px;
 }
 
 .ide-bottom-tab {
-    padding: 0 16px;
+    padding: 0 12px;
     height: 100%;
     display: flex;
     align-items: center;
+    font-family: var(--ide-font-ui);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: var(--ide-text-muted);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: color 0.12s;
     border-bottom: 2px solid transparent;
+    white-space: nowrap;
 }
 
 .ide-bottom-tab:hover { color: var(--ide-text); }
@@ -295,12 +311,12 @@
     border-bottom-color: var(--ide-accent);
 }
 
-/* --- Resizing & Utilities --- */
+/* --- Resize Handles --- */
 .ide-grid-resize-handle {
     position: absolute;
     background: transparent;
     z-index: 1000;
-    transition: background 0.2s ease;
+    transition: background 0.15s ease;
 }
 
 .ide-grid-resize-handle:hover,
@@ -313,18 +329,24 @@
 .ide-resize-handle { height: 3px; cursor: ns-resize; width: 100%; }
 
 /* --- Scrollbars --- */
-.ide-root ::-webkit-scrollbar { width: 10px; height: 10px; }
+.ide-root ::-webkit-scrollbar { width: 8px; height: 8px; }
 .ide-root ::-webkit-scrollbar-track { background: transparent; }
 .ide-root ::-webkit-scrollbar-thumb {
     background: var(--ide-border);
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     background-clip: padding-box;
     border-radius: 10px;
 }
 .ide-root ::-webkit-scrollbar-thumb:hover { background-color: var(--ide-text-faint); }
+.ide-root ::-webkit-scrollbar-corner { background: transparent; }
 
-/* --- Typography Helpers --- */
+/* --- Utility --- */
 .font-mono-ide {
-    font-family: var(--font-mono);
+    font-family: var(--ide-font-mono);
     font-variant-ligatures: contextual;
+}
+
+/* --- Selection --- */
+.ide-root ::selection {
+    background: rgba(99, 102, 241, 0.3);
 }
