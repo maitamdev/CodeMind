@@ -81,8 +81,8 @@ const LEVEL_MAP: Record<string, string> = {
 export default function CourseDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const { user, token } = useAuth();
-    const { toast } = useToast();
+    const { user } = useAuth();
+    const toaster = useToast();
     const slug = params?.slug as string;
 
     const [course, setCourse] = useState<CourseDetail | null>(null);
@@ -98,18 +98,18 @@ export default function CourseDetailPage() {
         setIsLoading(true);
         try {
             const res = await fetch(`/api/courses/${slug}`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                credentials: 'include'
             });
             const data = await res.json();
             if (data.success && data.data) {
                 setCourse(data.data);
             } else {
-                toast("Không tìm thấy khóa học!", "error");
+                toaster.error("Không tìm thấy khóa học!");
                 router.push("/courses");
             }
         } catch (error) {
             console.error("Fetch course error:", error);
-            toast("Lỗi tải thông tin khóa học", "error");
+            toaster.error("Lỗi tải thông tin khóa học");
         } finally {
             setIsLoading(false);
         }
@@ -117,7 +117,7 @@ export default function CourseDetailPage() {
 
     const handleEnroll = async () => {
         if (!user) {
-            toast("Vui lòng đăng nhập để tham gia khóa học", "warning");
+            toaster.warning("Vui lòng đăng nhập để tham gia khóa học");
             router.push("/login?redirect=/courses/" + slug);
             return;
         }
@@ -128,29 +128,29 @@ export default function CourseDetailPage() {
         }
 
         if (!course?.isFree) {
-            toast("Tính năng thanh toán đang được phát triển!", "info");
+            toaster.info("Tính năng thanh toán đang được phát triển!");
             return;
         }
 
         setIsEnrolling(true);
         try {
-            const res = await fetch(`/api/courses/${slug}/enroll`, {
+            const { secureFetch } = await import("@/contexts/AuthContext");
+            const res = await secureFetch(`/api/courses/${slug}/enroll`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
             });
             const data = await res.json();
             if (data.success) {
-                toast("Đăng ký thành công! Bắt đầu học thôi.", "success");
+                toaster.success("Đăng ký thành công! Bắt đầu học thôi.");
                 router.push(`/learn/${slug}`);
             } else {
-                toast(data.message || "Lỗi khi đăng ký", "error");
+                toaster.error(data.message || "Lỗi khi đăng ký");
             }
         } catch (error) {
             console.error("Enroll error:", error);
-            toast("Có lỗi xảy ra, vui lòng thử lại!", "error");
+            toaster.error("Có lỗi xảy ra, vui lòng thử lại!");
         } finally {
             setIsEnrolling(false);
         }
