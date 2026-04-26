@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
     Home,
     Route,
+    GraduationCap,
     Newspaper,
     MessageCircle,
     Laptop,
@@ -27,6 +28,12 @@ const publicMenuItems: MenuItem[] = [
         icon: Home,
         label: "Trang chủ",
         href: "/",
+    },
+    {
+        id: "courses",
+        icon: GraduationCap,
+        label: "Khóa học",
+        href: "/courses",
     },
     {
         id: "roadmap",
