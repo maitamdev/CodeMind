@@ -344,11 +344,10 @@ export default function LearnCoursePage() {
             const chaptersData = await chaptersResponse.json();
             const progressData = await progressResponse.json();
 
-            // ✅ FIX: Validate all responses are successful
+            // ✅ FIX: Validate course and chapters - progress can fail gracefully
             if (
                 !courseData.success ||
-                !chaptersData.success ||
-                !progressData.success
+                !chaptersData.success
             ) {
                 console.error("[LEARN PAGE] API response not successful:", {
                     courseSuccess: courseData.success,
@@ -357,6 +356,12 @@ export default function LearnCoursePage() {
                 });
                 toast.error("Không thể tải khóa học. Vui lòng thử lại");
                 return;
+            }
+            
+            // Progress API may fail for new enrollments - default to empty
+            if (!progressData.success) {
+                console.warn("[LEARN PAGE] Progress API failed, defaulting to 0%");
+                progressData.data = { completedLessons: [], progress: 0, totalLessons: 0, completedCount: 0 };
             }
 
             // Determine if it's a FREE course
