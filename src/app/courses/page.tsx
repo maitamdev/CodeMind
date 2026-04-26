@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -66,6 +66,14 @@ const LEVEL_OPTIONS = [
 ];
 
 export default function CoursesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><div className="animate-pulse text-indigo-500">Đang tải...</div></div>}>
+            <CoursesContent />
+        </Suspense>
+    );
+}
+
+function CoursesContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
