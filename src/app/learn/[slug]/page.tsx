@@ -1342,6 +1342,8 @@ export default function LearnCoursePage() {
                 <CertificateModal
                     isOpen={showCertificateModal}
                     onClose={() => setShowCertificateModal(false)}
+                    courseId={course.id}
+                    courseSlug={course.slug}
                     data={{
                         studentName:
                             user?.full_name || user?.username || "Học viên",

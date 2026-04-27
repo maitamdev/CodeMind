@@ -16,11 +16,55 @@ interface CertificateModalProps {
     instructorName: string;
     courseDuration: string;
   };
+  /**
+   * Pass courseId or courseSlug to obtain a deterministic certificate code
+   * (verified via /api/certificates/issue). When omitted, the modal will
+   * still display, but with a placeholder ID and no verify QR code.
+   */
+  courseId?: string;
+  courseSlug?: string;
   disableCelebration?: boolean;
 }
 
-export default function CertificateModal({ isOpen, onClose, data, disableCelebration = false }: CertificateModalProps) {
+export default function CertificateModal({ isOpen, onClose, data, courseId, courseSlug, disableCelebration = false }: CertificateModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [certCode, setCertCode] = React.useState<string | null>(null);
+  const [verifyUrl, setVerifyUrl] = React.useState<string | null>(null);
+  const [issueError, setIssueError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    if (!courseId && !courseSlug) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setIssueError(null);
+        const res = await fetch('/api/certificates/issue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ courseId, courseSlug }),
+        });
+        const json = await res.json();
+        if (cancelled) return;
+        if (res.ok && json.success && json.data?.code) {
+          setCertCode(json.data.code as string);
+          const absolute = typeof window !== 'undefined'
+            ? `${window.location.origin}/certificates/${json.data.code}`
+            : (json.data.verifyUrl as string);
+          setVerifyUrl(absolute);
+        } else {
+          setIssueError(json.message || 'Không thể tạo mã chứng chỉ.');
+        }
+      } catch {
+        if (!cancelled) setIssueError('Không thể kết nối tới hệ thống chứng chỉ.');
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, courseId, courseSlug]);
 
   useEffect(() => {
     if (isOpen && !disableCelebration) {
@@ -116,14 +160,29 @@ export default function CertificateModal({ isOpen, onClose, data, disableCelebra
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-gray-100 print:p-0 print:bg-white print:overflow-visible">
             <div className="print:landscape">
-              <Certificate {...data} />
+              <Certificate
+                {...data}
+                certificateId={certCode ?? undefined}
+                verifyUrl={verifyUrl ?? undefined}
+              />
             </div>
           </div>
 
           {/* Footer - Hidden on print */}
           <div className="p-6 border-t border-gray-100 bg-white flex justify-between items-center print:hidden">
             <div className="text-sm text-gray-500">
-              ID chứng chỉ: <span className="font-mono font-bold text-gray-700">DHV-{Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+              {certCode ? (
+                <>
+                  ID chứng chỉ:{' '}
+                  <span className="font-mono font-bold text-gray-700 break-all">
+                    {certCode}
+                  </span>
+                </>
+              ) : issueError ? (
+                <span className="text-rose-500">{issueError}</span>
+              ) : (
+                <span className="text-gray-400">Đang tạo mã chứng chỉ…</span>
+              )}
             </div>
             <div className="flex gap-4">
               <button className="text-gray-500 hover:text-indigo-600 flex items-center gap-2 text-sm font-medium transition-colors">

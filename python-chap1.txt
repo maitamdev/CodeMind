@@ -1,0 +1,1915 @@
+PHẦN 1: NHẬP MÔN PYTHON VÀ TƯ DUY LẬP TRÌNH
+CHƯƠNG 1: GIỚI THIỆU PYTHON
+Thông tin chung của chương
+
+Tên chương: Giới thiệu Python
+Đối tượng học: Người mới bắt đầu học lập trình
+Trình độ: Cơ bản, nhập môn đại học
+Thời lượng gợi ý: 4–6 buổi học
+Hình thức học: Lý thuyết kết hợp thực hành
+Yêu cầu đầu vào: Không yêu cầu biết lập trình trước
+
+1. Mục tiêu của chương
+
+Sau khi học xong chương này, người học cần đạt được các mục tiêu sau:
+
+1.1. Về kiến thức
+
+Người học hiểu được:
+
+Python là gì.
+Python được dùng trong những lĩnh vực nào.
+Vì sao Python phù hợp cho người mới bắt đầu học lập trình.
+Cách cài đặt Python trên máy tính.
+Cách sử dụng các công cụ lập trình như VS Code, PyCharm, Terminal.
+Cách chạy một chương trình Python.
+Cấu trúc cơ bản của một chương trình Python.
+Cách học lập trình hiệu quả và tránh các lỗi tư duy phổ biến.
+1.2. Về kỹ năng
+
+Người học có thể:
+
+Cài đặt Python.
+Kiểm tra phiên bản Python trên máy.
+Viết chương trình Python đầu tiên.
+Chạy file .py.
+Gõ lệnh trong Python Shell.
+Sử dụng Terminal ở mức cơ bản.
+Tạo thư mục và file chương trình Python.
+Nhận biết lỗi cơ bản khi chạy chương trình.
+1.3. Về thái độ học tập
+
+Người học cần hình thành:
+
+Tư duy kiên trì khi gặp lỗi.
+Thói quen thực hành thường xuyên.
+Tư duy chia nhỏ vấn đề.
+Thói quen đọc lỗi và tự sửa lỗi.
+Tư duy học lập trình bằng cách tự viết code, không chỉ xem lý thuyết.
+BÀI 1: PYTHON LÀ GÌ? DÙNG ĐỂ LÀM GÌ?
+1.1. Python là gì?
+
+Python là một ngôn ngữ lập trình bậc cao, được thiết kế để dễ đọc, dễ viết và dễ học.
+
+Nói đơn giản, Python là một công cụ giúp con người ra lệnh cho máy tính thực hiện một công việc nào đó.
+
+Ví dụ:
+
+print("Xin chào Python")
+
+Dòng lệnh trên yêu cầu máy tính in ra màn hình dòng chữ:
+
+Xin chào Python
+
+Python được tạo ra bởi Guido van Rossum và ra mắt lần đầu vào năm 1991. Tên gọi Python không xuất phát từ loài rắn, mà được lấy cảm hứng từ chương trình hài “Monty Python’s Flying Circus”.
+
+1.2. Ngôn ngữ lập trình là gì?
+
+Máy tính không tự hiểu ngôn ngữ con người như tiếng Việt hoặc tiếng Anh. Máy tính chỉ hiểu các chỉ dẫn rất cụ thể.
+
+Ngôn ngữ lập trình là phương tiện để con người giao tiếp với máy tính.
+
+Ví dụ, thay vì nói:
+
+Máy tính ơi, hãy cộng 5 với 3 rồi in kết quả ra màn hình.
+
+Ta viết bằng Python:
+
+print(5 + 3)
+
+Kết quả:
+
+8
+1.3. Vì sao Python dễ học?
+
+Python được đánh giá là một trong những ngôn ngữ lập trình dễ học nhất vì cú pháp của nó gần giống tiếng Anh và ít ký hiệu phức tạp.
+
+So sánh đơn giản:
+
+Python
+print("Hello")
+Java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+
+Với cùng một việc là in chữ “Hello”, Python ngắn gọn hơn rất nhiều.
+
+Điều này giúp người mới tập trung vào tư duy lập trình thay vì bị rối bởi cú pháp phức tạp.
+
+1.4. Python dùng để làm gì?
+
+Python được sử dụng trong rất nhiều lĩnh vực khác nhau.
+
+1.4.1. Lập trình web
+
+Python có thể dùng để xây dựng website, hệ thống quản trị, API và backend server.
+
+Một số framework phổ biến:
+
+Django
+Flask
+FastAPI
+
+Ví dụ ứng dụng:
+
+Website bán hàng
+Hệ thống quản lý học sinh
+Trang blog cá nhân
+API cho ứng dụng mobile
+Backend cho ứng dụng thương mại điện tử
+1.4.2. Tự động hóa công việc
+
+Python rất mạnh trong việc tự động hóa các công việc lặp đi lặp lại.
+
+Ví dụ:
+
+Đổi tên hàng trăm file cùng lúc
+Đọc dữ liệu từ Excel
+Gửi email tự động
+Tải file từ internet
+Tự động tạo báo cáo
+Tự động kiểm tra dữ liệu
+
+Ví dụ đơn giản:
+
+import os
+
+print(os.listdir())
+
+Đoạn code trên liệt kê các file trong thư mục hiện tại.
+
+1.4.3. Phân tích dữ liệu
+
+Python là một trong những ngôn ngữ phổ biến nhất trong lĩnh vực phân tích dữ liệu.
+
+Các thư viện thường dùng:
+
+NumPy
+Pandas
+Matplotlib
+Seaborn
+
+Ví dụ ứng dụng:
+
+Phân tích doanh thu bán hàng
+Phân tích dữ liệu khách hàng
+Xử lý dữ liệu khảo sát
+Vẽ biểu đồ báo cáo
+Dự đoán xu hướng kinh doanh
+1.4.4. Trí tuệ nhân tạo và Machine Learning
+
+Python là ngôn ngữ rất phổ biến trong AI và Machine Learning.
+
+Các thư viện nổi bật:
+
+Scikit-learn
+TensorFlow
+PyTorch
+Keras
+OpenCV
+
+Ví dụ ứng dụng:
+
+Nhận diện khuôn mặt
+Dự đoán giá nhà
+Chatbot
+Phân loại email spam
+Nhận diện hình ảnh
+Xử lý ngôn ngữ tự nhiên
+1.4.5. Lập trình backend
+
+Backend là phần xử lý phía sau của một ứng dụng.
+
+Ví dụ khi người dùng đăng nhập vào website, backend sẽ:
+
+Nhận email và mật khẩu
+Kiểm tra trong cơ sở dữ liệu
+Xác nhận thông tin
+Trả về kết quả đăng nhập thành công hoặc thất bại
+
+Python có thể dùng để xây dựng backend bằng Django, Flask hoặc FastAPI.
+
+1.4.6. Scripting
+
+Script là các chương trình nhỏ dùng để xử lý một công việc cụ thể.
+
+Ví dụ:
+
+Tạo file tự động
+Xóa file rác
+Kiểm tra kết nối internet
+Đọc log hệ thống
+Sao lưu dữ liệu
+
+Python rất phù hợp để viết script vì cú pháp ngắn gọn, dễ hiểu và có nhiều thư viện hỗ trợ.
+
+1.5. Ưu điểm của Python
+
+Python có nhiều ưu điểm:
+
+Dễ học
+
+Cú pháp gần với ngôn ngữ tự nhiên.
+
+if age >= 18:
+    print("Bạn đã đủ tuổi")
+
+Đọc gần giống như tiếng Anh:
+
+Nếu tuổi lớn hơn hoặc bằng 18 thì in ra “Bạn đã đủ tuổi”.
+
+Dễ đọc
+
+Code Python thường gọn và rõ ràng.
+
+name = "An"
+age = 20
+
+print(name)
+print(age)
+Có cộng đồng lớn
+
+Khi gặp lỗi, người học rất dễ tìm được tài liệu, video, bài viết hoặc câu trả lời trên internet.
+
+Nhiều thư viện
+
+Python có hàng nghìn thư viện hỗ trợ sẵn.
+
+Ví dụ:
+
+import math
+
+print(math.sqrt(16))
+
+Kết quả:
+
+4.0
+Ứng dụng rộng
+
+Python có thể dùng trong nhiều lĩnh vực:
+
+Web
+Data
+AI
+Automation
+Backend
+Game đơn giản
+DevOps
+Cybersecurity
+IoT
+1.6. Nhược điểm của Python
+
+Python không hoàn hảo. Nó cũng có một số nhược điểm:
+
+Tốc độ chậm hơn C/C++
+
+Python thường chậm hơn các ngôn ngữ như C, C++ vì Python là ngôn ngữ thông dịch.
+
+Không phải lựa chọn tốt nhất cho mobile app
+
+Python không phổ biến bằng Kotlin, Swift hoặc Flutter trong phát triển ứng dụng mobile.
+
+Quản lý bộ nhớ không trực tiếp
+
+Người học không cần quản lý bộ nhớ thủ công, điều này giúp dễ học nhưng cũng khiến người học ít hiểu sâu về bộ nhớ máy tính ở giai đoạn đầu.
+
+Tuy vậy, đối với người mới học lập trình, Python vẫn là một lựa chọn rất tốt.
+
+1.7. Python hoạt động như thế nào?
+
+Khi viết chương trình Python, ta thường viết code vào file có phần mở rộng .py.
+
+Ví dụ:
+
+hello.py
+
+Bên trong file:
+
+print("Hello Python")
+
+Khi chạy chương trình, Python Interpreter sẽ đọc file và thực thi từng dòng lệnh.
+
+Quy trình đơn giản:
+
+Người học viết code Python
+        ↓
+File .py
+        ↓
+Python Interpreter đọc code
+        ↓
+Máy tính thực hiện lệnh
+        ↓
+Hiển thị kết quả
+1.8. Chương trình Python đầu tiên
+print("Xin chào, tôi đang học Python!")
+
+Kết quả:
+
+Xin chào, tôi đang học Python!
+
+Hàm print() dùng để hiển thị dữ liệu ra màn hình.
+
+1.9. Giải thích chương trình đầu tiên
+print("Xin chào, tôi đang học Python!")
+
+Trong đó:
+
+print là tên hàm.
+Dấu () dùng để gọi hàm.
+Nội dung bên trong dấu ngoặc là dữ liệu muốn in ra.
+Dấu ngoặc kép " " dùng để biểu diễn chuỗi văn bản.
+1.10. Ví dụ thêm
+print("Họ tên: Nguyễn Văn An")
+print("Tuổi: 20")
+print("Ngành học: Công nghệ thông tin")
+
+Kết quả:
+
+Họ tên: Nguyễn Văn An
+Tuổi: 20
+Ngành học: Công nghệ thông tin
+1.11. Bài tập bài 1
+Bài tập 1
+
+Viết chương trình in ra màn hình dòng chữ:
+
+Tôi đang học Python
+Bài tập 2
+
+Viết chương trình in ra thông tin cá nhân gồm:
+
+Họ tên
+Tuổi
+Trường học
+Ngành học
+Sở thích
+Bài tập 3
+
+Viết chương trình in ra màn hình:
+
+==============================
+       CHÀO MỪNG ĐẾN PYTHON
+==============================
+Bài tập 4
+
+Tìm hiểu và ghi lại ít nhất 5 lĩnh vực có thể sử dụng Python.
+
+Bài tập 5
+
+Hãy giải thích bằng lời của bạn:
+
+Vì sao Python phù hợp với người mới học lập trình?
+
+BÀI 2: CÀI ĐẶT PYTHON, VS CODE, PYCHARM
+2.1. Vì sao cần cài đặt môi trường lập trình?
+
+Để viết và chạy chương trình Python trên máy tính, ta cần có:
+
+Python Interpreter
+Đây là chương trình giúp máy tính hiểu và chạy code Python.
+Trình soạn thảo code
+Đây là nơi ta viết code, ví dụ VS Code hoặc PyCharm.
+Terminal hoặc Command Prompt
+Đây là nơi ta gõ lệnh để chạy chương trình.
+2.2. Cài đặt Python
+Bước 1: Tải Python
+
+Truy cập trang chính thức của Python:
+
+python.org
+
+Chọn phiên bản Python mới nhất phù hợp với hệ điều hành.
+
+Bước 2: Cài đặt Python
+
+Khi cài đặt trên Windows, cần chú ý tích vào ô:
+
+Add Python to PATH
+
+Đây là bước rất quan trọng.
+
+Nếu không tích, máy tính có thể không nhận lệnh python trong Terminal.
+
+Bước 3: Kiểm tra cài đặt
+
+Mở Terminal hoặc Command Prompt và gõ:
+
+python --version
+
+Hoặc:
+
+python3 --version
+
+Nếu hiển thị phiên bản như:
+
+Python 3.12.x
+
+nghĩa là đã cài đặt thành công.
+
+2.3. Python PATH là gì?
+
+PATH là danh sách các vị trí mà hệ điều hành sẽ tìm kiếm chương trình khi ta gõ lệnh.
+
+Khi ta gõ:
+
+python
+
+Máy tính sẽ tìm trong PATH xem chương trình Python nằm ở đâu.
+
+Nếu Python chưa được thêm vào PATH, máy tính có thể báo lỗi:
+
+'python' is not recognized as an internal or external command
+
+Lỗi này thường gặp trên Windows.
+
+2.4. Cài đặt VS Code
+
+VS Code là trình soạn thảo code nhẹ, phổ biến và miễn phí.
+
+Ưu điểm của VS Code
+Miễn phí
+Nhẹ
+Hỗ trợ nhiều ngôn ngữ
+Có nhiều extension
+Dễ dùng cho người mới
+Phù hợp với cả học tập và làm việc thực tế
+Các bước cài đặt
+Tải VS Code từ trang chính thức.
+Cài đặt như phần mềm thông thường.
+Mở VS Code.
+Cài extension Python.
+2.5. Cài extension Python trong VS Code
+
+Trong VS Code:
+
+Mở tab Extensions.
+Tìm “Python”.
+Cài extension Python của Microsoft.
+Cài thêm “Pylance” nếu chưa có.
+
+Extension Python giúp:
+
+Gợi ý code
+Báo lỗi cú pháp
+Chạy file Python
+Debug chương trình
+Hỗ trợ format code
+2.6. Tạo file Python đầu tiên trong VS Code
+Bước 1: Tạo thư mục
+
+Ví dụ tạo thư mục:
+
+python-course
+Bước 2: Mở thư mục bằng VS Code
+
+Trong VS Code chọn:
+
+File > Open Folder
+
+Chọn thư mục python-course.
+
+Bước 3: Tạo file
+
+Tạo file:
+
+hello.py
+Bước 4: Viết code
+print("Hello Python")
+Bước 5: Chạy chương trình
+
+Có thể chạy bằng nút Run hoặc bằng Terminal:
+
+python hello.py
+
+Kết quả:
+
+Hello Python
+2.7. Cài đặt PyCharm
+
+PyCharm là một IDE chuyên dụng cho Python.
+
+IDE nghĩa là Integrated Development Environment, tức là môi trường phát triển tích hợp.
+
+Ưu điểm của PyCharm
+Hỗ trợ Python rất mạnh
+Gợi ý code tốt
+Quản lý project rõ ràng
+Có công cụ debug mạnh
+Phù hợp với dự án lớn
+Nhược điểm
+Nặng hơn VS Code
+Có thể hơi phức tạp với người mới
+Bản Professional có phí, nhưng bản Community miễn phí
+2.8. VS Code và PyCharm nên chọn cái nào?
+
+Với người mới bắt đầu, nên chọn VS Code vì nhẹ, dễ cài và dễ dùng.
+
+Sau khi đã quen với Python, có thể học thêm PyCharm nếu muốn làm các dự án lớn hơn.
+
+Bảng so sánh:
+
+Tiêu chí	VS Code	PyCharm
+Độ nhẹ	Nhẹ	Nặng hơn
+Dễ bắt đầu	Dễ	Trung bình
+Phù hợp người mới	Rất phù hợp	Phù hợp nhưng hơi nhiều chức năng
+Dự án lớn	Tốt	Rất tốt
+Miễn phí	Có	Có bản Community
+2.9. Một số lỗi thường gặp khi cài đặt
+Lỗi 1: Không nhận lệnh python
+
+Thông báo:
+
+python is not recognized
+
+Nguyên nhân thường là Python chưa được thêm vào PATH.
+
+Cách xử lý:
+
+Cài lại Python và tích “Add Python to PATH”.
+Hoặc thêm Python vào PATH thủ công.
+Lỗi 2: Gõ python nhưng mở Microsoft Store
+
+Lỗi này thường xảy ra trên Windows.
+
+Cách xử lý:
+
+Tắt App Execution Aliases cho Python trong Settings.
+Cài Python từ trang chính thức.
+Dùng lệnh py thay cho python.
+
+Ví dụ:
+
+py hello.py
+Lỗi 3: VS Code không nhận Python Interpreter
+
+Cách xử lý:
+
+Nhấn Ctrl + Shift + P
+Gõ “Python: Select Interpreter”
+Chọn phiên bản Python đã cài
+2.10. Bài tập bài 2
+Bài tập 1
+
+Cài đặt Python và kiểm tra phiên bản bằng Terminal.
+
+Bài tập 2
+
+Cài đặt VS Code và extension Python.
+
+Bài tập 3
+
+Tạo thư mục:
+
+python-basic
+
+Trong thư mục đó tạo file:
+
+lesson_01.py
+
+Viết chương trình:
+
+print("Tôi đã cài đặt Python thành công")
+Bài tập 4
+
+Chạy chương trình bằng ít nhất 2 cách:
+
+Bấm nút Run trong VS Code
+Chạy bằng Terminal
+Bài tập 5
+
+Ghi lại lỗi bạn gặp trong quá trình cài đặt, nếu có, và cách bạn đã xử lý.
+
+BÀI 3: CHẠY FILE .PY, PYTHON SHELL, TERMINAL
+3.1. File .py là gì?
+
+File .py là file chứa mã nguồn Python.
+
+Ví dụ:
+
+main.py
+
+Bên trong file có thể chứa:
+
+print("Đây là file Python")
+
+Khi chạy file này, Python sẽ đọc và thực hiện các lệnh bên trong.
+
+3.2. Cách chạy file Python
+
+Giả sử có file:
+
+hello.py
+
+Nội dung:
+
+print("Xin chào")
+
+Ta có thể chạy bằng lệnh:
+
+python hello.py
+
+Hoặc trên một số máy:
+
+python3 hello.py
+
+Hoặc Windows có thể dùng:
+
+py hello.py
+3.3. Terminal là gì?
+
+Terminal là công cụ cho phép người dùng giao tiếp với máy tính bằng lệnh.
+
+Trên Windows, Terminal có thể là:
+
+Command Prompt
+PowerShell
+Windows Terminal
+
+Trên macOS:
+
+Terminal
+
+Trên Linux:
+
+Terminal
+3.4. Một số lệnh Terminal cơ bản
+Kiểm tra thư mục hiện tại
+
+Windows:
+
+cd
+
+macOS/Linux:
+
+pwd
+Liệt kê file trong thư mục
+
+Windows:
+
+dir
+
+macOS/Linux:
+
+ls
+Di chuyển vào thư mục
+cd ten_thu_muc
+
+Ví dụ:
+
+cd python-basic
+Quay lại thư mục cha
+cd ..
+Tạo thư mục
+
+Windows:
+
+mkdir python-basic
+
+macOS/Linux:
+
+mkdir python-basic
+3.5. Python Shell là gì?
+
+Python Shell là môi trường cho phép gõ lệnh Python và xem kết quả ngay lập tức.
+
+Mở Terminal và gõ:
+
+python
+
+Hoặc:
+
+python3
+
+Khi vào Python Shell, ta thấy dấu nhắc:
+
+>>>
+
+Ví dụ:
+
+>>> 2 + 3
+5
+
+Hoặc:
+
+>>> print("Hello")
+Hello
+3.6. Khi nào dùng Python Shell?
+
+Python Shell phù hợp để:
+
+Thử nhanh một dòng lệnh
+Kiểm tra phép tính
+Thử hàm nhỏ
+Học cú pháp cơ bản
+
+Ví dụ:
+
+>>> 10 * 5
+50
+>>> "Python".upper()
+'PYTHON'
+3.7. Khi nào dùng file .py?
+
+Dùng file .py khi chương trình có nhiều dòng hoặc cần lưu lại.
+
+Ví dụ chương trình trong file:
+
+print("Chương trình tính tổng")
+print(10 + 20)
+print("Kết thúc chương trình")
+
+File .py phù hợp cho:
+
+Bài tập
+Dự án
+Chương trình nhiều dòng
+Code cần chạy lại nhiều lần
+3.8. So sánh Python Shell và file .py
+Tiêu chí	Python Shell	File .py
+Mục đích	Thử nhanh	Viết chương trình hoàn chỉnh
+Lưu code	Không thuận tiện	Có
+Phù hợp dự án	Không	Có
+Người mới học	Dùng để thử lệnh	Dùng để làm bài tập
+3.9. Chạy chương trình nhiều dòng
+
+Tạo file:
+
+profile.py
+
+Nội dung:
+
+print("THÔNG TIN SINH VIÊN")
+print("Họ tên: Trần Minh Anh")
+print("Tuổi: 19")
+print("Ngành: Công nghệ thông tin")
+
+Chạy:
+
+python profile.py
+
+Kết quả:
+
+THÔNG TIN SINH VIÊN
+Họ tên: Trần Minh Anh
+Tuổi: 19
+Ngành: Công nghệ thông tin
+3.10. Lỗi thường gặp khi chạy file Python
+Lỗi 1: Sai tên file
+
+Lệnh:
+
+python hello.py
+
+Nhưng file thật là:
+
+helo.py
+
+Kết quả có thể báo:
+
+No such file or directory
+
+Cách xử lý:
+
+Kiểm tra lại tên file.
+Kiểm tra thư mục hiện tại.
+Dùng lệnh dir hoặc ls để xem danh sách file.
+Lỗi 2: Đang đứng sai thư mục
+
+Ví dụ file nằm trong thư mục:
+
+Desktop/python-basic/hello.py
+
+Nhưng Terminal đang ở thư mục khác.
+
+Cách xử lý:
+
+cd Desktop/python-basic
+python hello.py
+Lỗi 3: Thiếu dấu ngoặc hoặc dấu nháy
+
+Code sai:
+
+print("Hello Python)
+
+Lỗi vì thiếu dấu nháy cuối.
+
+Code đúng:
+
+print("Hello Python")
+
+3.11. Bài tập bài 3
+Bài tập 1
+
+Tạo file:
+
+hello.py
+
+Viết chương trình in ra:
+
+Hello Python
+
+Chạy bằng Terminal.
+
+Bài tập 2
+
+Tạo file:
+
+student.py
+
+In ra thông tin sinh viên gồm:
+
+Mã sinh viên
+Họ tên
+Lớp
+Email
+Bài tập 3
+
+Mở Python Shell và thực hiện các phép tính:
+
+5 + 7
+20 - 3
+4 * 6
+10 / 2
+
+Ghi lại kết quả.
+
+Bài tập 4
+
+Tạo file:
+
+math_demo.py
+
+Viết chương trình:
+
+print(5 + 7)
+print(20 - 3)
+print(4 * 6)
+print(10 / 2)
+
+So sánh việc chạy trong Shell và chạy file .py.
+
+Bài tập 5
+
+Cố tình viết sai một dòng code, chạy chương trình, đọc thông báo lỗi và ghi lại lỗi đó.
+
+BÀI 4: CẤU TRÚC MỘT CHƯƠNG TRÌNH PYTHON
+4.1. Một chương trình Python gồm những gì?
+
+Một chương trình Python có thể rất đơn giản hoặc rất phức tạp.
+
+Ở mức cơ bản, chương trình Python thường gồm:
+
+Comment
+Lệnh import
+Khai báo biến
+Xử lý dữ liệu
+Hiển thị kết quả
+Hàm
+Điều kiện
+Vòng lặp
+Class
+
+Ở chương này, ta mới tập trung vào cấu trúc đơn giản.
+
+4.2. Ví dụ chương trình đơn giản
+# Chương trình đầu tiên của tôi
+
+print("Xin chào Python")
+print("Tôi đang học lập trình")
+
+Trong đó:
+
+# Chương trình đầu tiên của tôi
+
+là comment.
+
+Hai dòng sau là lệnh in ra màn hình.
+
+4.3. Comment là gì?
+
+Comment là phần ghi chú trong code. Python sẽ bỏ qua comment khi chạy chương trình.
+
+Comment giúp:
+
+Giải thích code
+Ghi chú mục đích chương trình
+Giúp người khác đọc hiểu code
+Giúp chính bạn hiểu lại code sau này
+
+Ví dụ:
+
+# In ra lời chào
+print("Xin chào")
+
+Dòng bắt đầu bằng dấu # là comment.
+
+4.4. Comment một dòng
+# Đây là comment một dòng
+print("Hello")
+4.5. Comment nhiều dòng
+
+Python không có cú pháp comment nhiều dòng chính thức như một số ngôn ngữ khác, nhưng có thể dùng nhiều dòng #:
+
+# Đây là chương trình minh họa
+# Tác giả: Sinh viên A
+# Mục tiêu: Làm quen với Python
+
+print("Hello Python")
+
+Hoặc dùng chuỗi nhiều dòng:
+
+"""
+Đây là phần mô tả chương trình.
+Chương trình này dùng để minh họa Python cơ bản.
+"""
+
+print("Hello")
+
+Tuy nhiên, với người mới học, nên dùng dấu # cho ghi chú thông thường.
+
+4.6. Lệnh import
+
+import dùng để đưa thư viện vào chương trình.
+
+Ví dụ:
+
+import math
+
+print(math.sqrt(25))
+
+Kết quả:
+
+5.0
+
+Trong đó:
+
+math là thư viện toán học.
+sqrt() là hàm tính căn bậc hai.
+4.7. Biến trong chương trình Python
+
+Biến dùng để lưu trữ dữ liệu.
+
+Ví dụ:
+
+name = "An"
+age = 20
+
+print(name)
+print(age)
+
+Kết quả:
+
+An
+20
+
+Ở đây:
+
+name lưu chuỗi "An".
+age lưu số 20.
+4.8. Thứ tự chạy chương trình
+
+Python chạy chương trình từ trên xuống dưới.
+
+Ví dụ:
+
+print("Dòng 1")
+print("Dòng 2")
+print("Dòng 3")
+
+Kết quả:
+
+Dòng 1
+Dòng 2
+Dòng 3
+
+Python sẽ chạy dòng 1 trước, sau đó dòng 2, rồi dòng 3.
+
+4.9. Sai thứ tự có thể gây lỗi
+
+Ví dụ sai:
+
+print(name)
+name = "An"
+
+Python sẽ báo lỗi vì biến name được sử dụng trước khi được tạo.
+
+Code đúng:
+
+name = "An"
+print(name)
+4.10. Thụt lề trong Python
+
+Python sử dụng thụt lề để xác định khối lệnh.
+
+Ví dụ:
+
+age = 20
+
+if age >= 18:
+    print("Đủ tuổi")
+
+Dòng:
+
+    print("Đủ tuổi")
+
+được thụt vào bên trong if.
+
+Nếu viết sai thụt lề, chương trình có thể báo lỗi.
+
+Ví dụ sai:
+
+age = 20
+
+if age >= 18:
+print("Đủ tuổi")
+
+Lỗi vì dòng print() không được thụt vào.
+
+4.11. Quy tắc thụt lề
+
+Thông thường, Python sử dụng 4 dấu cách cho một cấp thụt lề.
+
+Nên dùng:
+
+if True:
+    print("Đúng")
+
+Không nên trộn tab và dấu cách trong cùng một file.
+
+4.12. Cấu trúc chương trình Python cơ bản
+
+Một chương trình Python cơ bản có thể được tổ chức như sau:
+
+# 1. Ghi chú mô tả chương trình
+
+# 2. Import thư viện nếu cần
+import math
+
+# 3. Khai báo dữ liệu
+number = 16
+
+# 4. Xử lý dữ liệu
+result = math.sqrt(number)
+
+# 5. Hiển thị kết quả
+print("Căn bậc hai là:", result)
+
+Kết quả:
+
+Căn bậc hai là: 4.0
+4.13. Ví dụ chương trình hoàn chỉnh
+# Chương trình giới thiệu bản thân
+
+name = "Nguyễn Văn An"
+age = 20
+major = "Công nghệ thông tin"
+
+print("GIỚI THIỆU BẢN THÂN")
+print("Họ tên:", name)
+print("Tuổi:", age)
+print("Ngành học:", major)
+
+Kết quả:
+
+GIỚI THIỆU BẢN THÂN
+Họ tên: Nguyễn Văn An
+Tuổi: 20
+Ngành học: Công nghệ thông tin
+4.14. Một số lỗi cú pháp cơ bản
+Lỗi thiếu dấu ngoặc
+
+Sai:
+
+print("Hello"
+
+Đúng:
+
+print("Hello")
+Lỗi thiếu dấu nháy
+
+Sai:
+
+print("Hello)
+
+Đúng:
+
+print("Hello")
+Lỗi sai thụt lề
+
+Sai:
+
+if True:
+print("Đúng")
+
+Đúng:
+
+if True:
+    print("Đúng")
+Lỗi dùng biến chưa khai báo
+
+Sai:
+
+print(score)
+score = 10
+
+Đúng:
+
+score = 10
+print(score)
+4.15. Bài tập bài 4
+Bài tập 1
+
+Tạo file:
+
+program_structure.py
+
+Viết chương trình có:
+
+Comment giới thiệu chương trình
+3 biến: name, age, school
+In thông tin ra màn hình
+Bài tập 2
+
+Viết chương trình tính căn bậc hai của số 81 bằng thư viện math.
+
+Gợi ý:
+
+import math
+Bài tập 3
+
+Viết chương trình có ít nhất 5 dòng print().
+
+Bài tập 4
+
+Viết sai cú pháp trong chương trình, chạy thử và ghi lại thông báo lỗi.
+
+Bài tập 5
+
+Sửa lại chương trình bị lỗi sau:
+
+print("Chương trình Python"
+name = "An"
+print(name
+BÀI 5: CÁCH HỌC LẬP TRÌNH HIỆU QUẢ
+5.1. Học lập trình khác học lý thuyết thông thường
+
+Lập trình là kỹ năng thực hành. Không thể giỏi lập trình chỉ bằng cách đọc sách hoặc xem video.
+
+Để học tốt lập trình, người học cần:
+
+Đọc lý thuyết
+Viết code
+Gặp lỗi
+Sửa lỗi
+Làm bài tập
+Làm dự án
+Lặp lại nhiều lần
+
+Học lập trình giống học lái xe hoặc học chơi nhạc cụ. Chỉ xem người khác làm không đủ. Phải tự tay thực hành.
+
+5.2. Sai lầm phổ biến khi học lập trình
+Sai lầm 1: Chỉ xem video, không tự code
+
+Nhiều người học xem video và cảm thấy đã hiểu. Nhưng khi tự viết lại thì không biết bắt đầu từ đâu.
+
+Cách khắc phục:
+
+Xem đến đâu, code đến đó.
+Không copy toàn bộ code.
+Sau khi xem xong, tự viết lại không nhìn tài liệu.
+Sai lầm 2: Sợ lỗi
+
+Lỗi là một phần bình thường của lập trình.
+
+Lập trình viên chuyên nghiệp cũng gặp lỗi mỗi ngày.
+
+Thay vì sợ lỗi, người học nên tập đọc lỗi.
+
+Ví dụ lỗi:
+
+SyntaxError: missing closing parenthesis
+
+Nghĩa là thiếu dấu ngoặc đóng.
+
+Sai lầm 3: Học quá nhiều lý thuyết trước khi thực hành
+
+Một số người học cố học hết mọi thứ rồi mới làm bài tập. Cách này dễ gây chán và khó nhớ.
+
+Cách tốt hơn:
+
+Học một ít → thực hành ngay → sai → sửa → hiểu sâu hơn
+Sai lầm 4: Nhảy quá nhanh sang chủ đề khó
+
+Người mới thường muốn học AI, web hoặc automation ngay. Nhưng nếu chưa chắc nền tảng, khi vào dự án thật sẽ rất dễ bị rối.
+
+Cần học chắc:
+
+Biến
+Kiểu dữ liệu
+Điều kiện
+Vòng lặp
+Hàm
+List
+Dictionary
+File
+OOP
+Sai lầm 5: Không làm bài tập
+
+Bài tập giúp biến kiến thức thành kỹ năng.
+
+Mỗi bài học nên có:
+
+Bài tập cơ bản
+Bài tập vận dụng
+Bài tập nâng cao
+Mini project
+5.3. Phương pháp học Python hiệu quả
+Phương pháp 1: Code lại ví dụ
+
+Khi học một ví dụ, không nên chỉ đọc. Hãy tự gõ lại code.
+
+Ví dụ:
+
+print("Hello Python")
+
+Sau đó thử sửa:
+
+print("Tôi đang học Python")
+print("Python rất thú vị")
+Phương pháp 2: Thay đổi ví dụ
+
+Sau khi chạy được ví dụ, hãy thay đổi dữ liệu để hiểu rõ hơn.
+
+Ví dụ ban đầu:
+
+print(5 + 3)
+
+Thử sửa thành:
+
+print(10 + 20)
+print(100 - 30)
+print(6 * 7)
+
+Việc thay đổi giúp người học hiểu bản chất thay vì học thuộc.
+
+Phương pháp 3: Tự giải thích code
+
+Sau khi viết một đoạn code, hãy tự hỏi:
+
+Dòng này làm gì?
+Vì sao cần dòng này?
+Nếu xóa dòng này thì sao?
+Nếu đổi giá trị thì kết quả thay đổi thế nào?
+
+Ví dụ:
+
+name = "An"
+print(name)
+
+Giải thích:
+
+Dòng 1 tạo biến name và lưu giá trị "An".
+Dòng 2 in giá trị của biến name.
+Phương pháp 4: Ghi chú lỗi
+
+Mỗi khi gặp lỗi, nên ghi lại:
+
+Code bị lỗi
+Thông báo lỗi
+Nguyên nhân lỗi
+Cách sửa
+
+Ví dụ:
+
+print("Hello)
+
+Thông báo lỗi:
+
+SyntaxError
+
+Nguyên nhân:
+
+Thiếu dấu nháy kép đóng chuỗi
+
+Cách sửa:
+
+print("Hello")
+Phương pháp 5: Làm project nhỏ
+
+Sau vài bài học, nên làm project nhỏ để tổng hợp kiến thức.
+
+Ví dụ project sau chương 1:
+
+print("==============================")
+print("       HỒ SƠ CÁ NHÂN")
+print("==============================")
+print("Họ tên: Nguyễn Văn An")
+print("Tuổi: 20")
+print("Ngành học: Công nghệ thông tin")
+print("Mục tiêu: Trở thành lập trình viên Python")
+5.4. Lộ trình luyện tập mỗi ngày
+
+Một lịch học đơn giản:
+
+Mỗi ngày 60–90 phút
+15 phút đọc lý thuyết
+30 phút code ví dụ
+30 phút làm bài tập
+15 phút ghi chú lỗi và tổng kết
+Mỗi tuần
+Học 3–5 bài mới
+Làm 20–30 bài tập nhỏ
+Làm 1 mini project
+Ôn lại lỗi đã gặp
+5.5. Cách đọc lỗi trong Python
+
+Khi Python báo lỗi, không nên hoảng. Hãy đọc từ dưới lên.
+
+Ví dụ:
+
+print("Hello"
+
+Lỗi có thể hiển thị:
+
+SyntaxError: '(' was never closed
+
+Nghĩa là:
+
+Dấu ngoặc mở chưa được đóng
+
+Cách sửa:
+
+print("Hello")
+5.6. Cách đặt câu hỏi khi bị lỗi
+
+Một câu hỏi tốt nên có:
+
+Mục tiêu chương trình
+Đoạn code đang viết
+Thông báo lỗi đầy đủ
+Bạn đã thử sửa gì rồi
+
+Ví dụ câu hỏi chưa tốt:
+
+Code em bị lỗi, sửa giúp em.
+
+Ví dụ câu hỏi tốt:
+
+Em muốn in dòng chữ Hello Python. Code của em là print("Hello Python). Khi chạy báo SyntaxError. Em nghĩ bị thiếu dấu gì đó nhưng chưa biết sửa thế nào.
+
+Câu hỏi tốt giúp người khác hỗ trợ nhanh hơn và chính người học cũng hiểu vấn đề rõ hơn.
+
+5.7. Tư duy chia nhỏ vấn đề
+
+Khi gặp một bài toán, không nên viết code ngay. Hãy chia nhỏ bài toán.
+
+Ví dụ yêu cầu:
+
+Viết chương trình giới thiệu bản thân.
+
+Chia nhỏ:
+
+In tiêu đề.
+In họ tên.
+In tuổi.
+In trường.
+In ngành.
+In mục tiêu học tập.
+
+Code:
+
+print("GIỚI THIỆU BẢN THÂN")
+print("Họ tên: Nguyễn Văn An")
+print("Tuổi: 20")
+print("Trường: Đại học ABC")
+print("Ngành: Công nghệ thông tin")
+print("Mục tiêu: Học tốt Python")
+5.8. Bài tập bài 5
+Bài tập 1
+
+Viết lại bằng lời của bạn:
+
+Theo bạn, học lập trình cần thực hành nhiều hay học lý thuyết nhiều hơn? Vì sao?
+
+Bài tập 2
+
+Ghi lại 3 lỗi phổ biến người mới học Python có thể gặp.
+
+Bài tập 3
+
+Viết chương trình giới thiệu mục tiêu học Python của bạn.
+
+Bài tập 4
+
+Tự tạo một lỗi cú pháp, chạy chương trình, chụp hoặc ghi lại lỗi, sau đó sửa lỗi.
+
+Bài tập 5
+
+Viết kế hoạch học Python trong 7 ngày đầu tiên.
+
+TỔNG KẾT CHƯƠNG 1
+
+Sau chương này, người học đã biết:
+
+Python là ngôn ngữ lập trình dễ học, mạnh mẽ và phổ biến.
+Python có thể dùng trong web, automation, data, AI, backend và scripting.
+Muốn chạy Python cần cài Python Interpreter.
+VS Code là công cụ phù hợp cho người mới bắt đầu.
+File Python thường có phần mở rộng .py.
+Python Shell dùng để thử lệnh nhanh.
+Terminal dùng để chạy chương trình bằng lệnh.
+Python chạy code từ trên xuống dưới.
+Thụt lề rất quan trọng trong Python.
+Học lập trình hiệu quả cần thực hành nhiều, đọc lỗi và làm bài tập thường xuyên.
+MINI PROJECT CUỐI CHƯƠNG 1
+Tên project: Hồ sơ cá nhân bằng Python
+Yêu cầu
+
+Viết chương trình Python in ra một hồ sơ cá nhân đơn giản.
+
+Thông tin cần có:
+
+Họ tên
+Tuổi
+Trường học
+Ngành học
+Sở thích
+Mục tiêu học Python
+Lĩnh vực muốn theo đuổi sau khi học Python
+Code mẫu
+print("====================================")
+print("          HỒ SƠ CÁ NHÂN")
+print("====================================")
+
+print("Họ tên: Nguyễn Văn An")
+print("Tuổi: 20")
+print("Trường học: Đại học ABC")
+print("Ngành học: Công nghệ thông tin")
+print("Sở thích: Đọc sách, lập trình, nghe nhạc")
+print("Mục tiêu học Python: Nắm vững nền tảng lập trình")
+print("Định hướng: Backend Developer")
+
+print("====================================")
+print("        KẾT THÚC CHƯƠNG TRÌNH")
+print("====================================")
+Yêu cầu mở rộng
+
+Hãy tự thay đổi chương trình để in ra thêm:
+
+Email
+Số điện thoại
+Thành phố đang sống
+3 kỹ năng muốn học
+3 dự án muốn làm sau khóa học
+BÀI TẬP TỰ LUẬN CUỐI CHƯƠNG
+Câu 1
+
+Python là gì? Hãy giải thích bằng ngôn ngữ của bạn.
+
+Câu 2
+
+Nêu ít nhất 5 lĩnh vực Python có thể được sử dụng.
+
+Câu 3
+
+Vì sao Python phù hợp với người mới bắt đầu học lập trình?
+
+Câu 4
+
+Phân biệt Python Shell và file .py.
+
+Câu 5
+
+Terminal dùng để làm gì trong quá trình học Python?
+
+Câu 6
+
+Comment trong Python là gì? Vì sao nên dùng comment?
+
+Câu 7
+
+Vì sao thụt lề quan trọng trong Python?
+
+Câu 8
+
+Hãy nêu 5 lỗi người mới học Python thường gặp.
+
+Câu 9
+
+Theo bạn, cách học lập trình hiệu quả nhất là gì?
+
+Câu 10
+
+Hãy viết một chương trình Python in ra thông tin cá nhân của bạn.
+
+BÀI TẬP THỰC HÀNH CUỐI CHƯƠNG
+Bài 1: In lời chào
+
+Viết chương trình in ra:
+
+Xin chào Python!
+Tôi là sinh viên năm nhất.
+Tôi đang học lập trình.
+Bài 2: In thông tin trường học
+
+Viết chương trình in ra:
+
+Tên trường:
+Khoa:
+Ngành:
+Lớp:
+Mã sinh viên:
+Bài 3: Trang giới thiệu bản thân
+
+Viết chương trình in ra màn hình một trang giới thiệu bản thân có trang trí bằng dấu = hoặc -.
+
+Ví dụ:
+
+==============================
+       GIỚI THIỆU BẢN THÂN
+==============================
+Họ tên: ...
+Tuổi: ...
+Sở thích: ...
+Mục tiêu: ...
+==============================
+Bài 4: Thực hành Terminal
+
+Thực hiện các yêu cầu:
+
+Tạo thư mục python_chapter_01.
+Tạo file main.py.
+Viết chương trình in ra Chương 1 - Giới thiệu Python.
+Chạy file bằng Terminal.
+Bài 5: Tìm và sửa lỗi
+
+Cho chương trình sau:
+
+print("Xin chào Python"
+print("Tôi đang học lập trình")
+print("Python rất thú vị)
+
+Yêu cầu:
+
+Chạy chương trình.
+Ghi lại lỗi.
+Sửa lỗi.
+Chạy lại chương trình đúng.
+TRẮC NGHIỆM CUỐI CHƯƠNG
+Câu 1
+
+Python là gì?
+
+A. Một hệ điều hành
+B. Một ngôn ngữ lập trình
+C. Một phần mềm diệt virus
+D. Một trình duyệt web
+
+Đáp án: B
+
+Câu 2
+
+File Python thường có phần mở rộng nào?
+
+A. .java
+B. .html
+C. .py
+D. .txt
+
+Đáp án: C
+
+Câu 3
+
+Hàm nào dùng để in dữ liệu ra màn hình trong Python?
+
+A. show()
+B. display()
+C. print()
+D. write()
+
+Đáp án: C
+
+Câu 4
+
+Câu lệnh nào sau đây đúng?
+
+A. print("Hello")
+B. print "Hello"
+C. print(Hello)
+D. print("Hello)
+
+Đáp án: A
+
+Câu 5
+
+Python phù hợp với người mới học vì:
+
+A. Cú pháp khó
+B. Không cần thực hành
+C. Cú pháp dễ đọc, dễ viết
+D. Chỉ dùng cho game
+
+Đáp án: C
+
+Câu 6
+
+Để kiểm tra phiên bản Python, ta có thể dùng lệnh:
+
+A. python --version
+B. python check
+C. version python
+D. check python
+
+Đáp án: A
+
+Câu 7
+
+VS Code là gì?
+
+A. Một trình duyệt web
+B. Một trình soạn thảo code
+C. Một hệ điều hành
+D. Một loại cơ sở dữ liệu
+
+Đáp án: B
+
+Câu 8
+
+Python Shell dùng để:
+
+A. Gõ và chạy nhanh lệnh Python
+B. Thiết kế giao diện web
+C. Xóa Python khỏi máy
+D. Tạo tài khoản email
+
+Đáp án: A
+
+Câu 9
+
+Terminal dùng để:
+
+A. Chạy lệnh trên máy tính
+B. Chỉnh sửa ảnh
+C. Xem phim
+D. Thiết kế logo
+
+Đáp án: A
+
+Câu 10
+
+Comment trong Python bắt đầu bằng ký tự nào?
+
+A. //
+B. #
+C. /*
+D. @
+
+Đáp án: B
+
+Câu 11
+
+Dòng nào sau đây là comment hợp lệ trong Python?
+
+A. // Đây là comment
+B. # Đây là comment
+C. <!-- Đây là comment -->
+D. ** Đây là comment
+
+Đáp án: B
+
+Câu 12
+
+Python chạy chương trình theo thứ tự nào?
+
+A. Từ dưới lên trên
+B. Ngẫu nhiên
+C. Từ trên xuống dưới
+D. Theo thứ tự chữ cái
+
+Đáp án: C
+
+Câu 13
+
+Lỗi nào thường xảy ra khi thiếu dấu ngoặc trong Python?
+
+A. SyntaxError
+B. NameCorrect
+C. PrintError
+D. FileDone
+
+Đáp án: A
+
+Câu 14
+
+Trong Python, thụt lề thường dùng bao nhiêu dấu cách?
+
+A. 1
+B. 2
+C. 4
+D. 10
+
+Đáp án: C
+
+Câu 15
+
+Câu nào sau đây đúng khi học lập trình?
+
+A. Chỉ cần xem video là đủ
+B. Không cần làm bài tập
+C. Gặp lỗi là điều bình thường
+D. Không nên tự viết code
+
+Đáp án: C
+
+Câu 16
+
+Lệnh nào dùng để chạy file hello.py?
+
+A. run hello.py
+B. python hello.py
+C. start python hello.py
+D. hello python
+
+Đáp án: B
+
+Câu 17
+
+Lĩnh vực nào sau đây có thể dùng Python?
+
+A. Web
+B. AI
+C. Automation
+D. Cả A, B và C
+
+Đáp án: D
+
+Câu 18
+
+Đoạn code sau in ra gì?
+
+print(5 + 3)
+
+A. 5 + 3
+B. 8
+C. 53
+D. Báo lỗi
+
+Đáp án: B
+
+Câu 19
+
+Đoạn code nào bị lỗi?
+
+A. print("Python")
+B. print("Hello")
+C. print("Xin chào")
+D. print("Python)
+
+Đáp án: D
+
+Câu 20
+
+Khi gặp lỗi, người học nên làm gì?
+
+A. Bỏ học ngay
+B. Xóa toàn bộ chương trình
+C. Đọc thông báo lỗi và tìm nguyên nhân
+D. Không cần quan tâm lỗi
+
+Đáp án: C
+
+ĐÁP ÁN TRẮC NGHIỆM TỔNG HỢP
+Câu	Đáp án
+1	B
+2	C
+3	C
+4	A
+5	C
+6	A
+7	B
+8	A
+9	A
+10	B
+11	B
+12	C
+13	A
+14	C
+15	C
+16	B
+17	D
+18	B
+19	D
+20	C
+ĐỀ KIỂM TRA NGẮN CUỐI CHƯƠNG
+Thời gian làm bài
+
+30 phút
+
+Phần 1: Trắc nghiệm
+
+Chọn đáp án đúng cho 10 câu bất kỳ trong phần trắc nghiệm trên.
+
+Phần 2: Tự luận
+
+Trả lời ngắn gọn:
+
+Python là gì?
+Python dùng để làm gì?
+Vì sao cần cài Python Interpreter?
+VS Code dùng để làm gì?
+Người mới học lập trình nên học như thế nào?
+Phần 3: Thực hành
+
+Viết chương trình Python in ra:
+
+================================
+        BÀI KIỂM TRA CHƯƠNG 1
+================================
+Họ tên: ...
+Lớp: ...
+Mục tiêu học Python: ...
+Lĩnh vực yêu thích: ...
+================================
+RUBRIC CHẤM ĐIỂM CUỐI CHƯƠNG
+
+Tổng điểm: 10 điểm
+
+Tiêu chí	Điểm
+Hiểu Python là gì và ứng dụng của Python	2
+Cài đặt và chạy được Python	2
+Biết dùng VS Code hoặc công cụ tương đương	1
+Biết chạy file .py bằng Terminal	1.5
+Hiểu cấu trúc chương trình cơ bản	1.5
+Hoàn thành bài thực hành cuối chương	2
+GỢI Ý GIẢNG DẠY CHO GIẢNG VIÊN
+Buổi 1
+
+Nội dung:
+
+Python là gì?
+Ứng dụng của Python
+Chương trình Python đầu tiên
+
+Hoạt động lớp học:
+
+Giảng viên demo print("Hello Python")
+Sinh viên tự viết chương trình in thông tin cá nhân
+Thảo luận Python dùng trong lĩnh vực nào
+Buổi 2
+
+Nội dung:
+
+Cài đặt Python
+Cài đặt VS Code
+Cài extension Python
+
+Hoạt động lớp học:
+
+Sinh viên cài Python tại lớp
+Kiểm tra python --version
+Tạo file hello.py
+Buổi 3
+
+Nội dung:
+
+Terminal
+Python Shell
+Chạy file .py
+
+Hoạt động lớp học:
+
+Thực hành lệnh cd, dir, ls
+Chạy file Python từ Terminal
+So sánh Shell và file .py
+Buổi 4
+
+Nội dung:
+
+Cấu trúc chương trình Python
+Comment
+Import
+Thứ tự chạy chương trình
+Lỗi cú pháp cơ bản
+
+Hoạt động lớp học:
+
+Sinh viên sửa các đoạn code lỗi
+Làm mini project hồ sơ cá nhân
+Kiểm tra ngắn cuối chương
+KẾT LUẬN CHƯƠNG 1
+
+Chương 1 là bước khởi đầu quan trọng trong toàn bộ khóa học Python. Mục tiêu không phải là học nhiều cú pháp phức tạp, mà là giúp người học hiểu Python là gì, cài đặt được môi trường lập trình, chạy được chương trình đầu tiên và hình thành tư duy học lập trình đúng cách.
+
+Sau chương này, người học chưa cần viết được chương trình phức tạp, nhưng phải tự tin thực hiện được các việc sau:
+
+Mở VS Code.
+Tạo file Python.
+Viết vài dòng lệnh print().
+Chạy chương trình.
+Đọc lỗi cơ bản.
+Hiểu rằng lập trình là quá trình thực hành, sai, sửa và tiến bộ dần.
+
+Đây là nền tảng để bước sang Chương 2: Biến, kiểu dữ liệu và nhập xuất trong Python.

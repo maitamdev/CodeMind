@@ -12,6 +12,7 @@ import {
     MessageCircle,
     Laptop,
     Wrench,
+    Trophy,
     LucideIcon
 } from "lucide-react";
 
@@ -58,6 +59,12 @@ const publicMenuItems: MenuItem[] = [
         icon: Laptop,
         label: "Playground",
         href: "/playground",
+    },
+    {
+        id: "leaderboard",
+        icon: Trophy,
+        label: "Xếp hạng",
+        href: "/leaderboard",
     },
 ];
 

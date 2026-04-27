@@ -19,6 +19,7 @@ import Link from "next/link";
 import PageContainer from "@/components/PageContainer";
 import PageLoading from "@/components/PageLoading";
 import RoadmapTreeView, { RoadmapNodeData } from "@/components/RoadmapTreeView";
+import CourseRecommendations from "@/components/CourseRecommendations";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import ReactMarkdown from "react-markdown";
@@ -381,6 +382,16 @@ export default function CourseDetailPage() {
                     />
                 </section>
             )}
+
+            {/* Content-based recommendations */}
+            <PageContainer>
+                <div className="mt-12">
+                    <CourseRecommendations
+                        source={{ mode: "similar", courseId: course.id, courseSlug: course.slug }}
+                        limit={6}
+                    />
+                </div>
+            </PageContainer>
         </div>
     );
 }

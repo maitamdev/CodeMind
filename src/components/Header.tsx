@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2, Shield, LayoutDashboard } from "lucide-react";
+import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2, Shield, LayoutDashboard, Search } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +13,8 @@ import RegisterModal from "./RegisterModal";
 import AvatarWithProBadge from "./AvatarWithProBadge";
 import { getCanonicalProfilePath, normalizeUsername } from "@/lib/profile-url";
 import Logo from "./Logo";
+import { openCommandPalette } from "./CommandPalette";
+import NotificationCenter from "./NotificationCenter";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -59,7 +61,31 @@ export default function Header() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 flex-shrink-0 z-10">
-          
+
+          {/* Command Palette Trigger */}
+          <button
+            onClick={() => openCommandPalette()}
+            className="hidden md:inline-flex items-center gap-2 h-9 px-2.5 border border-border rounded-md bg-secondary/40 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Mở tìm kiếm nhanh"
+            title="Mở tìm kiếm nhanh (⌘K)"
+          >
+            <Search className="h-4 w-4" />
+            <span className="text-xs">Tìm kiếm</span>
+            <kbd className="ml-1 hidden lg:inline-flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+              ⌘K
+            </kbd>
+          </button>
+          <button
+            onClick={() => openCommandPalette()}
+            className="md:hidden p-2 border border-border rounded-none hover:bg-secondary text-foreground transition-colors"
+            aria-label="Mở tìm kiếm nhanh"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+
+          {/* Notifications */}
+          <NotificationCenter />
+
           {/* Theme Toggle */}
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

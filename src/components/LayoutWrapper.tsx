@@ -5,6 +5,7 @@ import Menu from "@/components/Menu";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterBulletin from "@/components/NewsletterBulletin";
+import CommandPalette from "@/components/CommandPalette";
 import { ReactNode, useEffect, useState } from "react";
 
 /**
@@ -31,6 +32,8 @@ const KNOWN_ROOT_PATHS = [
     "/s",
     "/saved",
     "/write",
+    "/leaderboard",
+    "/certificates",
 ];
 
 function isUserProfilePage(pathname: string | null): boolean {
@@ -62,9 +65,14 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
     // Detect user profile page for hover-reveal sidebar
     const isProfilePage = isUserProfilePage(pathname);
 
-    // Pages with no layout at all
+    // Pages with no layout at all (still mount the global Command Palette)
     if (isAdminPage || isLearningPage || isPlaygroundPage || isToolPage) {
-        return <>{children}</>;
+        return (
+            <>
+                {children}
+                <CommandPalette />
+            </>
+        );
     }
 
     // Course landing page — Footer only
@@ -73,6 +81,7 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
             <div className="bg-background min-h-screen text-foreground">
                 <main>{children}</main>
                 <Footer />
+                <CommandPalette />
             </div>
         );
     }
@@ -87,6 +96,7 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
             </main>
             <Footer />
             <NewsletterBulletin />
+            <CommandPalette />
         </div>
     );
 }

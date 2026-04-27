@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award } from 'lucide-react';
+import { Award, ShieldCheck } from 'lucide-react';
 
 interface CertificateProps {
   studentName: string;
@@ -8,6 +8,7 @@ interface CertificateProps {
   instructorName: string;
   courseDuration: string;
   certificateId?: string;
+  verifyUrl?: string;
 }
 
 const Certificate: React.FC<CertificateProps> = ({
@@ -16,8 +17,13 @@ const Certificate: React.FC<CertificateProps> = ({
   completionDate,
   instructorName,
   courseDuration,
-  certificateId = `DHV-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+  certificateId = `CM-${Math.random().toString(36).slice(2, 11).toUpperCase()}`,
+  verifyUrl,
 }) => {
+  const qrTarget = verifyUrl || (typeof window !== 'undefined' ? `${window.location.origin}/certificates/${certificateId}` : '');
+  const qrSrc = qrTarget
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(qrTarget)}`
+    : '';
   return (
     <div className="certificate-container w-full max-w-[1000px] mx-auto bg-white p-8 md:p-12 text-center relative overflow-hidden shadow-2xl print:shadow-none print:w-[100%] print:max-w-none print:p-0">
       {/* Decorative Border */}
@@ -103,10 +109,37 @@ const Certificate: React.FC<CertificateProps> = ({
             </div>
             <div className="border-t border-gray-400 w-48 mx-auto pt-2">
               <p className="font-bold text-gray-900">Date Issued</p>
-              <p className="text-xs text-gray-500 uppercase tracking-wider">ID: {certificateId}</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-mono break-all">
+                ID: {certificateId}
+              </p>
             </div>
           </div>
         </div>
+
+        {/* Verify Block */}
+        {qrSrc && (
+          <div className="mt-10 pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-center gap-4 max-w-3xl mx-auto">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={qrSrc}
+              alt="Xác thực chứng chỉ"
+              className="w-24 h-24 rounded-lg border border-gray-200 bg-white p-1"
+              loading="lazy"
+            />
+            <div className="text-center md:text-left">
+              <div className="inline-flex items-center gap-1.5 text-emerald-700 text-xs uppercase tracking-wider font-semibold mb-1">
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified by CodeMind
+              </div>
+              <p className="text-xs text-gray-600 max-w-xs">
+                Quét mã QR hoặc truy cập liên kết dưới đây để xác minh
+                tính hợp lệ của chứng chỉ này.
+              </p>
+              <p className="mt-1 text-[10px] text-gray-500 font-mono break-all max-w-xs">
+                {qrTarget}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
