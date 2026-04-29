@@ -8,6 +8,20 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * @swagger
+ * /api/ai-roadmap/[id]:
+ *   get:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/[id]
+ *     description: Tự động sinh tài liệu cho GET /api/ai-roadmap/[id]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: roadmapId } = await params;
@@ -116,6 +130,20 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
+/**
+ * @swagger
+ * /api/ai-roadmap/[id]:
+ *   delete:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/[id]
+ *     description: Tự động sinh tài liệu cho DELETE /api/ai-roadmap/[id]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: roadmapId } = await params;

@@ -65,6 +65,20 @@ const ACTIVITY_SOURCES: ActivitySource[] = [
  *
  * Returns: { success, data (dailyCounts), totalActivities, breakdown, joinedAt }
  */
+/**
+ * @swagger
+ * /api/profiles/[username]/activity:
+ *   get:
+ *     tags:
+ *       - Profiles
+ *     summary: API endpoint for /api/profiles/[username]/activity
+ *     description: Tự động sinh tài liệu cho GET /api/profiles/[username]/activity. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ username: string }> },

@@ -89,6 +89,8 @@ function fallbackDetail(nodeTitle: string, nodeDescription?: string): NodeDetail
     };
 }
 
+const detailCache = new Map<string, NodeDetailData>();
+
 export default function NodeDetailSidebar({
     isOpen,
     onClose,
@@ -109,9 +111,26 @@ export default function NodeDetailSidebar({
     const fetchNodeDetail = useCallback(async () => {
         if (!nodeTitle) return;
 
+        if (detailCache.has(nodeTitle)) {
+            setNodeDetail(detailCache.get(nodeTitle)!);
+            return;
+        }
+
+        try {
+            const cached = localStorage.getItem(`aiot_node_${nodeTitle}`);
+            if (cached) {
+                const parsed = JSON.parse(cached) as NodeDetailData;
+                detailCache.set(nodeTitle, parsed);
+                setNodeDetail(parsed);
+                return;
+            }
+        } catch (e) {
+            console.error("Local storage error", e);
+        }
+
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:8000/api/node-detail", {
+            const response = await fetch("/api/roadmap/node-detail", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -122,21 +141,32 @@ export default function NodeDetailSidebar({
             });
 
             if (!response.ok) {
-                setNodeDetail(fallbackDetail(nodeTitle, nodeDescription));
+                const fallback = fallbackDetail(nodeTitle, nodeDescription);
+                setNodeDetail(fallback);
                 return;
             }
 
             const data = await response.json();
-            setNodeDetail({
+            const newDetail = {
                 description: data.description || nodeDescription || "",
                 relatedConcepts: data.related_concepts || [],
                 freeResources: data.free_resources || [],
                 aiTutorContent: data.ai_tutor_content || "",
                 premiumResources: data.premium_resources || [],
-            });
+            };
+            
+            detailCache.set(nodeTitle, newDetail);
+            try {
+                localStorage.setItem(`aiot_node_${nodeTitle}`, JSON.stringify(newDetail));
+            } catch (e) {
+                console.error("Failed to save to localStorage", e);
+            }
+            
+            setNodeDetail(newDetail);
         } catch (error) {
             console.error("Failed to fetch node detail:", error);
-            setNodeDetail(fallbackDetail(nodeTitle, nodeDescription));
+            const fallback = fallbackDetail(nodeTitle, nodeDescription);
+            setNodeDetail(fallback);
         } finally {
             setIsLoading(false);
         }

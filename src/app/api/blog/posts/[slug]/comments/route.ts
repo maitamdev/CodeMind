@@ -22,6 +22,20 @@ async function getAuthUser() {
     }
 }
 
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/comments:
+ *   get:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/comments
+ *     description: Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/comments. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ slug: string }> }
@@ -77,6 +91,20 @@ export async function GET(
     }
 }
 
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/comments:
+ *   post:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/comments
+ *     description: Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/comments. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ slug: string }> }

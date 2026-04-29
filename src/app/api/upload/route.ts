@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadImage } from "@/lib/cloudinary";
 
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     tags:
+ *       - Upload
+ *     summary: API endpoint for /api/upload
+ *     description: Tự động sinh tài liệu cho POST /api/upload. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(req: NextRequest) {
     try {
         const formData = await req.formData();

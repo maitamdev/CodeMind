@@ -23,6 +23,20 @@ const ALLOWED_TYPES = [
     "image/gif",
 ];
 
+/**
+ * @swagger
+ * /api/upload/avatar:
+ *   post:
+ *     tags:
+ *       - Upload
+ *     summary: API endpoint for /api/upload/avatar
+ *     description: Tự động sinh tài liệu cho POST /api/upload/avatar. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         // 1. Authenticate user
@@ -137,6 +151,20 @@ export async function POST(request: NextRequest) {
  * API Route: DELETE /api/upload/avatar
  *
  * Delete user avatar from Cloudinary
+ */
+/**
+ * @swagger
+ * /api/upload/avatar:
+ *   delete:
+ *     tags:
+ *       - Upload
+ *     summary: API endpoint for /api/upload/avatar
+ *     description: Tự động sinh tài liệu cho DELETE /api/upload/avatar. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function DELETE(request: NextRequest) {
     try {

@@ -5,6 +5,20 @@ import {
     getAuthUserById,
 } from "@/lib/profile-service";
 
+/**
+ * @swagger
+ * /api/admin/profile-reviews/[userId]/approve:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/profile-reviews/[userId]/approve
+ *     description: Tự động sinh tài liệu cho POST /api/admin/profile-reviews/[userId]/approve. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ userId: string }> },

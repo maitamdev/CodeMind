@@ -12,6 +12,20 @@ import crypto from 'crypto';
  * Body (POST) hoặc Query (GET):
  * - recoveryKeys: string[] (array of recovery keys)
  */
+/**
+ * @swagger
+ * /api/auth/recovery-key/download:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/recovery-key/download
+ *     description: Tự động sinh tài liệu cho GET /api/auth/recovery-key/download. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // Authenticate user
@@ -126,6 +140,20 @@ Bảo mật:
  * POST /api/auth/recovery-key/download
  * 
  * Download recovery keys dưới dạng .txt file (POST version)
+ */
+/**
+ * @swagger
+ * /api/auth/recovery-key/download:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/recovery-key/download
+ *     description: Tự động sinh tài liệu cho POST /api/auth/recovery-key/download. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function POST(request: NextRequest) {
   try {

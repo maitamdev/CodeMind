@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getAuthUserId } from "@/lib/auth-helpers";
 
+/**
+ * @swagger
+ * /api/user/code:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: API endpoint for /api/user/code
+ *     description: Tự động sinh tài liệu cho GET /api/user/code. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const userId = await getAuthUserId();
@@ -32,6 +46,20 @@ export async function GET(request: NextRequest) {
     }
 }
 
+/**
+ * @swagger
+ * /api/user/code:
+ *   post:
+ *     tags:
+ *       - User
+ *     summary: API endpoint for /api/user/code
+ *     description: Tự động sinh tài liệu cho POST /api/user/code. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const userId = await getAuthUserId();

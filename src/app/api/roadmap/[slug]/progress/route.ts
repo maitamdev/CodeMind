@@ -14,6 +14,20 @@ const VALID_SLUGS = ["frontend", "backend", "fullstack", "mobile", "devops"];
  * GET /api/roadmap/[slug]/progress
  * Returns all node progress for the current user on a predefined roadmap.
  */
+/**
+ * @swagger
+ * /api/roadmap/[slug]/progress:
+ *   get:
+ *     tags:
+ *       - Roadmap
+ *     summary: API endpoint for /api/roadmap/[slug]/progress
+ *     description: Tự động sinh tài liệu cho GET /api/roadmap/[slug]/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const { slug } = await params;
@@ -77,6 +91,20 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  * POST /api/roadmap/[slug]/progress
  * Upsert a single node's progress status.
  * Body: { node_id: string, status: string }
+ */
+/**
+ * @swagger
+ * /api/roadmap/[slug]/progress:
+ *   post:
+ *     tags:
+ *       - Roadmap
+ *     summary: API endpoint for /api/roadmap/[slug]/progress
+ *     description: Tự động sinh tài liệu cho POST /api/roadmap/[slug]/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function POST(request: NextRequest, { params }: RouteParams) {
     try {

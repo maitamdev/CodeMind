@@ -4,6 +4,20 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
 // POST /api/lessons/answers/:answerId/like - Toggle like on an answer
+/**
+ * @swagger
+ * /api/lessons/answers/[answerId]/like:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/answers/[answerId]/like
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/answers/[answerId]/like. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ answerId: string }> }

@@ -5,6 +5,20 @@ import {
     replaceUserVerifications,
 } from "@/lib/profile-service";
 
+/**
+ * @swagger
+ * /api/admin/users/[userId]/verifications:
+ *   put:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/users/[userId]/verifications
+ *     description: Tự động sinh tài liệu cho PUT /api/admin/users/[userId]/verifications. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ userId: string }> },

@@ -5,6 +5,20 @@ import { supabaseAdmin } from "@/lib/supabase";
  * GET /api/links/[code] — Redirect to the original URL
  * Increments click counter and returns 307 redirect.
  */
+/**
+ * @swagger
+ * /api/links/[code]:
+ *   get:
+ *     tags:
+ *       - Links
+ *     summary: API endpoint for /api/links/[code]
+ *     description: Tự động sinh tài liệu cho GET /api/links/[code]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ code: string }> },

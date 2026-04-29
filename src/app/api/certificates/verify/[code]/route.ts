@@ -12,6 +12,20 @@ import { parseCertificateCode } from "@/lib/certificate";
  *
  * Returns 200 with `valid: false` for any tampered / unknown code.
  */
+/**
+ * @swagger
+ * /api/certificates/verify/[code]:
+ *   get:
+ *     tags:
+ *       - Certificates
+ *     summary: API endpoint for /api/certificates/verify/[code]
+ *     description: Tự động sinh tài liệu cho GET /api/certificates/verify/[code]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ code: string }> },

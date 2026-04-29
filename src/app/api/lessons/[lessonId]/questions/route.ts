@@ -11,6 +11,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * GET /api/lessons/:lessonId/questions
  * Get all questions for a lesson with status, likes, and answers count.
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/questions:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/questions
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/questions. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ lessonId: string }> },
@@ -130,6 +144,20 @@ export async function GET(
 /**
  * POST /api/lessons/:lessonId/questions
  * Create a new question (requires enrollment).
+ */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/questions:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/questions
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/questions. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function POST(
     request: NextRequest,

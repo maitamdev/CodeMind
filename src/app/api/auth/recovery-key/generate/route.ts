@@ -11,6 +11,20 @@ import crypto from 'crypto';
  * 
  * Requires: Authentication
  */
+/**
+ * @swagger
+ * /api/auth/recovery-key/generate:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/recovery-key/generate
+ *     description: Tự động sinh tài liệu cho POST /api/auth/recovery-key/generate. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     // Authenticate user

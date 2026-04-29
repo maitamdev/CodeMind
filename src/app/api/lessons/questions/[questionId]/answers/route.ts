@@ -7,6 +7,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * Create an answer for a question (requires enrollment).
  * Uses a single JOIN query for enrollment verification instead of 4 sequential queries.
  */
+/**
+ * @swagger
+ * /api/lessons/questions/[questionId]/answers:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/questions/[questionId]/answers
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/questions/[questionId]/answers. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ questionId: string }> },

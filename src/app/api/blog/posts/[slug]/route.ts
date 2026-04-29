@@ -4,6 +4,20 @@ import { verifyToken } from "@/lib/auth"
 import { cookies } from "next/headers"
 
 // GET - Get single blog post by slug
+/**
+ * @swagger
+ * /api/blog/posts/[slug]:
+ *   get:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]
+ *     description: Tự động sinh tài liệu cho GET /api/blog/posts/[slug]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -103,6 +117,20 @@ export async function GET(
 }
 
 // DELETE - Delete blog post by slug
+/**
+ * @swagger
+ * /api/blog/posts/[slug]:
+ *   delete:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]
+ *     description: Tự động sinh tài liệu cho DELETE /api/blog/posts/[slug]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }

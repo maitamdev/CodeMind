@@ -2,6 +2,20 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
 
+/**
+ * @swagger
+ * /api/cv/parse:
+ *   post:
+ *     tags:
+ *       - Cv
+ *     summary: API endpoint for /api/cv/parse
+ *     description: Tự động sinh tài liệu cho POST /api/cv/parse. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();

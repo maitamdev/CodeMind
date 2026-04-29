@@ -10,6 +10,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rpc } from '@/lib/db-helpers';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
 
+/**
+ * @swagger
+ * /api/users/me/courses:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/me/courses
+ *     description: Tự động sinh tài liệu cho GET /api/users/me/courses. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // 1. Authenticate user

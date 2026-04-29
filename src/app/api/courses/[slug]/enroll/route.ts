@@ -12,6 +12,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { queryOneBuilder, insert, update } from '@/lib/db';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
 
+/**
+ * @swagger
+ * /api/courses/[slug]/enroll:
+ *   post:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/enroll
+ *     description: Tự động sinh tài liệu cho POST /api/courses/[slug]/enroll. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }

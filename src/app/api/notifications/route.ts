@@ -37,6 +37,20 @@ const MAX_ITEMS = 30;
  *
  * The feed is sorted by `createdAt` desc and capped at MAX_ITEMS.
  */
+/**
+ * @swagger
+ * /api/notifications:
+ *   get:
+ *     tags:
+ *       - Notifications
+ *     summary: API endpoint for /api/notifications
+ *     description: Tự động sinh tài liệu cho GET /api/notifications. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET() {
     try {
         const userId = await getAuthUserId();

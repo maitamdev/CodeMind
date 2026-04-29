@@ -16,6 +16,20 @@ interface LessonContentResponse {
  * GET /api/lessons/[lessonId]/content
  * Lấy markdown content của một bài học
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/content:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/content
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ lessonId: string }> }
@@ -51,6 +65,20 @@ export async function GET(
 /**
  * PUT /api/lessons/[lessonId]/content
  * Cập nhật markdown content của một bài học
+ */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/content:
+ *   put:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/content
+ *     description: Tự động sinh tài liệu cho PUT /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function PUT(
   request: NextRequest,
@@ -117,6 +145,20 @@ export async function PUT(
 /**
  * PATCH /api/lessons/[lessonId]/content
  * Cập nhật một phần markdown content (append hoặc merge)
+ */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/content:
+ *   patch:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/content
+ *     description: Tự động sinh tài liệu cho PATCH /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function PATCH(
   request: NextRequest,

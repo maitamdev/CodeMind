@@ -27,6 +27,20 @@ function periodCutoff(period: Period): string | null {
  * and rank them by cumulative XP. When an `xp_history` table is added,
  * this endpoint should switch to summing XP within the period.
  */
+/**
+ * @swagger
+ * /api/leaderboard:
+ *   get:
+ *     tags:
+ *       - Leaderboard
+ *     summary: API endpoint for /api/leaderboard
+ *     description: Tự động sinh tài liệu cho GET /api/leaderboard. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         if (!supabaseAdmin) {

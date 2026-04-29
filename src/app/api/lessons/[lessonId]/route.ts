@@ -24,6 +24,20 @@ interface LessonData {
  * - Auto-generate placeholder video
  * - Cho phép user test UI/flow mà không cần quay video thực
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ lessonId: string }> }

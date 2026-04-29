@@ -105,6 +105,20 @@ async function getServiceHealth(): Promise<ServiceHealthPayload> {
     }
 }
 
+/**
+ * @swagger
+ * /api/face-touch/analyze:
+ *   get:
+ *     tags:
+ *       - Face-touch
+ *     summary: API endpoint for /api/face-touch/analyze
+ *     description: Tự động sinh tài liệu cho GET /api/face-touch/analyze. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET() {
     const health = await getServiceHealth();
 
@@ -118,6 +132,20 @@ export async function GET() {
     );
 }
 
+/**
+ * @swagger
+ * /api/face-touch/analyze:
+ *   post:
+ *     tags:
+ *       - Face-touch
+ *     summary: API endpoint for /api/face-touch/analyze
+ *     description: Tự động sinh tài liệu cho POST /api/face-touch/analyze. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const body = (await request.json()) as AnalyzeRequest;

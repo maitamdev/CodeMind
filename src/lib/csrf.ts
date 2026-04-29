@@ -91,6 +91,7 @@ const CSRF_EXEMPT_ROUTES = [
     "/api/ai/generate-code",
     "/api/ai/explain-error",
     "/api/ai-roadmap",
+    "/api/roadmap",
     "/api/face-touch/analyze",
     "/api/user/code",
     "/api/lessons",

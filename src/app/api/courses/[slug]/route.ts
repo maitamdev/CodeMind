@@ -10,6 +10,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { queryOneBuilder, db as supabaseAdmin } from "@/lib/db";
 import { verifyToken, extractTokenFromHeader } from "@/lib/auth";
 
+/**
+ * @swagger
+ * /api/courses/[slug]:
+ *   get:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]
+ *     description: Tự động sinh tài liệu cho GET /api/courses/[slug]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },

@@ -12,6 +12,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * - status: Filter by status (all, OPEN, ANSWERED, RESOLVED)
  * - page / limit: Pagination
  */
+/**
+ * @swagger
+ * /api/courses/[slug]/questions:
+ *   get:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/questions
+ *     description: Tự động sinh tài liệu cho GET /api/courses/[slug]/questions. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },

@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getCodeCompletion } from "@/lib/ollama"
 
+/**
+ * @swagger
+ * /api/ai/complete:
+ *   post:
+ *     tags:
+ *       - Ai
+ *     summary: API endpoint for /api/ai/complete
+ *     description: Tự động sinh tài liệu cho POST /api/ai/complete. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     let body: Record<string, unknown>

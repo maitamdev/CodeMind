@@ -7,6 +7,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * Top users with most accepted answers in the last 30 days.
  * Uses DB-level aggregation instead of client-side counting.
  */
+/**
+ * @swagger
+ * /api/qa/most-helpful:
+ *   get:
+ *     tags:
+ *       - Qa
+ *     summary: API endpoint for /api/qa/most-helpful
+ *     description: Tự động sinh tài liệu cho GET /api/qa/most-helpful. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         await requireAuth();

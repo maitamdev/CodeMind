@@ -3,6 +3,20 @@ import { getAuthPayloadFromRequest } from "@/lib/server-auth";
 import { getAuthUserById, listProfileReviews } from "@/lib/profile-service";
 import type { ProfessionalProfileStatus } from "@/types/profile";
 
+/**
+ * @swagger
+ * /api/admin/profile-reviews:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/profile-reviews
+ *     description: Tự động sinh tài liệu cho GET /api/admin/profile-reviews. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const payload = getAuthPayloadFromRequest(request);

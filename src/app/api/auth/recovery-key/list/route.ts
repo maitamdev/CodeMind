@@ -10,6 +10,20 @@ import crypto from 'crypto';
  * 
  * Requires: Authentication
  */
+/**
+ * @swagger
+ * /api/auth/recovery-key/list:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/recovery-key/list
+ *     description: Tự động sinh tài liệu cho GET /api/auth/recovery-key/list. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // Authenticate user

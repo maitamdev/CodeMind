@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db as supabaseAdmin } from "@/lib/db";
 
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/exercises:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/exercises
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/exercises. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ lessonId: string }> },

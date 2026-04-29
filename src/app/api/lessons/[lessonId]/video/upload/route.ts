@@ -34,6 +34,20 @@ const ALLOWED_FORMATS = [
 /**
  * POST handler for video upload
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/video/upload:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/video/upload
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/video/upload. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<Params> },
@@ -478,6 +492,20 @@ async function uploadToS3(
 
 /**
  * DELETE handler to delete video
+ */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/video/upload:
+ *   delete:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/video/upload
+ *     description: Tự động sinh tài liệu cho DELETE /api/lessons/[lessonId]/video/upload. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function DELETE(
     request: NextRequest,

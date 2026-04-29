@@ -26,6 +26,20 @@ async function getUserFromToken() {
 // ============================================
 // PUT /api/users/password
 // ============================================
+/**
+ * @swagger
+ * /api/users/password:
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/password
+ *     description: Tự động sinh tài liệu cho PUT /api/users/password. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(request: Request) {
   try {
     const userId = await getUserFromToken();

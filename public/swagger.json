@@ -1,0 +1,2154 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CodeMind API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/admin/courses-full": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/courses-full",
+        "description": "Tự động sinh tài liệu cho GET /api/admin/courses-full. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/profile-reviews/[userId]/approve": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/profile-reviews/[userId]/approve",
+        "description": "Tự động sinh tài liệu cho POST /api/admin/profile-reviews/[userId]/approve. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/profile-reviews/[userId]/reject": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/profile-reviews/[userId]/reject",
+        "description": "Tự động sinh tài liệu cho POST /api/admin/profile-reviews/[userId]/reject. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/profile-reviews": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/profile-reviews",
+        "description": "Tự động sinh tài liệu cho GET /api/admin/profile-reviews. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/stats": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/stats",
+        "description": "Tự động sinh tài liệu cho GET /api/admin/stats. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/sync-stats": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/sync-stats",
+        "description": "Tự động sinh tài liệu cho POST /api/admin/sync-stats. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/users/[userId]/roles": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/users/[userId]/roles",
+        "description": "Tự động sinh tài liệu cho PUT /api/admin/users/[userId]/roles. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/admin/users/[userId]/verifications": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "API endpoint for /api/admin/users/[userId]/verifications",
+        "description": "Tự động sinh tài liệu cho PUT /api/admin/users/[userId]/verifications. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai-roadmap/[id]/progress": {
+      "post": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/[id]/progress",
+        "description": "Tự động sinh tài liệu cho POST /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/[id]/progress",
+        "description": "Tự động sinh tài liệu cho PUT /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/[id]/progress",
+        "description": "Tự động sinh tài liệu cho GET /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai-roadmap/[id]": {
+      "get": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/[id]",
+        "description": "Tự động sinh tài liệu cho GET /api/ai-roadmap/[id]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/[id]",
+        "description": "Tự động sinh tài liệu cho DELETE /api/ai-roadmap/[id]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai-roadmap/generate": {
+      "post": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/generate",
+        "description": "Tự động sinh tài liệu cho POST /api/ai-roadmap/generate. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai-roadmap/my": {
+      "get": {
+        "tags": [
+          "Ai-roadmap"
+        ],
+        "summary": "API endpoint for /api/ai-roadmap/my",
+        "description": "Tự động sinh tài liệu cho GET /api/ai-roadmap/my. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/agent": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/agent",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/agent. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/chat": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/chat",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/chat. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/complete": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/complete",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/complete. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/explain-error": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/explain-error",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/explain-error. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/generate-code": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/generate-code",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/generate-code. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/health": {
+      "get": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/health",
+        "description": "Tự động sinh tài liệu cho GET /api/ai/health. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/review": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/review",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/review. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/ai/tutor": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "summary": "API endpoint for /api/ai/tutor",
+        "description": "Tự động sinh tài liệu cho POST /api/ai/tutor. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/change-password",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/change-password. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/csrf": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/csrf",
+        "description": "Tự động sinh tài liệu cho GET /api/auth/csrf. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password/reset": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/forgot-password/reset",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/forgot-password/reset. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password/send-otp": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/forgot-password/send-otp",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/forgot-password/send-otp. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password/verify-otp": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/forgot-password/verify-otp",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/forgot-password/verify-otp. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/login",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/login. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/logout",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/logout. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/me",
+        "description": "Tự động sinh tài liệu cho GET /api/auth/me. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/recovery-key/download": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/recovery-key/download",
+        "description": "Tự động sinh tài liệu cho GET /api/auth/recovery-key/download. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/recovery-key/download",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/recovery-key/download. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/recovery-key/generate": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/recovery-key/generate",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/recovery-key/generate. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/recovery-key/list": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/recovery-key/list",
+        "description": "Tự động sinh tài liệu cho GET /api/auth/recovery-key/list. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/recovery-key/verify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/recovery-key/verify",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/recovery-key/verify. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "API endpoint for /api/auth/register",
+        "description": "Tự động sinh tài liệu cho POST /api/auth/register. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/categories": {
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/categories",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/categories. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]/bookmark": {
+      "post": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/bookmark",
+        "description": "Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/bookmark. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/bookmark",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/bookmark. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]/comments": {
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/comments",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/comments. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/comments",
+        "description": "Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/comments. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]/interactions": {
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/interactions",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/interactions. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]/like": {
+      "post": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/like",
+        "description": "Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/like. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]": {
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/posts/[slug]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]",
+        "description": "Tự động sinh tài liệu cho DELETE /api/blog/posts/[slug]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts/[slug]/share": {
+      "post": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts/[slug]/share",
+        "description": "Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/share. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/blog/posts": {
+      "get": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts",
+        "description": "Tự động sinh tài liệu cho GET /api/blog/posts. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Blog"
+        ],
+        "summary": "API endpoint for /api/blog/posts",
+        "description": "Tự động sinh tài liệu cho POST /api/blog/posts. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/certificates/issue": {
+      "post": {
+        "tags": [
+          "Certificates"
+        ],
+        "summary": "API endpoint for /api/certificates/issue",
+        "description": "Tự động sinh tài liệu cho POST /api/certificates/issue. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/certificates/verify/[code]": {
+      "get": {
+        "tags": [
+          "Certificates"
+        ],
+        "summary": "API endpoint for /api/certificates/verify/[code]",
+        "description": "Tự động sinh tài liệu cho GET /api/certificates/verify/[code]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/chapters/[chapterId]/lessons": {
+      "get": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "API endpoint for /api/chapters/[chapterId]/lessons",
+        "description": "Tự động sinh tài liệu cho GET /api/chapters/[chapterId]/lessons. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/chapters/[chapterId]/summary": {
+      "get": {
+        "tags": [
+          "Chapters"
+        ],
+        "summary": "API endpoint for /api/chapters/[chapterId]/summary",
+        "description": "Tự động sinh tài liệu cho GET /api/chapters/[chapterId]/summary. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/cloudinary/sign": {
+      "post": {
+        "tags": [
+          "Cloudinary"
+        ],
+        "summary": "API endpoint for /api/cloudinary/sign",
+        "description": "Tự động sinh tài liệu cho POST /api/cloudinary/sign. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/code/execute": {
+      "post": {
+        "tags": [
+          "Code"
+        ],
+        "summary": "API endpoint for /api/code/execute",
+        "description": "Tự động sinh tài liệu cho POST /api/code/execute. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/chapters": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/chapters",
+        "description": "Tự động sinh tài liệu cho GET /api/courses/[slug]/chapters. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/enroll": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/enroll",
+        "description": "Tự động sinh tài liệu cho POST /api/courses/[slug]/enroll. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/progress": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/progress",
+        "description": "Tự động sinh tài liệu cho GET /api/courses/[slug]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/questions": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/questions",
+        "description": "Tự động sinh tài liệu cho GET /api/courses/[slug]/questions. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/reviews/like": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/reviews/like",
+        "description": "Tự động sinh tài liệu cho POST /api/courses/[slug]/reviews/like. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]/reviews": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/reviews",
+        "description": "Tự động sinh tài liệu cho GET /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/reviews",
+        "description": "Tự động sinh tài liệu cho POST /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]/reviews",
+        "description": "Tự động sinh tài liệu cho DELETE /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses/[slug]": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses/[slug]",
+        "description": "Tự động sinh tài liệu cho GET /api/courses/[slug]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/courses": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "summary": "API endpoint for /api/courses",
+        "description": "Tự động sinh tài liệu cho GET /api/courses. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/cv/parse": {
+      "post": {
+        "tags": [
+          "Cv"
+        ],
+        "summary": "API endpoint for /api/cv/parse",
+        "description": "Tự động sinh tài liệu cho POST /api/cv/parse. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/cv/suggest": {
+      "post": {
+        "tags": [
+          "Cv"
+        ],
+        "summary": "API endpoint for /api/cv/suggest",
+        "description": "Tự động sinh tài liệu cho POST /api/cv/suggest. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/exercises/[exerciseId]/submit": {
+      "post": {
+        "tags": [
+          "Exercises"
+        ],
+        "summary": "API endpoint for /api/exercises/[exerciseId]/submit",
+        "description": "Tự động sinh tài liệu cho POST /api/exercises/[exerciseId]/submit. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/face-touch/analyze": {
+      "get": {
+        "tags": [
+          "Face-touch"
+        ],
+        "summary": "API endpoint for /api/face-touch/analyze",
+        "description": "Tự động sinh tài liệu cho GET /api/face-touch/analyze. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Face-touch"
+        ],
+        "summary": "API endpoint for /api/face-touch/analyze",
+        "description": "Tự động sinh tài liệu cho POST /api/face-touch/analyze. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/gamification/stats": {
+      "get": {
+        "tags": [
+          "Gamification"
+        ],
+        "summary": "API endpoint for /api/gamification/stats",
+        "description": "Tự động sinh tài liệu cho GET /api/gamification/stats. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Gamification"
+        ],
+        "summary": "API endpoint for /api/gamification/stats",
+        "description": "Tự động sinh tài liệu cho POST /api/gamification/stats. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "tags": [
+          "Leaderboard"
+        ],
+        "summary": "API endpoint for /api/leaderboard",
+        "description": "Tự động sinh tài liệu cho GET /api/leaderboard. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/complete": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/complete",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/complete. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/content": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/content",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/content",
+        "description": "Tự động sinh tài liệu cho PUT /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/content",
+        "description": "Tự động sinh tài liệu cho PATCH /api/lessons/[lessonId]/content. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/exercises": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/exercises",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/exercises. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/questions": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/questions",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/questions. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/questions",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/questions. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/validate-video": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/validate-video",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/validate-video. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/video-sources": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/video-sources",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/video-sources. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/video/progress": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/video/progress",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/video/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/video": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/video",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/video. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/[lessonId]/video/upload": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/video/upload",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/video/upload. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/[lessonId]/video/upload",
+        "description": "Tự động sinh tài liệu cho DELETE /api/lessons/[lessonId]/video/upload. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/answers/[answerId]/accept": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/answers/[answerId]/accept",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/answers/[answerId]/accept. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/answers/[answerId]/like": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/answers/[answerId]/like",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/answers/[answerId]/like. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/questions/[questionId]/answers": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/questions/[questionId]/answers",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/questions/[questionId]/answers. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/questions/[questionId]/like": {
+      "post": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/questions/[questionId]/like",
+        "description": "Tự động sinh tài liệu cho POST /api/lessons/questions/[questionId]/like. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/lessons/questions/[questionId]": {
+      "get": {
+        "tags": [
+          "Lessons"
+        ],
+        "summary": "API endpoint for /api/lessons/questions/[questionId]",
+        "description": "Tự động sinh tài liệu cho GET /api/lessons/questions/[questionId]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/links/[code]": {
+      "get": {
+        "tags": [
+          "Links"
+        ],
+        "summary": "API endpoint for /api/links/[code]",
+        "description": "Tự động sinh tài liệu cho GET /api/links/[code]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/links": {
+      "post": {
+        "tags": [
+          "Links"
+        ],
+        "summary": "API endpoint for /api/links",
+        "description": "Tự động sinh tài liệu cho POST /api/links. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Links"
+        ],
+        "summary": "API endpoint for /api/links",
+        "description": "Tự động sinh tài liệu cho GET /api/links. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Links"
+        ],
+        "summary": "API endpoint for /api/links",
+        "description": "Tự động sinh tài liệu cho PATCH /api/links. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "API endpoint for /api/notifications",
+        "description": "Tự động sinh tài liệu cho GET /api/notifications. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/platform/stats": {
+      "get": {
+        "tags": [
+          "Platform"
+        ],
+        "summary": "API endpoint for /api/platform/stats",
+        "description": "Tự động sinh tài liệu cho GET /api/platform/stats. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/profiles/[username]/activity": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/[username]/activity",
+        "description": "Tự động sinh tài liệu cho GET /api/profiles/[username]/activity. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/profiles/[username]": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/[username]",
+        "description": "Tự động sinh tài liệu cho GET /api/profiles/[username]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/profiles/me/professional": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/me/professional",
+        "description": "Tự động sinh tài liệu cho GET /api/profiles/me/professional. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/me/professional",
+        "description": "Tự động sinh tài liệu cho PUT /api/profiles/me/professional. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/profiles/me/professional/submit": {
+      "post": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/me/professional/submit",
+        "description": "Tự động sinh tài liệu cho POST /api/profiles/me/professional/submit. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/profiles/me/public": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/me/public",
+        "description": "Tự động sinh tài liệu cho GET /api/profiles/me/public. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "API endpoint for /api/profiles/me/public",
+        "description": "Tự động sinh tài liệu cho PUT /api/profiles/me/public. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/qa/most-helpful": {
+      "get": {
+        "tags": [
+          "Qa"
+        ],
+        "summary": "API endpoint for /api/qa/most-helpful",
+        "description": "Tự động sinh tài liệu cho GET /api/qa/most-helpful. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/questions/[questionId]": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "API endpoint for /api/questions/[questionId]",
+        "description": "Tự động sinh tài liệu cho GET /api/questions/[questionId]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/questions": {
+      "get": {
+        "tags": [
+          "Questions"
+        ],
+        "summary": "API endpoint for /api/questions",
+        "description": "Tự động sinh tài liệu cho GET /api/questions. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/recommendations/courses": {
+      "get": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "API endpoint for /api/recommendations/courses",
+        "description": "Tự động sinh tài liệu cho GET /api/recommendations/courses. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/roadmap/[slug]/progress": {
+      "get": {
+        "tags": [
+          "Roadmap"
+        ],
+        "summary": "API endpoint for /api/roadmap/[slug]/progress",
+        "description": "Tự động sinh tài liệu cho GET /api/roadmap/[slug]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Roadmap"
+        ],
+        "summary": "API endpoint for /api/roadmap/[slug]/progress",
+        "description": "Tự động sinh tài liệu cho POST /api/roadmap/[slug]/progress. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/roadmap/node-detail": {
+      "post": {
+        "tags": [
+          "Roadmap AI"
+        ],
+        "summary": "Tạo chi tiết cho một Node (bài học) bằng AI",
+        "description": "Gọi API Groq để phân tích và sinh ra nội dung giải thích, tài liệu học tập cho một chủ đề cụ thể.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "topic"
+                ],
+                "properties": {
+                  "topic": {
+                    "type": "string",
+                    "example": "React Hooks"
+                  },
+                  "context": {
+                    "type": "string",
+                    "example": "Lập trình Frontend cơ bản"
+                  },
+                  "user_level": {
+                    "type": "string",
+                    "example": "beginner"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thông tin chi tiết của node"
+          },
+          "400": {
+            "description": "Thiếu topic"
+          },
+          "500": {
+            "description": "Lỗi máy chủ hoặc lỗi parse JSON"
+          }
+        }
+      }
+    },
+    "/api/upload/avatar": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "API endpoint for /api/upload/avatar",
+        "description": "Tự động sinh tài liệu cho POST /api/upload/avatar. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "API endpoint for /api/upload/avatar",
+        "description": "Tự động sinh tài liệu cho DELETE /api/upload/avatar. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/upload": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "API endpoint for /api/upload",
+        "description": "Tự động sinh tài liệu cho POST /api/upload. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/user/code": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "API endpoint for /api/user/code",
+        "description": "Tự động sinh tài liệu cho GET /api/user/code. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "API endpoint for /api/user/code",
+        "description": "Tự động sinh tài liệu cho POST /api/user/code. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/[username]/activities": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/[username]/activities",
+        "description": "Tự động sinh tài liệu cho GET /api/users/[username]/activities. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/[username]/courses": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/[username]/courses",
+        "description": "Tự động sinh tài liệu cho GET /api/users/[username]/courses. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/[username]": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/[username]",
+        "description": "Tự động sinh tài liệu cho GET /api/users/[username]. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/[username]/saved": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/[username]/saved",
+        "description": "Tự động sinh tài liệu cho GET /api/users/[username]/saved. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/me/courses": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/me/courses",
+        "description": "Tự động sinh tài liệu cho GET /api/users/me/courses. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/my-posts": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/my-posts",
+        "description": "Tự động sinh tài liệu cho GET /api/users/my-posts. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/password",
+        "description": "Tự động sinh tài liệu cho PUT /api/users/password. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/profile",
+        "description": "Tự động sinh tài liệu cho PUT /api/users/profile. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/users/saved": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "API endpoint for /api/users/saved",
+        "description": "Tự động sinh tài liệu cho GET /api/users/saved. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    },
+    "/api/youtube/search": {
+      "get": {
+        "tags": [
+          "Youtube"
+        ],
+        "summary": "API endpoint for /api/youtube/search",
+        "description": "Tự động sinh tài liệu cho GET /api/youtube/search. Hãy cập nhật mô tả chi tiết sau.",
+        "responses": {
+          "200": {
+            "description": "Thành công"
+          },
+          "500": {
+            "description": "Lỗi máy chủ"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

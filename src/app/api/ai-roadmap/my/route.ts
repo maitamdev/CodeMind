@@ -3,6 +3,20 @@ import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 
+/**
+ * @swagger
+ * /api/ai-roadmap/my:
+ *   get:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/my
+ *     description: Tự động sinh tài liệu cho GET /api/ai-roadmap/my. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // 1. Authenticate user

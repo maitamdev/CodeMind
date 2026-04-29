@@ -11,6 +11,20 @@ import { db as supabaseAdmin } from "@/lib/db";
 import { verifyToken, extractTokenFromHeader } from "@/lib/auth";
 import { queryOneBuilder, insert, deleteRows } from "@/lib/db";
 
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/bookmark:
+ *   post:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/bookmark
+ *     description: Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/bookmark. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -101,6 +115,20 @@ export async function POST(
  * API Route: GET /api/blog/posts/[slug]/bookmark
  * 
  * Check if current user has bookmarked this post
+ */
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/bookmark:
+ *   get:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/bookmark
+ *     description: Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/bookmark. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function GET(
   request: NextRequest,

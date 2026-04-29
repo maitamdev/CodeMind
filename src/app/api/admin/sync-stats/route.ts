@@ -10,6 +10,20 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+/**
+ * @swagger
+ * /api/admin/sync-stats:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/sync-stats
+ *     description: Tự động sinh tài liệu cho POST /api/admin/sync-stats. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST() {
     try {
         if (!supabaseAdmin) {

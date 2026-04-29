@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getChatCompletion } from "@/lib/ollama"
 
+/**
+ * @swagger
+ * /api/ai/explain-error:
+ *   post:
+ *     tags:
+ *       - Ai
+ *     summary: API endpoint for /api/ai/explain-error
+ *     description: Tự động sinh tài liệu cho POST /api/ai/explain-error. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const { error: errorMessage, code, language } = await request.json()

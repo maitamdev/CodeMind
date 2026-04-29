@@ -8,6 +8,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { db as supabaseAdmin } from "@/lib/db";
 import { verifyToken, extractTokenFromHeader } from "@/lib/auth";
 
+/**
+ * @swagger
+ * /api/courses/[slug]/reviews/like:
+ *   post:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/reviews/like
+ *     description: Tự động sinh tài liệu cho POST /api/courses/[slug]/reviews/like. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },

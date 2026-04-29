@@ -3,6 +3,20 @@ import { getAuthPayloadFromRequest } from "@/lib/server-auth";
 import { getAuthUserById, replaceUserRoles } from "@/lib/profile-service";
 import type { AppRole } from "@/types/profile";
 
+/**
+ * @swagger
+ * /api/admin/users/[userId]/roles:
+ *   put:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/users/[userId]/roles
+ *     description: Tự động sinh tài liệu cho PUT /api/admin/users/[userId]/roles. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ userId: string }> },

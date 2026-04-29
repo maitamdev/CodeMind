@@ -3,6 +3,20 @@ import { rpc, queryBuilder, db as supabaseAdmin } from "@/lib/db"
 import { verifyToken } from "@/lib/auth"
 
 // GET - Get current user's blog posts
+/**
+ * @swagger
+ * /api/users/my-posts:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/my-posts
+ *     description: Tự động sinh tài liệu cho GET /api/users/my-posts. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // Get token from cookie

@@ -7,6 +7,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * Get question detail with answers (lesson-level view).
  * Uses DB-level status/answers_count columns.
  */
+/**
+ * @swagger
+ * /api/lessons/questions/[questionId]:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/questions/[questionId]
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/questions/[questionId]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ questionId: string }> },

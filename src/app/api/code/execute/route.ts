@@ -14,6 +14,20 @@ const BROWSER_LANGS = new Set(["javascript", "typescript"]);
 const COMPILED_LANGS = new Set(["cpp", "c", "java", "go", "rust", "csharp"]);
 const INTERPRETED_LANGS = new Set(["python", "ruby", "php"]);
 
+/**
+ * @swagger
+ * /api/code/execute:
+ *   post:
+ *     tags:
+ *       - Code
+ *     summary: API endpoint for /api/code/execute
+ *     description: Tự động sinh tài liệu cho POST /api/code/execute. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         let body;

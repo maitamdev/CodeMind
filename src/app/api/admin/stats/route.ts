@@ -70,6 +70,20 @@ interface PaymentRow {
     created_at: string | null;
 }
 
+/**
+ * @swagger
+ * /api/admin/stats:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/stats
+ *     description: Tự động sinh tài liệu cho GET /api/admin/stats. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         // Parallel fetch all data for performance

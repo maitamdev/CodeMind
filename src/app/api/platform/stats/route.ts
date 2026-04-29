@@ -8,6 +8,20 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+/**
+ * @swagger
+ * /api/platform/stats:
+ *   get:
+ *     tags:
+ *       - Platform
+ *     summary: API endpoint for /api/platform/stats
+ *     description: Tự động sinh tài liệu cho GET /api/platform/stats. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET() {
     try {
         if (!supabaseAdmin) {

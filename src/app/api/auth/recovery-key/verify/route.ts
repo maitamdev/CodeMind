@@ -14,6 +14,20 @@ import crypto from 'crypto';
  * - email: string (để tìm user)
  * - newPassword: string
  */
+/**
+ * @swagger
+ * /api/auth/recovery-key/verify:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/recovery-key/verify
+ *     description: Tự động sinh tài liệu cho POST /api/auth/recovery-key/verify. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

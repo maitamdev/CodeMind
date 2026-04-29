@@ -8,6 +8,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { db as supabaseAdmin } from "@/lib/db";
 import { queryOneBuilder } from "@/lib/db";
 
+/**
+ * @swagger
+ * /api/users/[username]/saved:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/[username]/saved
+ *     description: Tự động sinh tài liệu cho GET /api/users/[username]/saved. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ username: string }> }

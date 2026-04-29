@@ -27,10 +27,12 @@ export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on click outside
+  // Close menu on click outside and set mounted
   useEffect(() => {
+    setMounted(true);
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
@@ -92,7 +94,7 @@ export default function Header() {
             className="p-2 border border-border rounded-none hover:bg-secondary text-foreground transition-colors"
             aria-label="Toggle Theme"
           >
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted && theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
           {!isLoading && (

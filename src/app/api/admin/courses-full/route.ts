@@ -28,6 +28,20 @@ interface AdminLesson {
  * Fetch all courses with chapters and lessons (optimized for admin dashboard)
  * Only for authenticated admin/teacher users
  */
+/**
+ * @swagger
+ * /api/admin/courses-full:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: API endpoint for /api/admin/courses-full
+ *     description: Tự động sinh tài liệu cho GET /api/admin/courses-full. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
   try {
     // Get all published courses

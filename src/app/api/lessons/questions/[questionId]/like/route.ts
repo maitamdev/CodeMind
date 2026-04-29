@@ -8,6 +8,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * Uses upsert/delete with unique constraint to prevent race conditions.
  * Uses atomic SQL for likes_count update.
  */
+/**
+ * @swagger
+ * /api/lessons/questions/[questionId]/like:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/questions/[questionId]/like
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/questions/[questionId]/like. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ questionId: string }> },

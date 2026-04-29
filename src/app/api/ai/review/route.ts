@@ -1,5 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
 
+/**
+ * @swagger
+ * /api/ai/review:
+ *   post:
+ *     tags:
+ *       - Ai
+ *     summary: API endpoint for /api/ai/review
+ *     description: Tự động sinh tài liệu cho POST /api/ai/review. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     // Check if API key is configured

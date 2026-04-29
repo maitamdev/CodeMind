@@ -39,6 +39,20 @@ function resolveCreator(
  * POST /api/links — Create a short link
  * Body: { url: string, customCode?: string, anonymousId?: string }
  */
+/**
+ * @swagger
+ * /api/links:
+ *   post:
+ *     tags:
+ *       - Links
+ *     summary: API endpoint for /api/links
+ *     description: Tự động sinh tài liệu cho POST /api/links. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -165,6 +179,20 @@ export async function POST(request: NextRequest) {
  * Query: ?anonymousId=<uuid> (for guests)
  * Auth users are identified automatically via auth_token
  */
+/**
+ * @swagger
+ * /api/links:
+ *   get:
+ *     tags:
+ *       - Links
+ *     summary: API endpoint for /api/links
+ *     description: Tự động sinh tài liệu cho GET /api/links. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         if (!supabaseAdmin) {
@@ -221,6 +249,20 @@ export async function GET(request: NextRequest) {
  * PATCH /api/links — Claim anonymous links when user logs in
  * Body: { anonymousId: string }
  * Requires auth_token
+ */
+/**
+ * @swagger
+ * /api/links:
+ *   patch:
+ *     tags:
+ *       - Links
+ *     summary: API endpoint for /api/links
+ *     description: Tự động sinh tài liệu cho PATCH /api/links. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function PATCH(request: NextRequest) {
     try {

@@ -6,6 +6,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * GET /api/questions/[questionId]
  * Get question detail with answers, lesson info, and participants.
  */
+/**
+ * @swagger
+ * /api/questions/[questionId]:
+ *   get:
+ *     tags:
+ *       - Questions
+ *     summary: API endpoint for /api/questions/[questionId]
+ *     description: Tự động sinh tài liệu cho GET /api/questions/[questionId]. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ questionId: string }> },

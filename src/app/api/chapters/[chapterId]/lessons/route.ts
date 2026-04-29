@@ -13,6 +13,20 @@ interface Lesson {
  * GET /api/chapters/[chapterId]/lessons
  * Lấy danh sách lessons của một chapter
  */
+/**
+ * @swagger
+ * /api/chapters/[chapterId]/lessons:
+ *   get:
+ *     tags:
+ *       - Chapters
+ *     summary: API endpoint for /api/chapters/[chapterId]/lessons
+ *     description: Tự động sinh tài liệu cho GET /api/chapters/[chapterId]/lessons. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ chapterId: string }> }

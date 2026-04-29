@@ -5,6 +5,20 @@ import {
     upsertProfessionalProfileDraft,
 } from "@/lib/profile-service";
 
+/**
+ * @swagger
+ * /api/profiles/me/professional:
+ *   get:
+ *     tags:
+ *       - Profiles
+ *     summary: API endpoint for /api/profiles/me/professional
+ *     description: Tự động sinh tài liệu cho GET /api/profiles/me/professional. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const payload = getAuthPayloadFromRequest(request);
@@ -40,6 +54,20 @@ export async function GET(request: NextRequest) {
     }
 }
 
+/**
+ * @swagger
+ * /api/profiles/me/professional:
+ *   put:
+ *     tags:
+ *       - Profiles
+ *     summary: API endpoint for /api/profiles/me/professional
+ *     description: Tự động sinh tài liệu cho PUT /api/profiles/me/professional. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(request: NextRequest) {
     try {
         const payload = getAuthPayloadFromRequest(request);

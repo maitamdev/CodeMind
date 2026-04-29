@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server"
 import { checkHealth, getOllamaConfig } from "@/lib/ollama"
 
+/**
+ * @swagger
+ * /api/ai/health:
+ *   get:
+ *     tags:
+ *       - Ai
+ *     summary: API endpoint for /api/ai/health
+ *     description: Tự động sinh tài liệu cho GET /api/ai/health. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET() {
   try {
     const config = getOllamaConfig()

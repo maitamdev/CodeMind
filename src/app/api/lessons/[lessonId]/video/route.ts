@@ -21,6 +21,20 @@ interface Params {
  * GET handler for video streaming
  * Supports HTTP Range requests for seeking
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/video:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/video
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/video. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<Params> }

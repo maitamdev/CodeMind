@@ -250,6 +250,20 @@ function calcRelevanceScore(
     return { score: Math.round(score * 100) / 100, factors };
 }
 
+/**
+ * @swagger
+ * /api/youtube/search:
+ *   get:
+ *     tags:
+ *       - Youtube
+ *     summary: API endpoint for /api/youtube/search
+ *     description: Tự động sinh tài liệu cho GET /api/youtube/search. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);

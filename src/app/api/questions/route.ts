@@ -14,6 +14,20 @@ import { requireAuth, AuthError } from "@/lib/auth-helpers";
  * - page: Page number (default 1)
  * - limit: Items per page (default 20, max 50)
  */
+/**
+ * @swagger
+ * /api/questions:
+ *   get:
+ *     tags:
+ *       - Questions
+ *     summary: API endpoint for /api/questions
+ *     description: Tự động sinh tài liệu cho GET /api/questions. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         await requireAuth();

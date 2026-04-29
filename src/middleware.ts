@@ -48,7 +48,7 @@ function setSecurityHeaders(
     pathname: string,
 ): NextResponse {
     // Chống clickjacking
-    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-Frame-Options", "SAMEORIGIN");
     // Chống MIME sniffing
     response.headers.set("X-Content-Type-Options", "nosniff");
     // XSS filter (legacy browsers)
@@ -74,7 +74,7 @@ function setSecurityHeaders(
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com data:",
             "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://i.ytimg.com https://cdn2.fptshop.com.vn https://caodangvietmyhanoi.edu.vn https://models.dev",
-            "connect-src 'self' https://*.supabase.co https://api.cloudinary.com wss://*.supabase.co https://cdn.jsdelivr.net",
+            "connect-src 'self' http://localhost:* https://*.supabase.co https://api.cloudinary.com wss://*.supabase.co https://cdn.jsdelivr.net",
             "frame-src 'self' https://www.youtube.com https://youtube.com",
             "media-src 'self' https://res.cloudinary.com blob:",
             "worker-src 'self' blob: https://cdn.jsdelivr.net",

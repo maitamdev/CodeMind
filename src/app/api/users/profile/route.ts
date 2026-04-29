@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthPayloadFromRequest } from "@/lib/server-auth";
 import { updatePublicProfile } from "@/lib/profile-service";
 
+/**
+ * @swagger
+ * /api/users/profile:
+ *   put:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/profile
+ *     description: Tự động sinh tài liệu cho PUT /api/users/profile. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(request: NextRequest) {
     try {
         const payload = getAuthPayloadFromRequest(request);

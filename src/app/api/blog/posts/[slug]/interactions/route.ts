@@ -22,6 +22,20 @@ async function getAuthUser() {
     }
 }
 
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/interactions:
+ *   get:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/interactions
+ *     description: Tự động sinh tài liệu cho GET /api/blog/posts/[slug]/interactions. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ slug: string }> }

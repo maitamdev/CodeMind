@@ -22,6 +22,20 @@ async function getAuthUser() {
     }
 }
 
+/**
+ * @swagger
+ * /api/blog/posts/[slug]/like:
+ *   post:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts/[slug]/like
+ *     description: Tự động sinh tài liệu cho POST /api/blog/posts/[slug]/like. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ slug: string }> }

@@ -15,6 +15,20 @@ interface GenerateRequest {
     profile: UserProfile;
 }
 
+/**
+ * @swagger
+ * /api/ai-roadmap/generate:
+ *   post:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/generate
+ *     description: Tự động sinh tài liệu cho POST /api/ai-roadmap/generate. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         // 1. Authenticate user

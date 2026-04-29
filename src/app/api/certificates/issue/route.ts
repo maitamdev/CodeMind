@@ -18,6 +18,20 @@ interface IssueBody {
  *   - An active enrollment for that course
  *   - All lessons in the course marked complete
  */
+/**
+ * @swagger
+ * /api/certificates/issue:
+ *   post:
+ *     tags:
+ *       - Certificates
+ *     summary: API endpoint for /api/certificates/issue
+ *     description: Tự động sinh tài liệu cho POST /api/certificates/issue. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const userId = await getAuthUserId();

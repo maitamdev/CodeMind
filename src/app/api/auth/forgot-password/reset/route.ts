@@ -12,6 +12,20 @@ import crypto from 'crypto';
  * - resetToken: string (token từ verify-otp)
  * - newPassword: string
  */
+/**
+ * @swagger
+ * /api/auth/forgot-password/reset:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/forgot-password/reset
+ *     description: Tự động sinh tài liệu cho POST /api/auth/forgot-password/reset. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

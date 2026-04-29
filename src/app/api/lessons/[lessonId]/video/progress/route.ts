@@ -16,6 +16,20 @@ interface Params {
 /**
  * POST handler - Save video progress
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/video/progress:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/video/progress
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/[lessonId]/video/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<Params> }

@@ -118,6 +118,20 @@ async function upsertProgress(
 /**
  * POST /api/ai-roadmap/[id]/progress — Upsert node progress.
  */
+/**
+ * @swagger
+ * /api/ai-roadmap/[id]/progress:
+ *   post:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/[id]/progress
+ *     description: Tự động sinh tài liệu cho POST /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest, { params }: RouteParams) {
     try {
         const { id: roadmapId } = await params;
@@ -138,6 +152,20 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 /**
  * PUT /api/ai-roadmap/[id]/progress — Alias for POST (backward compat).
  */
+/**
+ * @swagger
+ * /api/ai-roadmap/[id]/progress:
+ *   put:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/[id]/progress
+ *     description: Tự động sinh tài liệu cho PUT /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
         const { id: roadmapId } = await params;
@@ -157,6 +185,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 /**
  * GET /api/ai-roadmap/[id]/progress — Fetch all progress for a roadmap.
+ */
+/**
+ * @swagger
+ * /api/ai-roadmap/[id]/progress:
+ *   get:
+ *     tags:
+ *       - Ai-roadmap
+ *     summary: API endpoint for /api/ai-roadmap/[id]/progress
+ *     description: Tự động sinh tài liệu cho GET /api/ai-roadmap/[id]/progress. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
     try {

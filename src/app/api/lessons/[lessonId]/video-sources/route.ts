@@ -57,6 +57,20 @@ function getVimeoEmbedUrl(url: string): string {
  * - isMock: Whether this is a placeholder video
  * - fallback: Alternative URL if primary fails
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/video-sources:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/video-sources
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/video-sources. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ lessonId: string }> }

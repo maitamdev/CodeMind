@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
+/**
+ * @swagger
+ * /api/cloudinary/sign:
+ *   post:
+ *     tags:
+ *       - Cloudinary
+ *     summary: API endpoint for /api/cloudinary/sign
+ *     description: Tự động sinh tài liệu cho POST /api/cloudinary/sign. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

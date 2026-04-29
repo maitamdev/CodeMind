@@ -3,6 +3,20 @@ import { queryOneBuilder, queryBuilder } from '@/lib/db';
 import { supabaseAdmin } from '@/lib/supabase';
 import { ActivityData, ActivityDay } from '@/types/profile';
 
+/**
+ * @swagger
+ * /api/users/[username]/activities:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: API endpoint for /api/users/[username]/activities
+ *     description: Tự động sinh tài liệu cho GET /api/users/[username]/activities. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ username: string }> }

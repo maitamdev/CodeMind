@@ -1,24 +1,23 @@
 /**
- * Groq Roadmap Service — Direct Groq API integration for Next.js
- * Replaces the Python FastAPI ai-service entirely.
+ * AI Roadmap Service — Groq API integration for Next.js
+ * Uses Groq for fast LLM inference.
  */
 
-import Groq from "groq-sdk";
-
 // ─── Config ───
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
-const GROQ_MAX_TOKENS = 12000;
-const GROQ_TEMPERATURE = 0.7;
-const PROMPT_VERSION = "2.0.0";
+const MAX_TOKENS = 6000;
+const TEMPERATURE = 0.7;
+const PROMPT_VERSION = "2.1.0";
 
-function getGroqClient(): Groq {
+function getGroqApiKey(): string {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
         throw new Error(
-            "GROQ_API_KEY chưa được cấu hình. Lấy key miễn phí tại: https://console.groq.com/",
+            "GROQ_API_KEY chưa được cấu hình trong .env.local",
         );
     }
-    return new Groq({ apiKey });
+    return apiKey;
 }
 
 // ─── System Prompt ───
@@ -67,15 +66,18 @@ NON-NEGOTIABLE OUTPUT RULES:
 9. Project/checkpoint nodes should stay limited; prioritize lessons, theory, and concept coverage.
 10. Prefer smaller lesson nodes over giant vague nodes. Split broad topics into teachable pieces.
 
-CONTENT QUALITY RULES:
-- Be comprehensive and accurate for the requested target role.
-- Cover foundations, internals, practical standards, and ecosystem knowledge.
-- Include theoretical concepts, terminology, mental models, and best practices.
-- When the learner prefers theory-heavy content, bias learning_resources.suggested_type toward "doc".
-- When outputting projects, use them as checkpoints/capstones, not as the majority of nodes.
-- Descriptions should explain what the learner studies and why it matters.
-- Prerequisites must reference human-readable prior topics, not node IDs.
-- Learning outcomes must be concrete and skill-oriented.
+CONTENT QUALITY RULES (STRICTLY ENFORCED):
+1. Node "label" and "name" MUST be raw, punchy, and highly specific technology/concept names (max 1-4 words).
+2. BANNED WORDS in Node Titles: "Lý thuyết", "Cơ bản", "Tổng quan", "Giới thiệu", "Kiến thức", "Thiết kế", "Thực hành", "Cơ sở", "Công cụ", "Kết thúc". NEVER USE THEM!
+3. MUST INCLUDE REAL TECH STACKS: You must mention actual tools, libraries, languages, and specific algorithms. 
+   - BAD: "Lý thuyết Học Máy", "Mạng Nơ-ron", "Xử lý Ngôn Ngữ"
+   - GOOD: "Python & Pandas", "Scikit-learn", "Gradient Descent", "PyTorch Basics", "CNNs & ResNet", "Transformers", "LLMs & RAG", "Vector Databases", "FastAPI Deployment".
+4. Make the roadmap structure look highly professional, premium, and logical (like a Silicon Valley bootcamp curriculum).
+5. Sections and subsections must follow a strict progressive flow, naming them precisely by their technical phase (e.g., "Phase 1: Foundation & Data", "Phase 2: Deep Learning", "Phase 3: MLOps").
+6. Cover internals, practical standards, and ecosystem knowledge for the requested role.
+7. Descriptions must explain what the learner studies and why it matters in the real world.
+8. Prerequisites must reference human-readable prior topics, not node IDs.
+9. Learning outcomes must be concrete and skill-oriented.
 
 EDGE RULES (CRITICAL - DO NOT SKIP):
 - The "edges" array is MANDATORY and must NOT be empty.
@@ -633,7 +635,7 @@ export async function generateRoadmapWithGroq(
     generationPreferencesReq?: Record<string, string>,
     generationDirectivesReq?: Record<string, any>,
 ): Promise<GroqRoadmapResult> {
-    const client = getGroqClient();
+    const apiKey = getGroqApiKey();
     const startTime = Date.now();
 
     let userPrompt = buildUserPrompt({
@@ -655,27 +657,53 @@ export async function generateRoadmapWithGroq(
         generationDirectives: generationDirectivesReq,
     });
 
-    // Groq JSON mode requires "json" in prompt
+    // Ensure "json" is in prompt for JSON mode
     if (!userPrompt.toLowerCase().includes("json")) {
         userPrompt += "\n\nHãy trả về kết quả dưới dạng JSON.";
     }
 
-    const response = await client.chat.completions.create({
-        model: GROQ_MODEL,
-        messages: [
-            { role: "system", content: ROADMAP_SYSTEM_PROMPT },
-            { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-        temperature: GROQ_TEMPERATURE,
-        max_tokens: GROQ_MAX_TOKENS,
+    const fetchResponse = await fetch(GROQ_API_URL, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            model: GROQ_MODEL,
+            messages: [
+                { role: "system", content: ROADMAP_SYSTEM_PROMPT },
+                { role: "user", content: userPrompt },
+            ],
+            temperature: TEMPERATURE,
+            max_tokens: MAX_TOKENS,
+        }),
     });
 
+    if (!fetchResponse.ok) {
+        const errorBody = await fetchResponse.text();
+        throw new Error(
+            `Groq API error (${fetchResponse.status}): ${errorBody.substring(0, 300)}`,
+        );
+    }
+
+    const responseData = await fetchResponse.json();
     const latencyMs = Date.now() - startTime;
-    const content = response.choices[0]?.message?.content;
+
+    const content = responseData.choices?.[0]?.message?.content;
     if (!content) throw new Error("Empty response from Groq API");
 
-    const rawData = JSON.parse(content);
+    let rawData;
+    try {
+        const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (jsonMatch) {
+            rawData = JSON.parse(jsonMatch[1]);
+        } else {
+            rawData = JSON.parse(content);
+        }
+    } catch (e) {
+        console.error("Failed to parse Groq roadmap JSON:", content.substring(0, 500));
+        throw new Error("AI returned invalid JSON format");
+    }
     const roadmap = parseRawRoadmap(rawData);
 
     // Simple personalization score
@@ -693,12 +721,14 @@ export async function generateRoadmapWithGroq(
     );
     const personalizationScore = Math.round(score * 100) / 100;
 
+    const usedModel = responseData.model || GROQ_MODEL;
+
     return {
         roadmap,
         metadata: {
-            model: GROQ_MODEL,
-            input_tokens: response.usage?.prompt_tokens || 0,
-            output_tokens: response.usage?.completion_tokens || 0,
+            model: usedModel,
+            input_tokens: responseData.usage?.prompt_tokens || 0,
+            output_tokens: responseData.usage?.completion_tokens || 0,
             latency_ms: latencyMs,
             prompt_version: PROMPT_VERSION,
             personalization_score: personalizationScore,
@@ -706,3 +736,4 @@ export async function generateRoadmapWithGroq(
         },
     };
 }
+

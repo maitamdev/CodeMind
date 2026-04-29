@@ -3,6 +3,20 @@ import { db as supabaseAdmin, queryOneBuilder } from "@/lib/db";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
+/**
+ * @swagger
+ * /api/exercises/[exerciseId]/submit:
+ *   post:
+ *     tags:
+ *       - Exercises
+ *     summary: API endpoint for /api/exercises/[exerciseId]/submit
+ *     description: Tự động sinh tài liệu cho POST /api/exercises/[exerciseId]/submit. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ exerciseId: string }> },

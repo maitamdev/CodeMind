@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryOneBuilder, queryBuilder, db as supabaseAdmin } from "@/lib/db";
 
+/**
+ * @swagger
+ * /api/courses/[slug]/chapters:
+ *   get:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/chapters
+ *     description: Tự động sinh tài liệu cho GET /api/courses/[slug]/chapters. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },

@@ -4,6 +4,20 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
 // POST /api/lessons/answers/:answerId/accept - Accept an answer as solution
+/**
+ * @swagger
+ * /api/lessons/answers/[answerId]/accept:
+ *   post:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/answers/[answerId]/accept
+ *     description: Tự động sinh tài liệu cho POST /api/lessons/answers/[answerId]/accept. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ answerId: string }> }

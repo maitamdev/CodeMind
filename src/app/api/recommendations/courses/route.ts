@@ -15,6 +15,20 @@ import {
  *   - for        : "me"    (personalized — uses caller's enrollments)
  *   - limit      : number  (1..20, default 6)
  */
+/**
+ * @swagger
+ * /api/recommendations/courses:
+ *   get:
+ *     tags:
+ *       - Recommendations
+ *     summary: API endpoint for /api/recommendations/courses
+ *     description: Tự động sinh tài liệu cho GET /api/recommendations/courses. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);

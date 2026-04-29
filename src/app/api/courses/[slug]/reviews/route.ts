@@ -32,6 +32,20 @@ async function getCourseIdBySlug(slug: string): Promise<string | null> {
 // ════════════════════════════════════════════
 // GET — List reviews
 // ════════════════════════════════════════════
+/**
+ * @swagger
+ * /api/courses/[slug]/reviews:
+ *   get:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/reviews
+ *     description: Tự động sinh tài liệu cho GET /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },
@@ -206,6 +220,20 @@ export async function GET(
 // ════════════════════════════════════════════
 // POST — Create or update review
 // ════════════════════════════════════════════
+/**
+ * @swagger
+ * /api/courses/[slug]/reviews:
+ *   post:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/reviews
+ *     description: Tự động sinh tài liệu cho POST /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },
@@ -324,6 +352,20 @@ export async function POST(
 // ════════════════════════════════════════════
 // DELETE — Delete own review
 // ════════════════════════════════════════════
+/**
+ * @swagger
+ * /api/courses/[slug]/reviews:
+ *   delete:
+ *     tags:
+ *       - Courses
+ *     summary: API endpoint for /api/courses/[slug]/reviews
+ *     description: Tự động sinh tài liệu cho DELETE /api/courses/[slug]/reviews. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function DELETE(
     request: NextRequest,
     { params }: { params: Promise<{ slug: string }> },

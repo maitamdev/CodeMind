@@ -10,6 +10,20 @@ import { checkRateLimit, getClientIP, RATE_LIMITS } from "@/lib/rateLimit";
 import { logAuditEvent, extractRequestMeta } from "@/lib/audit-log";
 import { getJWTSecret } from "@/lib/env-validation";
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/register
+ *     description: Tự động sinh tài liệu cho POST /api/auth/register. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         // Rate limit check

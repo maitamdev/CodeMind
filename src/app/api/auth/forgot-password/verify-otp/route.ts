@@ -13,6 +13,20 @@ import crypto from 'crypto';
  * - phone?: string (nếu method = 'phone')
  * - otp: string (6 digits)
  */
+/**
+ * @swagger
+ * /api/auth/forgot-password/verify-otp:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/forgot-password/verify-otp
+ *     description: Tự động sinh tài liệu cho POST /api/auth/forgot-password/verify-otp. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

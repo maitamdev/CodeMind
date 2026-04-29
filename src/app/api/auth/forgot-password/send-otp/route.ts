@@ -14,6 +14,20 @@ import crypto from 'crypto';
  * - email?: string (nếu method = 'email')
  * - phone?: string (nếu method = 'phone')
  */
+/**
+ * @swagger
+ * /api/auth/forgot-password/send-otp:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/forgot-password/send-otp
+ *     description: Tự động sinh tài liệu cho POST /api/auth/forgot-password/send-otp. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

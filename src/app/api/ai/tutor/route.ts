@@ -174,6 +174,20 @@ function createStaticStream(content: string): ReadableStream<string> {
     });
 }
 
+/**
+ * @swagger
+ * /api/ai/tutor:
+ *   post:
+ *     tags:
+ *       - Ai
+ *     summary: API endpoint for /api/ai/tutor
+ *     description: Tự động sinh tài liệu cho POST /api/ai/tutor. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const {

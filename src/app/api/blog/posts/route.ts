@@ -24,6 +24,20 @@ function generateExcerpt(html: string, maxLength: number = 200): string {
 }
 
 // GET - Fetch blog posts with filters and pagination
+/**
+ * @swagger
+ * /api/blog/posts:
+ *   get:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts
+ *     description: Tự động sinh tài liệu cho GET /api/blog/posts. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -305,6 +319,20 @@ export async function GET(request: NextRequest) {
 }
 
 // POST - Create new blog post
+/**
+ * @swagger
+ * /api/blog/posts:
+ *   post:
+ *     tags:
+ *       - Blog
+ *     summary: API endpoint for /api/blog/posts
+ *     description: Tự động sinh tài liệu cho POST /api/blog/posts. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST(request: NextRequest) {
     try {
         const cookieStore = await cookies();

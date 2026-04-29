@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthPayloadFromRequest } from "@/lib/server-auth";
 import { getAuthUserById } from "@/lib/profile-service";
 
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     summary: API endpoint for /api/auth/me
+ *     description: Tự động sinh tài liệu cho GET /api/auth/me. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(request: NextRequest) {
     try {
         const payload = getAuthPayloadFromRequest(request);

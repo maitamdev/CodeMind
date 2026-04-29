@@ -3,6 +3,20 @@ import { db as supabaseAdmin } from "@/lib/db";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
+/**
+ * @swagger
+ * /api/gamification/stats:
+ *   get:
+ *     tags:
+ *       - Gamification
+ *     summary: API endpoint for /api/gamification/stats
+ *     description: Tự động sinh tài liệu cho GET /api/gamification/stats. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET() {
     try {
         const cookieStore = await cookies();
@@ -61,6 +75,20 @@ export async function GET() {
     }
 }
 
+/**
+ * @swagger
+ * /api/gamification/stats:
+ *   post:
+ *     tags:
+ *       - Gamification
+ *     summary: API endpoint for /api/gamification/stats
+ *     description: Tự động sinh tài liệu cho POST /api/gamification/stats. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function POST() {
     try {
         const cookieStore = await cookies();

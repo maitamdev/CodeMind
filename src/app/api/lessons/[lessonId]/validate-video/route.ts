@@ -116,6 +116,20 @@ function validateVideoUrl(url: string | null): {
  * - reason: Error reason if invalid
  * - alternative: Suggested fix if invalid
  */
+/**
+ * @swagger
+ * /api/lessons/[lessonId]/validate-video:
+ *   get:
+ *     tags:
+ *       - Lessons
+ *     summary: API endpoint for /api/lessons/[lessonId]/validate-video
+ *     description: Tự động sinh tài liệu cho GET /api/lessons/[lessonId]/validate-video. Hãy cập nhật mô tả chi tiết sau.
+ *     responses:
+ *       200:
+ *         description: Thành công
+ *       500:
+ *         description: Lỗi máy chủ
+ */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ lessonId: string }> },
