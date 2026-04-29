@@ -48,6 +48,7 @@
     "dagre": "^0.8.5",
     "dotenv": "^17.2.3",
     "framer-motion": "^11.11.17",
+    "groq-sdk": "^1.1.2",
     "html-react-parser": "^5.2.17",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^2.0.2",

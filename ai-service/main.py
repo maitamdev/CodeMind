@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.config import settings
-from app.routers import roadmap, ollama, ollama_proxy, face_touch, cv
+from app.routers import roadmap
 
 # Configure logging
 logging.basicConfig(
@@ -22,14 +22,11 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
     # Startup
-    logger.info(f"[START] AI Service (Groq + Ollama Local)")
+    logger.info(f"[START] AI Service (Roadmap Groq)")
     logger.info(f"[ENV] {'Development' if settings.DEBUG else 'Production'}")
     logger.info(f"[GROQ MODEL] {settings.GROQ_MODEL}")
     api_key_preview = settings.GROQ_API_KEY[:15] + "..." if settings.GROQ_API_KEY and len(settings.GROQ_API_KEY) > 15 else "NOT SET"
     logger.info(f"[GROQ KEY] {api_key_preview}")
-    logger.info(f"[OLLAMA] {settings.OLLAMA_BASE_URL}")
-    logger.info(f"[OLLAMA CHAT] {settings.OLLAMA_CHAT_MODEL}")
-    logger.info(f"[OLLAMA COMPLETION] {settings.OLLAMA_COMPLETION_MODEL}")
     yield
     # Shutdown
     logger.info("[STOP] Shutting down AI Service")
@@ -37,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="CodeMind Platform - AI Service",
-    description="AI Service: Roadmap Generation (Groq) + Code Agent (Ollama Local)",
+    description="AI Service: Lightweight Roadmap Generation (Groq)",
     version="2.0.0",
     lifespan=lifespan,
 )
@@ -54,10 +51,6 @@ app.add_middleware(
 
 # Include routers
 app.include_router(roadmap.router)
-app.include_router(ollama_proxy.router)  # Transparent proxy: /api/tags, /api/chat, /api/generate
-app.include_router(ollama.router)
-app.include_router(face_touch.router)
-app.include_router(cv.router)
 
 
 @app.get("/")
@@ -67,7 +60,7 @@ async def root():
         "status": "ok",
         "service": "CodeMind Platform - AI Service",
         "version": "2.0.0",
-        "providers": ["groq", "ollama-local"],
+        "providers": ["groq"],
     }
 
 
@@ -82,12 +75,7 @@ async def health_check():
                 "configured": bool(settings.GROQ_API_KEY),
                 "model": settings.GROQ_MODEL,
                 "api_key_preview": api_key_preview,
-            },
-            "ollama": {
-                "base_url": settings.OLLAMA_BASE_URL,
-                "chat_model": settings.OLLAMA_CHAT_MODEL,
-                "completion_model": settings.OLLAMA_COMPLETION_MODEL,
-            },
+            }
         },
     }
 

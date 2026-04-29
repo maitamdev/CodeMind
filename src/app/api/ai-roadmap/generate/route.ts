@@ -8,14 +8,8 @@ import {
     toGenerationDirectivesRequest,
     toGenerationPreferencesRequest,
 } from "@/lib/ai-roadmap-generation";
-import type {
-    UserProfile,
-    GenerateRoadmapResponse,
-    AIGeneratedRoadmapDB,
-} from "@/types/ai-roadmap";
-
-const FASTAPI_BASE_URL =
-    process.env.FASTAPI_BASE_URL || "http://localhost:8000";
+import { generateRoadmapWithGroq } from "@/lib/groq-roadmap-service";
+import type { UserProfile } from "@/types/ai-roadmap";
 
 interface GenerateRequest {
     profile: UserProfile;
@@ -106,143 +100,65 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 4. Call FastAPI to generate roadmap
+        // 4. Call Groq directly (no FastAPI needed!)
         const startTime = Date.now();
+        let aiResult;
 
-        let fastApiResponse: Response;
         try {
-            fastApiResponse = await fetch(
-                `${FASTAPI_BASE_URL}/api/generate-roadmap`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        profile: {
-                            current_role: profile.currentRole, // Auto-derived from audience data
-                            target_role: profile.targetRole,
-                            current_skills: profile.currentSkills,
-                            skill_level: profile.skillLevel,
-                            learning_style: profile.learningStyle,
-                            hours_per_week: profile.hoursPerWeek,
-                            target_months: profile.targetMonths,
-                            preferred_language: profile.preferredLanguage,
-                            focus_areas: profile.focusAreas,
-                            audience_type: profile.audienceType || "worker",
-                            generation_preferences:
-                                generationPreferencesRequest,
-                            // Audience-specific detail fields
-                            specific_job: profile.specificJob || null,
-                            class_level: profile.classLevel || null,
-                            major: profile.major || null,
-                            study_year: profile.studyYear || null,
-                        },
-                        generation_directives: generationDirectivesRequest,
-                    }),
-                    // Add timeout
-                    signal: AbortSignal.timeout(60000), // 60 seconds timeout
-                },
+            aiResult = await generateRoadmapWithGroq(
+                profile,
+                generationPreferencesRequest as any,
+                generationDirectivesRequest as any,
             );
-        } catch (fetchError: any) {
-            console.error("FastAPI connection error:", fetchError);
+        } catch (groqError: any) {
+            console.error("Groq API error:", groqError);
 
-            // Check if it's a timeout or connection error
+            const message = groqError?.message || String(groqError);
+
+            // Handle specific Groq errors
+            if (message.includes("rate_limit") || message.includes("429")) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        error: "Groq API rate limit exceeded. Vui lòng đợi 1 phút và thử lại. (Free tier: 30 requests/phút)",
+                    },
+                    { status: 429 },
+                );
+            }
             if (
-                fetchError.name === "TimeoutError" ||
-                fetchError.name === "AbortError"
+                message.includes("invalid_api_key") ||
+                message.includes("401") ||
+                message.includes("GROQ_API_KEY")
             ) {
                 return NextResponse.json(
                     {
                         success: false,
-                        error: "AI service timeout. Vui lòng thử lại sau.",
+                        error: "Groq API key không hợp lệ. Vui lòng kiểm tra GROQ_API_KEY trong .env.local. Lấy API key miễn phí tại: https://console.groq.com/",
                     },
-                    { status: 504 },
+                    { status: 401 },
+                );
+            }
+            if (message.includes("connection") || message.includes("503")) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        error: "Không thể kết nối đến Groq API. Vui lòng kiểm tra kết nối internet.",
+                    },
+                    { status: 503 },
                 );
             }
 
             return NextResponse.json(
                 {
                     success: false,
-                    error: "Không thể kết nối đến AI service. Vui lòng kiểm tra FastAPI đã chạy chưa (http://localhost:8000).",
+                    error: `Lỗi tạo roadmap: ${message.substring(0, 200)}`,
                 },
-                { status: 503 },
-            );
-        }
-
-        if (!fastApiResponse.ok) {
-            const errorText = await fastApiResponse.text();
-            let errorMessage = "Failed to generate roadmap";
-
-            try {
-                const errorJson = JSON.parse(errorText);
-                const detail = errorJson.detail || errorText;
-
-                // Handle specific Groq API errors
-                if (detail.includes("rate_limit") || detail.includes("429")) {
-                    errorMessage =
-                        "Groq API rate limit exceeded. Vui lòng đợi 1 phút và thử lại. (Free tier: 30 requests/phút)";
-                } else if (
-                    detail.includes("invalid_api_key") ||
-                    detail.includes("401") ||
-                    detail.includes("GROQ_API_KEY")
-                ) {
-                    errorMessage =
-                        "Groq API key không hợp lệ. Vui lòng kiểm tra GROQ_API_KEY trong ai-service/.env. Lấy API key miễn phí tại: https://console.groq.com/";
-                } else if (
-                    detail.includes("connection") ||
-                    detail.includes("503")
-                ) {
-                    errorMessage =
-                        "Không thể kết nối đến Groq API. Vui lòng kiểm tra kết nối internet.";
-                } else {
-                    errorMessage = `AI service error: ${detail.substring(0, 200)}`;
-                }
-            } catch {
-                // If can't parse, use raw error text
-                if (
-                    errorText.includes("rate_limit") ||
-                    errorText.includes("429")
-                ) {
-                    errorMessage =
-                        "Groq API rate limit exceeded. Vui lòng đợi 1 phút.";
-                } else if (
-                    errorText.includes("401") ||
-                    errorText.includes("api_key")
-                ) {
-                    errorMessage =
-                        "Groq API key không hợp lệ. Lấy key miễn phí tại: https://console.groq.com/";
-                } else {
-                    errorMessage =
-                        errorText.substring(0, 200) ||
-                        "Failed to generate roadmap";
-                }
-            }
-
-            console.error("FastAPI error:", errorText);
-            return NextResponse.json(
-                { success: false, error: errorMessage },
-                {
-                    status:
-                        fastApiResponse.status >= 500
-                            ? 503
-                            : fastApiResponse.status,
-                },
-            );
-        }
-
-        let aiResponse: any;
-        try {
-            aiResponse = await fastApiResponse.json();
-        } catch (parseError) {
-            console.error("Failed to parse FastAPI response:", parseError);
-            return NextResponse.json(
-                { success: false, error: "Invalid response from AI service" },
                 { status: 500 },
             );
         }
 
         const totalLatency = Date.now() - startTime;
+        const { roadmap: aiRoadmap, metadata: aiMetadata } = aiResult;
 
         // 5. Save generated roadmap to database
         let savedRoadmap = null;
@@ -253,16 +169,15 @@ export async function POST(request: NextRequest) {
                     .insert({
                         user_id: userId,
                         profile_id: savedProfile?.id || null,
-                        title: aiResponse.roadmap.roadmap_title,
-                        description: aiResponse.roadmap.roadmap_description,
-                        total_estimated_hours:
-                            aiResponse.roadmap.total_estimated_hours,
-                        sections: aiResponse.roadmap.sections || [],
-                        phases: aiResponse.roadmap.phases,
-                        nodes: aiResponse.roadmap.nodes,
-                        edges: aiResponse.roadmap.edges,
+                        title: aiRoadmap.roadmap_title,
+                        description: aiRoadmap.roadmap_description,
+                        total_estimated_hours: aiRoadmap.total_estimated_hours,
+                        sections: aiRoadmap.sections || [],
+                        phases: aiRoadmap.phases,
+                        nodes: aiRoadmap.nodes,
+                        edges: aiRoadmap.edges,
                         generation_metadata: {
-                            ...aiResponse.metadata,
+                            ...aiMetadata,
                             total_latency_ms: totalLatency,
                             generation_input: {
                                 audience_type: profile.audienceType || "worker",
@@ -283,7 +198,7 @@ export async function POST(request: NextRequest) {
             if (roadmapError) {
                 console.error("Error saving roadmap:", roadmapError);
 
-                // If table doesn't exist, return roadmap data anyway (user can still view it)
+                // If table doesn't exist, return roadmap data anyway
                 if (
                     roadmapError.code === "PGRST204" ||
                     roadmapError.message?.includes("does not exist") ||
@@ -292,19 +207,18 @@ export async function POST(request: NextRequest) {
                     console.warn(
                         "Roadmap table does not exist. Returning roadmap without saving.",
                     );
-                    // Return roadmap with a temporary ID
                     return NextResponse.json({
                         success: true,
                         data: {
                             id: `temp-${Date.now()}`,
-                            ...aiResponse.roadmap,
+                            ...aiRoadmap,
                             metadata: {
-                                ...aiResponse.metadata,
+                                ...aiMetadata,
                                 total_latency_ms: totalLatency,
                             },
                         },
                         warning:
-                            "Roadmap generated successfully but not saved to database. Please run database migration (scripts/ai-roadmap-schema.sql) to enable persistence.",
+                            "Roadmap generated successfully but not saved to database.",
                     });
                 }
 
@@ -328,9 +242,9 @@ export async function POST(request: NextRequest) {
                 success: true,
                 data: {
                     id: `temp-${Date.now()}`,
-                    ...aiResponse.roadmap,
+                    ...aiRoadmap,
                     metadata: {
-                        ...aiResponse.metadata,
+                        ...aiMetadata,
                         total_latency_ms: totalLatency,
                     },
                 },
@@ -342,15 +256,14 @@ export async function POST(request: NextRequest) {
 
         // 6. Return success response
         if (!savedRoadmap) {
-            // This shouldn't happen, but handle it gracefully
             console.warn("Roadmap was not saved but no error was thrown");
             return NextResponse.json({
                 success: true,
                 data: {
                     id: `temp-${Date.now()}`,
-                    ...aiResponse.roadmap,
+                    ...aiRoadmap,
                     metadata: {
-                        ...aiResponse.metadata,
+                        ...aiMetadata,
                         total_latency_ms: totalLatency,
                     },
                 },
@@ -363,9 +276,9 @@ export async function POST(request: NextRequest) {
             success: true,
             data: {
                 id: savedRoadmap.id,
-                ...aiResponse.roadmap,
+                ...aiRoadmap,
                 metadata: {
-                    ...aiResponse.metadata,
+                    ...aiMetadata,
                     total_latency_ms: totalLatency,
                 },
             },
