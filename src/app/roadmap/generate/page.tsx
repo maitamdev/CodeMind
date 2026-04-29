@@ -6,7 +6,7 @@ import { ArrowLeft, Brain, Sparkles, Target, Clock, Zap } from "lucide-react";
 import Link from "next/link";
 import OnboardingForm from "@/components/AIRoadmap/OnboardingForm";
 import type { UserProfile } from "@/types/ai-roadmap";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, secureFetch } from "@/contexts/AuthContext";
 
 export default function GenerateRoadmapPage() {
     const router = useRouter();
@@ -26,12 +26,11 @@ export default function GenerateRoadmapPage() {
         setWarning(null);
 
         try {
-            const response = await fetch("/api/ai-roadmap/generate", {
+            const response = await secureFetch("/api/ai-roadmap/generate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                credentials: "include",
                 body: JSON.stringify({ profile }),
             });
 

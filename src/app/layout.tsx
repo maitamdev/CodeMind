@@ -9,7 +9,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
+const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono', display: 'swap', preload: false});
 
 export const metadata: Metadata = {
     title: "CodeMind — Nền tảng học lập trình tích hợp AI",
