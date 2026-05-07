@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUserId } from "@/lib/auth-helpers";
 import { db as supabaseAdmin } from "@/lib/db";
+import { getAuthUserById } from "@/lib/profile-service";
 import { buildCertificateCode, getCertificateVerifyUrl } from "@/lib/certificate";
 
 interface IssueBody {
@@ -118,7 +119,11 @@ export async function POST(request: NextRequest) {
             ).length;
         }
 
+        const user = await getAuthUserById(userId);
+        const isAdmin = user?.primaryRole === "admin" || user?.roles?.includes("admin");
+
         const isFinished =
+            isAdmin ||
             (totalLessons > 0 && completedCount >= totalLessons) ||
             !!enrollment.completed_at;
 
