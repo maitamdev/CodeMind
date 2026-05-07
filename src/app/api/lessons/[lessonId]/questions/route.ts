@@ -274,7 +274,7 @@ export async function POST(
                             content: `Tiêu đề: ${title}\nNội dung: ${content}`
                         }
                     ],
-                    model: "llama-3.3-70b-versatile",
+                    model: "llama-3.1-8b-instant",
                     temperature: 0.7,
                     max_completion_tokens: 1024,
                 });

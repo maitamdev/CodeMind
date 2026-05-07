@@ -1,8 +1,8 @@
 // Groq AI Models Configuration for CodeMind Platform
 
-export const DEFAULT_GROQ_CHAT_MODEL = "llama-3.3-70b-versatile";
+export const DEFAULT_GROQ_CHAT_MODEL = "llama-3.1-8b-instant";
 export const DEFAULT_GROQ_COMPLETION_MODEL = "llama-3.1-8b-instant";
-export const DEFAULT_GROQ_TUTOR_MODEL = "llama-3.3-70b-versatile";
+export const DEFAULT_GROQ_TUTOR_MODEL = "llama-3.1-8b-instant";
 
 // Legacy aliases for backward compatibility
 export const DEFAULT_OLLAMA_CHAT_MODEL = DEFAULT_GROQ_CHAT_MODEL;
