@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { BotMessageSquare, Maximize2, Minimize2, X, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,16 +57,22 @@ export default function AITutorFAB() {
                 <TooltipTrigger asChild>
                     <Button
                         type="button"
-                        variant={isOpen ? "ghost" : "default"}
-                        size="icon-lg"
+                        variant={isOpen ? "secondary" : "default"}
+                        size="icon"
                         onClick={togglePanel}
-                        className="fixed bottom-20 right-6 z-[9998] rounded-full shadow-md border-0"
+                        className="fixed bottom-20 right-6 z-[9998] size-14 rounded-full shadow-2xl shadow-indigo-500/50 border border-indigo-500/30 p-0 hover:scale-110 transition-transform duration-300 overflow-hidden"
                         aria-label="AI Tutor"
                     >
                         {isOpen ? (
-                            <X className="size-5" />
+                            <X className="size-6 text-zinc-400" />
                         ) : (
-                            <BotMessageSquare className="size-5" />
+                            <Image 
+                                src="/assets/img/ai-avatar.png"
+                                alt="AI Tutor"
+                                width={56}
+                                height={56}
+                                className="object-cover w-full h-full"
+                            />
                         )}
                     </Button>
                 </TooltipTrigger>
@@ -97,8 +104,14 @@ export default function AITutorFAB() {
                             className="flex h-full w-full items-center justify-between px-4 text-left transition-colors hover:bg-zinc-900"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/15">
-                                    <BotMessageSquare className="size-4 text-emerald-400" />
+                                <div className="flex size-8 items-center justify-center rounded-full overflow-hidden border border-indigo-500/20">
+                                    <Image 
+                                        src="/assets/img/ai-avatar.png"
+                                        alt="AI Tutor"
+                                        width={32}
+                                        height={32}
+                                        className="object-cover w-full h-full"
+                                    />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-zinc-100">
