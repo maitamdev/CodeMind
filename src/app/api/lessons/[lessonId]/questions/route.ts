@@ -253,11 +253,11 @@ export async function POST(
         // GROQ AI AUTO-REPLY
         // -------------------------------------------------------------------
         try {
-            // Find an admin user to act as the AI avatar
+            // Find the dedicated AI user
             const { data: adminUser } = await supabaseAdmin!
                 .from("users")
                 .select("id")
-                .eq("role", "admin")
+                .eq("username", "codemind_ai")
                 .limit(1)
                 .single();
 
