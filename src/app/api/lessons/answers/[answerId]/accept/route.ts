@@ -76,11 +76,11 @@ export async function POST(
       { is_accepted: true }
     );
 
-    // Update question is_resolved to true (status is calculated dynamically)
+    // Update question status to RESOLVED
     await update(
       "lesson_questions",
       { id: questionId },
-      { is_resolved: true }
+      { status: "RESOLVED" }
     );
 
     return NextResponse.json({
