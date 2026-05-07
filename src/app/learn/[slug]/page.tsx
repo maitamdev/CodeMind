@@ -509,7 +509,7 @@ export default function LearnCoursePage() {
                 });
 
                 // Auto advance to next lesson
-                goToNextLesson();
+                goToNextLesson(true);
             } else {
                 toast.error(data.message || "Không thể đánh dấu hoàn thành");
             }
@@ -592,7 +592,7 @@ export default function LearnCoursePage() {
         });
     };
 
-    const goToNextLesson = async () => {
+    const goToNextLesson = async (forceAllow = false) => {
         if (!course || !currentLesson) return;
 
         // 1. Identify next lesson immediately
@@ -604,6 +604,17 @@ export default function LearnCoursePage() {
             currentIndex < allLessons.length - 1
                 ? allLessons[currentIndex + 1]
                 : null;
+
+        const isAdmin = user?.primaryRole === "admin" || user?.roles?.includes("admin");
+        const requiresExplicitCompletion = 
+            currentLesson.type === "video" || 
+            currentLesson.type === "quiz" || 
+            currentLesson.type === "code_exercise";
+
+        if (!forceAllow && !isAdmin && requiresExplicitCompletion && !currentLesson.isCompleted) {
+            toast.error("Bạn cần hoàn thành bài học hiện tại để sang bài tiếp theo");
+            return;
+        }
 
         // 2. Optimistic UI Update
         // Update local state immediately to mark current as completed
@@ -934,7 +945,7 @@ export default function LearnCoursePage() {
                                                 toast.success(
                                                     "Bài học đã hoàn thành! Tiếp tục với bài học tiếp theo",
                                                 );
-                                                goToNextLesson();
+                                                goToNextLesson(true);
                                             }}
                                             onProgress={(data) => {
                                                 console.log(
@@ -943,65 +954,25 @@ export default function LearnCoursePage() {
                                             }}
                                             autoSave={true}
                                         />
-                                    ) : (
-                                        // Show message for non-video lessons (reading materials, quizzes)
+                                    ) : currentLesson?.type === "reading" || currentLesson?.type === "quiz" ? null : (
+                                        // Show message for missing video lessons
                                         <div
                                             className={`w-full aspect-video ${isDarkTheme ? "bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700" : "bg-gradient-to-br from-gray-200 to-gray-100 border-gray-300"} rounded-lg flex items-center justify-center border`}
                                         >
                                             <div className="text-center">
-                                                {currentLesson?.type ===
-                                                "reading" ? (
-                                                    <>
-                                                        <FileText
-                                                            className={`w-16 h-16 mx-auto mb-4 ${isDarkTheme ? "text-gray-600" : "text-gray-400"}`}
-                                                        />
-                                                        <p
-                                                            className={`text-lg font-medium ${isDarkTheme ? "text-gray-400" : "text-gray-600"}`}
-                                                        >
-                                                            Bài học dạng đọc
-                                                        </p>
-                                                        <p
-                                                            className={`text-sm mt-2 ${isDarkTheme ? "text-gray-500" : "text-gray-500"}`}
-                                                        >
-                                                            Xem nội dung bên
-                                                            dưới
-                                                        </p>
-                                                    </>
-                                                ) : currentLesson?.type ===
-                                                  "quiz" ? (
-                                                    <>
-                                                        <Flag
-                                                            className={`w-16 h-16 mx-auto mb-4 ${isDarkTheme ? "text-gray-600" : "text-gray-400"}`}
-                                                        />
-                                                        <p
-                                                            className={`text-lg font-medium ${isDarkTheme ? "text-gray-400" : "text-gray-600"}`}
-                                                        >
-                                                            Bài kiểm tra
-                                                        </p>
-                                                        <p
-                                                            className={`text-sm mt-2 ${isDarkTheme ? "text-gray-500" : "text-gray-500"}`}
-                                                        >
-                                                            Xem câu hỏi bên dưới
-                                                        </p>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <PlayCircle
-                                                            className={`w-16 h-16 mx-auto mb-4 ${isDarkTheme ? "text-gray-600" : "text-gray-400"}`}
-                                                        />
-                                                        <p
-                                                            className={`text-lg font-medium ${isDarkTheme ? "text-gray-400" : "text-gray-600"}`}
-                                                        >
-                                                            Đang cập nhật video
-                                                        </p>
-                                                        <p
-                                                            className={`text-sm mt-2 ${isDarkTheme ? "text-gray-500" : "text-gray-500"}`}
-                                                        >
-                                                            Video sẽ được thêm
-                                                            sớm
-                                                        </p>
-                                                    </>
-                                                )}
+                                                <PlayCircle
+                                                    className={`w-16 h-16 mx-auto mb-4 ${isDarkTheme ? "text-gray-600" : "text-gray-400"}`}
+                                                />
+                                                <p
+                                                    className={`text-lg font-medium ${isDarkTheme ? "text-gray-400" : "text-gray-600"}`}
+                                                >
+                                                    Đang cập nhật video
+                                                </p>
+                                                <p
+                                                    className={`text-sm mt-2 ${isDarkTheme ? "text-gray-500" : "text-gray-500"}`}
+                                                >
+                                                    Video sẽ được thêm sớm
+                                                </p>
                                             </div>
                                         </div>
                                     )}
@@ -1218,7 +1189,7 @@ export default function LearnCoursePage() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={goToNextLesson}
+                                onClick={() => goToNextLesson(false)}
                                 className="group text-primary-foreground hover:bg-white/15 hover:text-primary-foreground border-0 uppercase font-semibold text-xs gap-1.5"
                             >
                                 <span>Bài tiếp theo</span>
@@ -1281,6 +1252,7 @@ export default function LearnCoursePage() {
                     handleLessonClick={handleLessonClick}
                     isFree={isFree}
                     codePlaygroundOpen={isCodePlaygroundOpen}
+                    isAdmin={user?.primaryRole === "admin" || user?.roles?.includes("admin")}
                 />
 
                 {/* Code Playground - Part of page layout */}

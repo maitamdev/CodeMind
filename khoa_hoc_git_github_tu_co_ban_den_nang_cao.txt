@@ -1,0 +1,3567 @@
+KHÓA HỌC GIT & GITHUB TỪ CƠ BẢN ĐẾN NÂNG CAO
+Phiên bản: 1.0
+Ngôn ngữ: Tiếng Việt
+Định dạng: Giáo trình tự học + bài tập + dự án thực hành
+
+============================================================
+MỤC LỤC
+============================================================
+
+PHẦN 0. GIỚI THIỆU KHÓA HỌC
+PHẦN 1. TƯ DUY NỀN TẢNG VỀ GIT, GITHUB VÀ VERSION CONTROL
+PHẦN 2. CÀI ĐẶT VÀ CẤU HÌNH MÔI TRƯỜNG
+PHẦN 3. LÀM VIỆC VỚI REPOSITORY CỤC BỘ
+PHẦN 4. SNAPSHOT, COMMIT VÀ LỊCH SỬ THAY ĐỔI
+PHẦN 5. BRANCH, MERGE VÀ QUY TRÌNH PHÁT TRIỂN SONG SONG
+PHẦN 6. REMOTE REPOSITORY VÀ GITHUB
+PHẦN 7. QUẢN LÝ XUNG ĐỘT, PULL, FETCH, REBASE
+PHẦN 8. GITHUB PULL REQUEST, CODE REVIEW VÀ COLLABORATION
+PHẦN 9. GIT NÂNG CAO: STASH, RESET, REVERT, CHERRY-PICK, TAG
+PHẦN 10. VIẾT COMMIT MESSAGE VÀ QUY ƯỚC LÀM VIỆC CHUYÊN NGHIỆP
+PHẦN 11. GITHUB ISSUES, PROJECTS, WIKI, RELEASES
+PHẦN 12. GITHUB ACTIONS VÀ CI/CD CƠ BẢN
+PHẦN 13. BẢO MẬT, SSH, TOKEN, SECRET VÀ QUẢN LÝ QUYỀN
+PHẦN 14. GIT TRONG DỰ ÁN THỰC TẾ
+PHẦN 15. CÁC TÌNH HUỐNG LỖI THƯỜNG GẶP VÀ CÁCH XỬ LÝ
+PHẦN 16. BÀI TẬP THỰC HÀNH THEO CẤP ĐỘ
+PHẦN 17. DỰ ÁN CUỐI KHÓA
+PHẦN 18. CHEAT SHEET LỆNH GIT & GITHUB
+PHẦN 19. LỘ TRÌNH ÔN TẬP 30 NGÀY
+PHẦN 20. PHỤ LỤC
+
+============================================================
+PHẦN 0. GIỚI THIỆU KHÓA HỌC
+============================================================
+
+0.1. Mục tiêu khóa học
+
+Sau khi hoàn thành khóa học này, bạn có thể:
+
+1. Hiểu Git là gì, GitHub là gì và vì sao lập trình viên cần dùng.
+2. Sử dụng thành thạo Git trong dự án cá nhân.
+3. Làm việc nhóm bằng GitHub: clone, push, pull, pull request, review code.
+4. Quản lý branch, merge, rebase, conflict.
+5. Khôi phục lỗi bằng reset, revert, checkout, restore.
+6. Sử dụng tag, release, issue, project board.
+7. Tạo workflow CI/CD cơ bản bằng GitHub Actions.
+8. Áp dụng quy trình Git chuyên nghiệp như Git Flow, trunk-based development.
+9. Xử lý các lỗi Git thường gặp trong thực tế.
+10. Có đủ nền tảng để tham gia dự án mã nguồn mở hoặc làm việc trong công ty.
+
+0.2. Đối tượng phù hợp
+
+Khóa học phù hợp với:
+
+- Người mới học lập trình.
+- Sinh viên công nghệ thông tin.
+- Lập trình viên frontend, backend, mobile, DevOps.
+- Tester, BA, PM cần hiểu quy trình làm việc với source code.
+- Người muốn đóng góp open source.
+- Người muốn quản lý tài liệu, cấu hình, nội dung bằng Git.
+
+0.3. Yêu cầu đầu vào
+
+Bạn không cần biết Git trước. Tuy nhiên, bạn nên có:
+
+- Kiến thức cơ bản về máy tính.
+- Biết mở terminal/cmd.
+- Biết tạo file, thư mục.
+- Nếu biết HTML/CSS/JavaScript hoặc Python thì thực hành sẽ dễ hơn, nhưng không bắt buộc.
+
+0.4. Cách học hiệu quả
+
+Không nên chỉ đọc. Hãy thực hành từng lệnh.
+
+Gợi ý cách học:
+
+- Đọc lý thuyết ngắn.
+- Gõ lại lệnh.
+- Quan sát kết quả.
+- Cố tình tạo lỗi nhỏ.
+- Tự sửa lỗi.
+- Ghi chú lại quy trình.
+- Làm bài tập cuối mỗi phần.
+
+0.5. Quy ước trong giáo trình
+
+Các lệnh bắt đầu bằng ký hiệu $ là lệnh chạy trong terminal.
+
+Ví dụ:
+
+$ git status
+
+Bạn không cần gõ dấu $.
+
+Ký hiệu:
+
+- Working Directory: thư mục làm việc hiện tại.
+- Staging Area: khu vực chờ commit.
+- Repository: kho lưu trữ Git.
+- Remote: kho lưu trữ trên máy chủ như GitHub.
+- HEAD: vị trí commit hiện tại bạn đang đứng.
+
+============================================================
+PHẦN 1. TƯ DUY NỀN TẢNG VỀ GIT, GITHUB VÀ VERSION CONTROL
+============================================================
+
+1.1. Version control là gì?
+
+Version control, hay quản lý phiên bản, là cách theo dõi sự thay đổi của file theo thời gian.
+
+Ví dụ bạn viết một tài liệu:
+
+- bao_cao_v1.docx
+- bao_cao_v2.docx
+- bao_cao_final.docx
+- bao_cao_final_sua_lan_cuoi.docx
+- bao_cao_final_that_su_lan_cuoi.docx
+
+Cách đặt tên này rất dễ rối. Git giải quyết vấn đề bằng cách lưu lịch sử thay đổi một cách có hệ thống.
+
+Git giúp bạn biết:
+
+- Ai thay đổi?
+- Thay đổi lúc nào?
+- Thay đổi dòng nào?
+- Vì sao thay đổi?
+- Có thể quay lại phiên bản cũ không?
+- Có thể làm nhiều tính năng song song không?
+
+1.2. Git là gì?
+
+Git là hệ thống quản lý phiên bản phân tán.
+
+Điểm quan trọng:
+
+- Git chạy được trên máy cá nhân.
+- Mỗi người có một bản sao đầy đủ lịch sử dự án.
+- Không cần internet vẫn commit được.
+- Có thể đồng bộ với remote như GitHub khi cần.
+- Rất nhanh và mạnh.
+
+1.3. GitHub là gì?
+
+GitHub là nền tảng lưu trữ Git repository trên internet.
+
+GitHub cung cấp:
+
+- Lưu code online.
+- Làm việc nhóm.
+- Pull request.
+- Code review.
+- Issue tracking.
+- Project board.
+- Wiki.
+- Release.
+- GitHub Actions.
+- Quản lý quyền truy cập.
+- Hồ sơ cá nhân lập trình viên.
+
+Git là công cụ. GitHub là dịch vụ/platform dùng Git.
+
+1.4. So sánh Git và GitHub
+
+Git:
+- Chạy trên máy của bạn.
+- Quản lý lịch sử code.
+- Dùng bằng terminal hoặc GUI.
+- Không bắt buộc cần tài khoản.
+
+GitHub:
+- Chạy trên web.
+- Lưu repository online.
+- Hỗ trợ cộng tác.
+- Cần tài khoản.
+- Có nhiều tính năng ngoài Git.
+
+1.5. Vì sao nên học Git sớm?
+
+Vì Git là kỹ năng bắt buộc trong hầu hết công việc lập trình.
+
+Lợi ích:
+
+- Không sợ mất code.
+- Dễ thử nghiệm ý tưởng mới.
+- Dễ làm việc nhóm.
+- Có portfolio trên GitHub.
+- Tăng tính chuyên nghiệp.
+- Hiểu quy trình phát triển phần mềm thực tế.
+
+1.6. Mô hình hoạt động cơ bản của Git
+
+Git thường có 3 khu vực chính:
+
+1. Working Directory
+   Nơi bạn sửa file.
+
+2. Staging Area
+   Nơi bạn chọn các thay đổi chuẩn bị commit.
+
+3. Local Repository
+   Nơi Git lưu commit vào lịch sử.
+
+Luồng cơ bản:
+
+Sửa file -> git add -> git commit
+
+Sau đó nếu làm việc với GitHub:
+
+git push -> đưa commit lên GitHub
+git pull -> lấy thay đổi mới từ GitHub về máy
+
+1.7. Commit là gì?
+
+Commit là một điểm lưu lịch sử.
+
+Mỗi commit giống như một snapshot của dự án tại thời điểm đó.
+
+Một commit thường gồm:
+
+- Mã hash duy nhất.
+- Tác giả.
+- Thời gian.
+- Nội dung thay đổi.
+- Commit message.
+- Con trỏ đến commit cha.
+
+Ví dụ commit message:
+
+Add login form
+Fix navbar layout
+Update README instructions
+
+1.8. Branch là gì?
+
+Branch là nhánh phát triển độc lập.
+
+Ví dụ:
+
+- main: code ổn định.
+- feature/login: phát triển chức năng đăng nhập.
+- bugfix/navbar: sửa lỗi thanh điều hướng.
+- release/v1.0.0: chuẩn bị phát hành.
+
+Branch giúp bạn làm việc mà không ảnh hưởng trực tiếp đến code chính.
+
+1.9. Merge là gì?
+
+Merge là gộp thay đổi từ branch này vào branch khác.
+
+Ví dụ:
+
+Bạn làm xong chức năng login ở branch feature/login.
+Bạn merge vào main để đưa vào code chính.
+
+1.10. Conflict là gì?
+
+Conflict xảy ra khi Git không tự quyết định được cách gộp thay đổi.
+
+Ví dụ:
+
+Bạn sửa dòng 10 trong file app.js.
+Đồng đội cũng sửa dòng 10 trong file app.js.
+Khi merge, Git hỏi bạn nên giữ bản nào.
+
+Conflict không đáng sợ. Nó chỉ cần con người quyết định.
+
+============================================================
+PHẦN 2. CÀI ĐẶT VÀ CẤU HÌNH MÔI TRƯỜNG
+============================================================
+
+2.1. Cài Git
+
+Trên Windows:
+
+1. Truy cập trang chính thức của Git.
+2. Tải Git for Windows.
+3. Cài đặt theo mặc định.
+4. Mở Git Bash hoặc PowerShell.
+5. Kiểm tra:
+
+$ git --version
+
+Trên macOS:
+
+Cách 1: Dùng Xcode Command Line Tools
+
+$ git --version
+
+Nếu chưa có, macOS sẽ hỏi cài đặt.
+
+Cách 2: Dùng Homebrew
+
+$ brew install git
+
+Trên Ubuntu/Linux:
+
+$ sudo apt update
+$ sudo apt install git
+$ git --version
+
+2.2. Cấu hình tên và email
+
+Git cần biết bạn là ai khi tạo commit.
+
+$ git config --global user.name "Ten Cua Ban"
+$ git config --global user.email "email@example.com"
+
+Kiểm tra:
+
+$ git config --global --list
+
+2.3. Cấu hình editor mặc định
+
+Ví dụ dùng VS Code:
+
+$ git config --global core.editor "code --wait"
+
+2.4. Cấu hình tên branch mặc định
+
+Hiện nay thường dùng main:
+
+$ git config --global init.defaultBranch main
+
+2.5. Cấu hình xuống dòng
+
+Trên Windows:
+
+$ git config --global core.autocrlf true
+
+Trên macOS/Linux:
+
+$ git config --global core.autocrlf input
+
+2.6. Cài GitHub CLI tùy chọn
+
+GitHub CLI là công cụ thao tác GitHub bằng terminal.
+
+Kiểm tra:
+
+$ gh --version
+
+Đăng nhập:
+
+$ gh auth login
+
+Các lệnh hay dùng:
+
+$ gh repo create
+$ gh repo clone owner/repo
+$ gh pr create
+$ gh pr list
+$ gh issue list
+
+2.7. Cài VS Code và extension
+
+Nên cài:
+
+- Visual Studio Code.
+- GitLens.
+- Git Graph.
+- GitHub Pull Requests and Issues.
+
+2.8. Tạo tài khoản GitHub
+
+Bạn cần:
+
+- Username chuyên nghiệp.
+- Email chính xác.
+- Ảnh đại diện rõ ràng.
+- Bật xác thực hai bước nếu có thể.
+
+2.9. Kiểm tra môi trường hoàn chỉnh
+
+Chạy:
+
+$ git --version
+$ git config --global user.name
+$ git config --global user.email
+
+Nếu có kết quả đầy đủ, bạn đã sẵn sàng.
+
+Bài tập phần 2:
+
+1. Cài Git.
+2. Cấu hình username/email.
+3. Tạo tài khoản GitHub.
+4. Tạo thư mục git-course-practice trên máy.
+5. Mở terminal tại thư mục đó.
+
+============================================================
+PHẦN 3. LÀM VIỆC VỚI REPOSITORY CỤC BỘ
+============================================================
+
+3.1. Repository là gì?
+
+Repository, gọi tắt là repo, là thư mục được Git theo dõi.
+
+Một repo gồm:
+
+- File dự án.
+- Thư mục .git chứa dữ liệu Git.
+- Lịch sử commit.
+- Cấu hình.
+- Branch, tag, remote.
+
+3.2. Tạo repository mới
+
+Tạo thư mục:
+
+$ mkdir my-first-repo
+$ cd my-first-repo
+
+Khởi tạo Git:
+
+$ git init
+
+Kết quả:
+
+Initialized empty Git repository...
+
+Từ lúc này, thư mục my-first-repo là Git repository.
+
+3.3. Kiểm tra trạng thái
+
+$ git status
+
+Bạn sẽ thấy branch hiện tại và trạng thái file.
+
+3.4. Tạo file đầu tiên
+
+$ echo "# My First Repo" > README.md
+
+Kiểm tra:
+
+$ git status
+
+Git sẽ báo README.md là untracked file.
+
+3.5. Untracked file là gì?
+
+Untracked file là file tồn tại trong thư mục nhưng Git chưa theo dõi.
+
+Muốn Git theo dõi, dùng:
+
+$ git add README.md
+
+3.6. Staging Area
+
+Sau khi git add, file được đưa vào staging area.
+
+Staging area cho phép bạn chọn chính xác thay đổi nào sẽ nằm trong commit.
+
+3.7. Commit đầu tiên
+
+$ git commit -m "Initial commit"
+
+Commit message nên mô tả ngắn gọn thay đổi.
+
+3.8. Xem lịch sử commit
+
+$ git log
+
+Xem gọn hơn:
+
+$ git log --oneline
+
+3.9. Sửa file và commit tiếp
+
+Mở README.md, thêm nội dung:
+
+Day 1: Learning Git basics.
+
+Sau đó:
+
+$ git status
+$ git add README.md
+$ git commit -m "Update README with learning note"
+
+3.10. Git theo dõi thay đổi như thế nào?
+
+Git không lưu mỗi file đầy đủ theo kiểu đơn giản. Git lưu object trong database nội bộ.
+
+Các loại object chính:
+
+- Blob: nội dung file.
+- Tree: cấu trúc thư mục.
+- Commit: metadata và liên kết snapshot.
+- Tag: nhãn cho commit.
+
+Bạn không cần biết sâu ở giai đoạn đầu, nhưng hiểu rằng Git lưu lịch sử rất tối ưu.
+
+3.11. Xem sự khác biệt
+
+Sửa README.md rồi chạy:
+
+$ git diff
+
+Lệnh này cho biết thay đổi chưa staged.
+
+Sau khi add:
+
+$ git add README.md
+$ git diff --staged
+
+3.12. Bỏ theo dõi file khỏi staging
+
+Nếu add nhầm:
+
+$ git restore --staged README.md
+
+3.13. Khôi phục thay đổi chưa commit
+
+Nếu bạn sửa file nhưng muốn bỏ thay đổi:
+
+$ git restore README.md
+
+Cẩn thận: lệnh này có thể làm mất thay đổi chưa commit.
+
+3.14. Xóa file bằng Git
+
+$ rm old-file.txt
+$ git status
+$ git add old-file.txt
+$ git commit -m "Remove old file"
+
+Hoặc:
+
+$ git rm old-file.txt
+$ git commit -m "Remove old file"
+
+3.15. Đổi tên file
+
+$ git mv oldname.txt newname.txt
+$ git commit -m "Rename file"
+
+Bài tập phần 3:
+
+1. Tạo repo local tên git-basic.
+2. Tạo README.md.
+3. Commit lần đầu.
+4. Tạo file notes.txt.
+5. Commit notes.txt.
+6. Sửa README.md.
+7. Dùng git diff để xem thay đổi.
+8. Commit thay đổi.
+9. Xem lịch sử bằng git log --oneline.
+
+============================================================
+PHẦN 4. SNAPSHOT, COMMIT VÀ LỊCH SỬ THAY ĐỔI
+============================================================
+
+4.1. Commit tốt là gì?
+
+Commit tốt nên:
+
+- Nhỏ.
+- Có mục đích rõ.
+- Không trộn nhiều việc không liên quan.
+- Có message dễ hiểu.
+- Có thể revert nếu cần.
+
+Commit không tốt:
+
+- "fix"
+- "update"
+- "abc"
+- "done"
+- Một commit chứa cả sửa bug, thêm feature, format code, xóa file.
+
+4.2. Cấu trúc commit message chuyên nghiệp
+
+Dạng đơn giản:
+
+<verb> <object>
+
+Ví dụ:
+
+Add user login page
+Fix password validation
+Update API documentation
+Remove unused CSS
+
+Dạng Conventional Commits:
+
+<type>(scope): <description>
+
+Ví dụ:
+
+feat(auth): add login form
+fix(api): handle timeout error
+docs(readme): update setup guide
+refactor(user): simplify profile service
+test(auth): add login validation tests
+
+Các type thường dùng:
+
+- feat: thêm tính năng.
+- fix: sửa lỗi.
+- docs: tài liệu.
+- style: format, dấu cách, không đổi logic.
+- refactor: tái cấu trúc code.
+- test: thêm/sửa test.
+- chore: việc phụ trợ.
+- perf: tối ưu hiệu năng.
+- ci: cấu hình CI/CD.
+- build: hệ thống build.
+
+4.3. Xem log đẹp hơn
+
+$ git log --oneline --graph --decorate --all
+
+Ý nghĩa:
+
+- --oneline: mỗi commit một dòng.
+- --graph: vẽ nhánh.
+- --decorate: hiện branch/tag.
+- --all: hiện tất cả branch.
+
+4.4. Xem chi tiết một commit
+
+$ git show <commit-hash>
+
+Ví dụ:
+
+$ git show a1b2c3d
+
+4.5. Xem ai sửa dòng nào
+
+$ git blame README.md
+
+Lệnh này hữu ích khi cần biết dòng code do ai thay đổi và ở commit nào.
+
+4.6. Xem file thay đổi trong commit
+
+$ git show --name-only <commit-hash>
+
+4.7. Xem thống kê thay đổi
+
+$ git show --stat <commit-hash>
+
+4.8. Commit tất cả file đã tracked
+
+Nếu file đã từng được Git theo dõi:
+
+$ git commit -am "Update tracked files"
+
+Lưu ý: -a không add file mới untracked.
+
+4.9. Sửa commit gần nhất
+
+Nếu vừa commit xong nhưng quên file:
+
+$ git add missing-file.txt
+$ git commit --amend
+
+Nếu chỉ muốn sửa message:
+
+$ git commit --amend -m "Better commit message"
+
+Cẩn thận: không nên amend commit đã push lên branch chung nếu không hiểu hậu quả.
+
+4.10. File .gitignore
+
+.gitignore dùng để bỏ qua file không cần commit.
+
+Ví dụ .gitignore cho Node.js:
+
+node_modules/
+.env
+dist/
+coverage/
+npm-debug.log
+
+Ví dụ cho Python:
+
+__pycache__/
+*.pyc
+.venv/
+.env
+dist/
+build/
+
+Ví dụ chung:
+
+.DS_Store
+Thumbs.db
+*.log
+
+4.11. Tại sao không commit file nhạy cảm?
+
+Không nên commit:
+
+- Password.
+- API key.
+- Access token.
+- Private key.
+- File .env chứa secret.
+- Database production.
+
+Nếu lỡ commit secret, xóa trong commit mới chưa đủ. Secret vẫn nằm trong lịch sử. Cần rotate secret và làm sạch history.
+
+4.12. Xóa file đã tracked nhưng muốn giữ local
+
+Ví dụ đã commit .env, giờ muốn Git ngừng theo dõi:
+
+$ git rm --cached .env
+$ echo ".env" >> .gitignore
+$ git add .gitignore
+$ git commit -m "Stop tracking env file"
+
+Bài tập phần 4:
+
+1. Tạo 5 commit nhỏ.
+2. Xem log dạng graph.
+3. Dùng git show xem commit thứ 2.
+4. Tạo .gitignore.
+5. Thêm file .env rồi đảm bảo Git không track.
+6. Thử amend commit gần nhất.
+
+============================================================
+PHẦN 5. BRANCH, MERGE VÀ QUY TRÌNH PHÁT TRIỂN SONG SONG
+============================================================
+
+5.1. Branch giải quyết vấn đề gì?
+
+Khi bạn muốn thêm tính năng mới, bạn không nên sửa trực tiếp main.
+
+Lý do:
+
+- Code main nên luôn ổn định.
+- Feature có thể làm dở nhiều ngày.
+- Có thể thử nghiệm mà không phá code chính.
+- Dễ review và rollback.
+
+5.2. Xem branch
+
+$ git branch
+
+5.3. Tạo branch mới
+
+$ git branch feature/login
+
+5.4. Chuyển branch
+
+$ git switch feature/login
+
+Hoặc dùng lệnh cũ:
+
+$ git checkout feature/login
+
+5.5. Tạo và chuyển branch cùng lúc
+
+$ git switch -c feature/login
+
+Hoặc:
+
+$ git checkout -b feature/login
+
+5.6. Commit trên branch
+
+Ví dụ:
+
+$ echo "Login page" > login.html
+$ git add login.html
+$ git commit -m "Add login page"
+
+Commit này nằm trên branch feature/login.
+
+5.7. Quay lại main
+
+$ git switch main
+
+Bạn sẽ thấy login.html có thể biến mất vì file đó thuộc branch feature/login.
+
+5.8. Merge branch
+
+Sau khi làm xong:
+
+$ git switch main
+$ git merge feature/login
+
+5.9. Fast-forward merge
+
+Nếu main chưa có commit mới kể từ khi tách branch, Git có thể fast-forward.
+
+Nghĩa là con trỏ main được đẩy thẳng tới commit mới.
+
+5.10. Three-way merge
+
+Nếu main và feature đều có commit mới, Git tạo merge commit.
+
+5.11. Xóa branch sau khi merge
+
+$ git branch -d feature/login
+
+Nếu branch chưa merge mà vẫn muốn xóa:
+
+$ git branch -D feature/login
+
+5.12. Đặt tên branch chuyên nghiệp
+
+Quy ước phổ biến:
+
+feature/login-page
+feature/payment-integration
+bugfix/navbar-overlap
+hotfix/security-patch
+release/v1.2.0
+chore/update-dependencies
+docs/api-guide
+
+5.13. Branch main/master
+
+Trước đây nhiều repo dùng master.
+Hiện nay nhiều repo dùng main.
+
+5.14. Branch develop
+
+Một số quy trình dùng:
+
+- main: production.
+- develop: tích hợp tính năng.
+- feature/*: phát triển tính năng.
+- release/*: chuẩn bị phát hành.
+- hotfix/*: sửa lỗi khẩn cấp.
+
+5.15. Merge conflict cơ bản
+
+Tạo ví dụ:
+
+Trên main, file hello.txt:
+
+Hello from main
+
+Trên branch feature, sửa cùng dòng:
+
+Hello from feature
+
+Khi merge, Git có thể báo conflict.
+
+File sẽ có dạng:
+
+<<<<<<< HEAD
+Hello from main
+=======
+Hello from feature
+>>>>>>> feature/example
+
+Bạn cần sửa thành nội dung mong muốn, ví dụ:
+
+Hello from main and feature
+
+Sau đó:
+
+$ git add hello.txt
+$ git commit
+
+5.16. Quy tắc xử lý conflict
+
+1. Đọc kỹ file conflict.
+2. Hiểu thay đổi của hai bên.
+3. Không xóa bừa.
+4. Chạy test sau khi sửa.
+5. Add file đã sửa.
+6. Commit merge.
+7. Báo đồng đội nếu cần.
+
+Bài tập phần 5:
+
+1. Tạo branch feature/about-page.
+2. Tạo file about.html.
+3. Commit.
+4. Merge vào main.
+5. Xóa branch.
+6. Tạo conflict giả lập.
+7. Tự giải quyết conflict.
+
+============================================================
+PHẦN 6. REMOTE REPOSITORY VÀ GITHUB
+============================================================
+
+6.1. Remote repository là gì?
+
+Remote repository là repo nằm trên máy chủ khác, thường là GitHub.
+
+Nó giúp:
+
+- Sao lưu code.
+- Chia sẻ code.
+- Làm việc nhóm.
+- Deploy.
+- Code review.
+
+6.2. Tạo repository trên GitHub
+
+Các bước:
+
+1. Đăng nhập GitHub.
+2. Chọn New repository.
+3. Đặt tên repo.
+4. Chọn public hoặc private.
+5. Không nên tick tạo README nếu bạn đã có repo local, để tránh conflict ban đầu.
+6. Nhấn Create repository.
+
+6.3. Kết nối local repo với GitHub
+
+Giả sử URL repo là:
+
+https://github.com/username/my-repo.git
+
+Chạy:
+
+$ git remote add origin https://github.com/username/my-repo.git
+
+Kiểm tra:
+
+$ git remote -v
+
+6.4. Push lần đầu
+
+$ git push -u origin main
+
+-u thiết lập upstream để lần sau chỉ cần:
+
+$ git push
+
+6.5. Clone repository
+
+Nếu repo đã có trên GitHub:
+
+$ git clone https://github.com/username/my-repo.git
+
+Sau đó:
+
+$ cd my-repo
+
+6.6. Push thay đổi
+
+Quy trình:
+
+$ git status
+$ git add .
+$ git commit -m "Update project"
+$ git push
+
+6.7. Pull thay đổi
+
+Khi người khác có thay đổi trên GitHub:
+
+$ git pull
+
+git pull thực chất thường tương đương:
+
+git fetch + git merge
+
+6.8. Fetch là gì?
+
+$ git fetch
+
+Fetch tải dữ liệu mới từ remote về nhưng chưa gộp vào branch hiện tại.
+
+Sau fetch, có thể xem:
+
+$ git log --oneline --all --graph
+
+6.9. Remote origin là gì?
+
+origin là tên mặc định của remote repo.
+
+Bạn có thể đổi tên nhưng thường không cần.
+
+6.10. Xem remote branch
+
+$ git branch -r
+
+Xem tất cả:
+
+$ git branch -a
+
+6.11. Tạo branch local theo remote branch
+
+$ git switch -c feature/login origin/feature/login
+
+Hoặc:
+
+$ git switch feature/login
+
+nếu Git tự nhận biết được.
+
+6.12. Push branch mới lên GitHub
+
+$ git push -u origin feature/login
+
+6.13. Xóa branch remote
+
+$ git push origin --delete feature/login
+
+6.14. HTTPS và SSH
+
+Có hai cách kết nối GitHub phổ biến:
+
+HTTPS:
+
+https://github.com/username/repo.git
+
+SSH:
+
+git@github.com:username/repo.git
+
+SSH tiện hơn khi làm việc lâu dài vì không phải nhập token nhiều lần.
+
+6.15. Fork là gì?
+
+Fork là sao chép repo của người khác về tài khoản GitHub của bạn.
+
+Dùng khi:
+
+- Đóng góp open source.
+- Không có quyền push trực tiếp vào repo gốc.
+- Muốn thử nghiệm riêng.
+
+6.16. Upstream là gì?
+
+Khi bạn fork repo, repo gốc thường gọi là upstream.
+
+Thêm upstream:
+
+$ git remote add upstream https://github.com/original-owner/original-repo.git
+
+Lấy thay đổi từ upstream:
+
+$ git fetch upstream
+$ git switch main
+$ git merge upstream/main
+
+Bài tập phần 6:
+
+1. Tạo repo trên GitHub.
+2. Push repo local lên GitHub.
+3. Clone repo về thư mục khác.
+4. Sửa README ở thư mục clone.
+5. Commit và push.
+6. Quay lại thư mục cũ, pull thay đổi.
+7. Tạo branch mới và push branch đó lên GitHub.
+
+============================================================
+PHẦN 7. QUẢN LÝ XUNG ĐỘT, PULL, FETCH, REBASE
+============================================================
+
+7.1. Pull hoạt động như thế nào?
+
+Lệnh:
+
+$ git pull
+
+thường gồm:
+
+$ git fetch
+$ git merge
+
+Nó tải commit mới từ remote và gộp vào branch hiện tại.
+
+7.2. Vấn đề với pull
+
+Nếu local và remote cùng có commit mới, pull có thể tạo merge commit.
+
+Điều này không sai, nhưng lịch sử có thể rối.
+
+7.3. Pull với rebase
+
+$ git pull --rebase
+
+Lệnh này tải commit remote, sau đó đặt commit local của bạn lên trên commit remote.
+
+Lịch sử sẽ thẳng hơn.
+
+7.4. Rebase là gì?
+
+Rebase là thay đổi nền của branch.
+
+Ví dụ:
+
+Bạn có branch feature tách từ main.
+Trong lúc bạn làm, main có thêm commit mới.
+Bạn muốn feature như thể được tách từ main mới nhất.
+
+Chạy:
+
+$ git switch feature
+$ git rebase main
+
+7.5. Merge vs Rebase
+
+Merge:
+
+- Giữ nguyên lịch sử thật.
+- Có thể tạo merge commit.
+- An toàn hơn cho branch đã chia sẻ.
+- Phù hợp khi muốn thấy điểm gộp.
+
+Rebase:
+
+- Lịch sử tuyến tính, sạch.
+- Có thể viết lại commit hash.
+- Không nên rebase branch public/shared nếu người khác đang dựa vào nó.
+- Phù hợp dọn branch cá nhân trước khi merge.
+
+7.6. Nguyên tắc vàng của rebase
+
+Không rebase commit đã public nếu người khác đang dùng branch đó.
+
+Có thể rebase:
+
+- Branch cá nhân.
+- Commit chưa push.
+- Branch feature bạn là người duy nhất làm.
+
+Hạn chế rebase:
+
+- main.
+- develop dùng chung.
+- branch nhiều người cùng push.
+
+7.7. Rebase conflict
+
+Khi rebase gặp conflict:
+
+1. Mở file conflict.
+2. Sửa conflict.
+3. Add file:
+
+$ git add file.txt
+
+4. Tiếp tục rebase:
+
+$ git rebase --continue
+
+Nếu muốn hủy:
+
+$ git rebase --abort
+
+Nếu muốn bỏ commit hiện tại:
+
+$ git rebase --skip
+
+7.8. Squash commit bằng interactive rebase
+
+Nếu có nhiều commit nhỏ:
+
+$ git rebase -i HEAD~3
+
+Bạn sẽ thấy:
+
+pick a1 Add login html
+pick b2 Fix typo
+pick c3 Adjust button style
+
+Đổi thành:
+
+pick a1 Add login html
+squash b2 Fix typo
+squash c3 Adjust button style
+
+Sau đó sửa commit message.
+
+7.9. Khi nào squash?
+
+Nên squash khi:
+
+- Có nhiều commit sửa lỗi nhỏ.
+- Muốn PR gọn.
+- Commit trung gian không có ý nghĩa.
+- Dự án yêu cầu lịch sử sạch.
+
+Không nên squash nếu:
+
+- Mỗi commit có ý nghĩa riêng.
+- Cần giữ lịch sử phát triển chi tiết.
+- Commit đã được người khác dùng.
+
+7.10. Force push an toàn
+
+Sau rebase branch đã push, cần force push:
+
+$ git push --force-with-lease
+
+Không nên dùng:
+
+$ git push --force
+
+Vì --force có thể ghi đè thay đổi của người khác. --force-with-lease an toàn hơn vì kiểm tra remote có thay đổi mới không.
+
+Bài tập phần 7:
+
+1. Tạo branch feature/rebase-demo.
+2. Commit 3 lần.
+3. Trên main tạo commit mới.
+4. Rebase feature lên main.
+5. Tạo conflict và giải quyết.
+6. Squash 3 commit thành 1.
+7. Push bằng --force-with-lease trên branch cá nhân.
+
+============================================================
+PHẦN 8. GITHUB PULL REQUEST, CODE REVIEW VÀ COLLABORATION
+============================================================
+
+8.1. Pull Request là gì?
+
+Pull Request, viết tắt PR, là yêu cầu gộp thay đổi từ branch này vào branch khác.
+
+PR giúp:
+
+- Thảo luận code.
+- Review trước khi merge.
+- Chạy test tự động.
+- Ghi lại quyết định.
+- Kiểm soát chất lượng.
+
+8.2. Quy trình PR cơ bản
+
+1. Tạo branch từ main mới nhất.
+2. Code và commit.
+3. Push branch lên GitHub.
+4. Tạo pull request.
+5. Mô tả thay đổi.
+6. Reviewer xem code.
+7. Sửa theo góp ý.
+8. CI pass.
+9. Merge PR.
+10. Xóa branch.
+
+8.3. Tạo PR trên GitHub
+
+Sau khi push branch, GitHub thường hiện nút Compare & pull request.
+
+Bạn điền:
+
+- Title.
+- Description.
+- Linked issue.
+- Screenshots nếu có UI.
+- Checklist.
+- Reviewer.
+- Assignee.
+- Labels.
+
+8.4. Mẫu mô tả PR
+
+Tiêu đề:
+feat(auth): add login page
+
+Mô tả:
+
+Summary:
+- Add login page UI.
+- Add basic form validation.
+- Connect login button to auth service.
+
+Why:
+- Users need to sign in before accessing dashboard.
+
+Testing:
+- Tested empty email.
+- Tested invalid password.
+- Tested successful login.
+
+Screenshots:
+- Attach image if UI change.
+
+Checklist:
+- [ ] Code builds successfully.
+- [ ] Tests passed.
+- [ ] No sensitive data committed.
+- [ ] Documentation updated if needed.
+
+8.5. Code review là gì?
+
+Code review là quá trình người khác đọc thay đổi của bạn trước khi merge.
+
+Mục tiêu không phải bắt lỗi cá nhân, mà là tăng chất lượng code.
+
+Reviewer kiểm tra:
+
+- Logic đúng không?
+- Code dễ đọc không?
+- Có test không?
+- Có bảo mật không?
+- Có ảnh hưởng performance không?
+- Có phá chức năng cũ không?
+- Có tuân thủ convention không?
+
+8.6. Cách nhận review chuyên nghiệp
+
+Nên:
+
+- Cảm ơn reviewer.
+- Hỏi lại nếu chưa rõ.
+- Không phản ứng phòng thủ.
+- Giải thích lý do kỹ thuật.
+- Sửa và báo lại.
+
+Không nên:
+
+- Tranh cãi cá nhân.
+- Ignore comment.
+- Push thay đổi không liên quan.
+- Nói "máy em chạy được" mà không kiểm tra kỹ.
+
+8.7. Cách review chuyên nghiệp
+
+Nên viết:
+
+- "Consider renaming this variable for clarity."
+- "Could this return null? We may need a guard here."
+- "This logic looks good, but please add a test for the error case."
+
+Không nên viết:
+
+- "Code dở quá."
+- "Sai rồi."
+- "Ai viết thế này?"
+
+8.8. Merge options trên GitHub
+
+GitHub thường có 3 kiểu merge:
+
+1. Create a merge commit
+   Giữ lịch sử đầy đủ, tạo merge commit.
+
+2. Squash and merge
+   Gộp toàn bộ commit trong PR thành một commit.
+
+3. Rebase and merge
+   Đưa commit trong PR lên main theo lịch sử tuyến tính.
+
+8.9. Chọn kiểu merge nào?
+
+Merge commit:
+- Tốt cho repo muốn giữ dấu vết nhánh.
+- Lịch sử có thể nhiều merge commit.
+
+Squash and merge:
+- Tốt cho PR có nhiều commit nhỏ.
+- main sạch, mỗi PR một commit.
+
+Rebase and merge:
+- Lịch sử tuyến tính.
+- Giữ từng commit nhưng không có merge commit.
+
+8.10. Branch protection
+
+Trong dự án chuyên nghiệp, main thường được bảo vệ:
+
+- Không push trực tiếp.
+- Bắt buộc PR.
+- Bắt buộc review.
+- Bắt buộc CI pass.
+- Bắt buộc branch up to date.
+- Không cho force push.
+
+8.11. Draft Pull Request
+
+Draft PR dùng khi code chưa sẵn sàng merge nhưng muốn:
+
+- Chia sẻ tiến độ.
+- Xin góp ý sớm.
+- Chạy CI.
+- Thảo luận thiết kế.
+
+8.12. Linked issue
+
+Trong PR description có thể viết:
+
+Closes #12
+Fixes #34
+Resolves #56
+
+Khi PR merge, GitHub tự đóng issue tương ứng.
+
+Bài tập phần 8:
+
+1. Tạo issue "Add contact page".
+2. Tạo branch feature/contact-page.
+3. Commit code.
+4. Push branch.
+5. Tạo PR.
+6. Viết mô tả PR theo mẫu.
+7. Merge PR.
+8. Kiểm tra issue tự đóng nếu dùng Closes #issue_number.
+
+============================================================
+PHẦN 9. GIT NÂNG CAO: STASH, RESET, REVERT, CHERRY-PICK, TAG
+============================================================
+
+9.1. Git stash
+
+Stash dùng để cất tạm thay đổi chưa commit.
+
+Tình huống:
+
+Bạn đang code dở trên feature A.
+Đột nhiên cần chuyển sang sửa bug khẩn cấp.
+Bạn chưa muốn commit code dở.
+Dùng stash.
+
+Lệnh:
+
+$ git stash
+
+Xem danh sách stash:
+
+$ git stash list
+
+Lấy stash mới nhất:
+
+$ git stash pop
+
+Lấy nhưng không xóa stash:
+
+$ git stash apply
+
+Stash với message:
+
+$ git stash push -m "WIP login form"
+
+Xóa stash:
+
+$ git stash drop stash@{0}
+
+Xóa toàn bộ stash:
+
+$ git stash clear
+
+9.2. Git restore
+
+Khôi phục file trong working directory:
+
+$ git restore file.txt
+
+Bỏ file khỏi staging:
+
+$ git restore --staged file.txt
+
+Khôi phục file từ commit cụ thể:
+
+$ git restore --source=<commit-hash> file.txt
+
+9.3. Git checkout
+
+Lệnh checkout cũ có nhiều chức năng:
+
+- Chuyển branch.
+- Tạo branch.
+- Khôi phục file.
+- Checkout commit.
+
+Hiện nay nên dùng:
+
+- git switch cho branch.
+- git restore cho file.
+
+9.4. Git reset
+
+Reset di chuyển HEAD và có thể thay đổi staging/working directory.
+
+Ba chế độ chính:
+
+1. --soft
+   Di chuyển HEAD, giữ thay đổi trong staging.
+
+2. --mixed
+   Di chuyển HEAD, giữ thay đổi trong working directory nhưng bỏ staging.
+   Đây là mặc định.
+
+3. --hard
+   Di chuyển HEAD, xóa thay đổi trong staging và working directory.
+
+Ví dụ:
+
+$ git reset --soft HEAD~1
+
+Undo commit gần nhất nhưng giữ staged.
+
+$ git reset HEAD~1
+
+Undo commit gần nhất, giữ file đã sửa nhưng unstaged.
+
+$ git reset --hard HEAD~1
+
+Xóa commit gần nhất và xóa luôn thay đổi.
+
+Cẩn thận với --hard.
+
+9.5. Git revert
+
+Revert tạo commit mới để đảo ngược thay đổi của commit cũ.
+
+$ git revert <commit-hash>
+
+Nên dùng revert khi commit đã push/public vì không viết lại lịch sử.
+
+9.6. Reset vs Revert
+
+Reset:
+- Viết lại lịch sử.
+- Phù hợp commit local.
+- Có thể nguy hiểm nếu đã push.
+
+Revert:
+- Không viết lại lịch sử.
+- Phù hợp commit đã public.
+- An toàn cho team.
+
+9.7. Git cherry-pick
+
+Cherry-pick lấy một commit cụ thể từ branch khác áp dụng vào branch hiện tại.
+
+Ví dụ:
+
+$ git switch main
+$ git cherry-pick a1b2c3d
+
+Tình huống dùng:
+
+- Lấy hotfix từ branch khác.
+- Chọn một commit hữu ích mà không merge toàn bộ branch.
+- Backport bugfix.
+
+9.8. Git tag
+
+Tag đánh dấu commit quan trọng, thường dùng cho version release.
+
+Tạo lightweight tag:
+
+$ git tag v1.0.0
+
+Tạo annotated tag:
+
+$ git tag -a v1.0.0 -m "Release version 1.0.0"
+
+Xem tag:
+
+$ git tag
+
+Push tag:
+
+$ git push origin v1.0.0
+
+Push tất cả tag:
+
+$ git push origin --tags
+
+Xóa tag local:
+
+$ git tag -d v1.0.0
+
+Xóa tag remote:
+
+$ git push origin --delete v1.0.0
+
+9.9. Semantic Versioning
+
+Version thường có dạng:
+
+MAJOR.MINOR.PATCH
+
+Ví dụ:
+
+1.4.2
+
+Ý nghĩa:
+
+- MAJOR: thay đổi lớn, có thể breaking change.
+- MINOR: thêm tính năng tương thích ngược.
+- PATCH: sửa lỗi nhỏ.
+
+Ví dụ:
+
+v1.0.0
+v1.1.0
+v1.1.1
+v2.0.0
+
+9.10. Git reflog
+
+Reflog ghi lại lịch sử di chuyển HEAD.
+
+Rất hữu ích khi lỡ reset sai.
+
+$ git reflog
+
+Khôi phục:
+
+$ git reset --hard <hash-from-reflog>
+
+Reflog có thể cứu bạn trong nhiều tình huống, nhưng không nên phụ thuộc hoàn toàn.
+
+Bài tập phần 9:
+
+1. Tạo thay đổi chưa commit rồi stash.
+2. Chuyển branch, sau đó pop stash.
+3. Tạo commit rồi reset --soft.
+4. Tạo commit rồi revert.
+5. Cherry-pick một commit từ branch khác.
+6. Tạo tag v1.0.0 và push lên GitHub.
+7. Dùng reflog để xem lịch sử HEAD.
+
+============================================================
+PHẦN 10. VIẾT COMMIT MESSAGE VÀ QUY ƯỚC LÀM VIỆC CHUYÊN NGHIỆP
+============================================================
+
+10.1. Vì sao commit message quan trọng?
+
+Commit message giúp người khác hiểu lịch sử dự án.
+
+Một lịch sử tốt giúp:
+
+- Debug nhanh.
+- Review dễ.
+- Rollback an toàn.
+- Tạo changelog tự động.
+- Hiểu vì sao code thay đổi.
+
+10.2. Nguyên tắc commit message
+
+Nên:
+
+- Dùng động từ ở dạng mệnh lệnh tiếng Anh nếu làm dự án quốc tế.
+- Ngắn gọn ở dòng đầu.
+- Giải thích why ở phần body nếu cần.
+- Không viết mơ hồ.
+
+Ví dụ tốt:
+
+Add product search filter
+Fix null response in payment API
+Refactor cart calculation logic
+
+Ví dụ kém:
+
+update
+fix bug
+done
+code lại
+sửa linh tinh
+
+10.3. Commit message nhiều dòng
+
+Dạng:
+
+Short summary under 50 characters
+
+Explain the problem and why this change is needed.
+Mention side effects or migration notes if any.
+
+Ví dụ:
+
+Fix order total rounding
+
+The payment provider requires totals to be rounded to
+two decimal places. This change prevents mismatch errors
+during checkout.
+
+10.4. Conventional Commits chi tiết
+
+Cấu trúc:
+
+type(scope): description
+
+body
+
+footer
+
+Ví dụ:
+
+feat(auth): add password reset flow
+
+Allow users to request a reset link by email and set a
+new password through a time-limited token.
+
+Closes #42
+
+10.5. Breaking change
+
+Ví dụ:
+
+feat(api)!: remove legacy user endpoint
+
+BREAKING CHANGE: /api/v1/users has been removed. Use
+/api/v2/users instead.
+
+10.6. Quy tắc chia commit
+
+Một commit nên đại diện cho một ý tưởng hoàn chỉnh.
+
+Không nên:
+
+- Commit quá lớn.
+- Commit code không chạy được.
+- Commit file format hàng loạt chung với sửa logic.
+- Commit secret.
+
+Nên:
+
+- Commit sau khi hoàn thành phần nhỏ.
+- Commit khi test qua.
+- Commit refactor riêng với feature.
+- Commit tài liệu riêng nếu lớn.
+
+10.7. Pre-commit hook
+
+Hook là script chạy ở thời điểm nhất định.
+
+Pre-commit chạy trước khi commit.
+
+Có thể dùng để:
+
+- Format code.
+- Chạy lint.
+- Chạy test.
+- Chặn secret.
+
+Ví dụ công cụ:
+
+- pre-commit framework.
+- Husky cho Node.js.
+- lint-staged.
+- commitlint.
+
+10.8. Quy ước branch
+
+Ví dụ:
+
+feature/JIRA-123-login-page
+bugfix/JIRA-456-cart-total
+hotfix/JIRA-789-payment-crash
+
+10.9. Quy ước PR
+
+PR nên:
+
+- Nhỏ vừa đủ.
+- Mô tả rõ.
+- Có ảnh nếu UI.
+- Có test.
+- Không trộn nhiều chủ đề.
+- Gắn issue/task.
+
+10.10. Definition of Done
+
+Một task được coi là xong khi:
+
+- Code hoàn thành.
+- Test pass.
+- Không còn lỗi lint.
+- Đã review.
+- Đã cập nhật tài liệu nếu cần.
+- Đã kiểm tra bảo mật cơ bản.
+- Đã merge vào branch chính theo quy trình.
+
+Bài tập phần 10:
+
+1. Viết lại 10 commit message kém thành tốt.
+2. Tạo 3 commit theo Conventional Commits.
+3. Viết PR template cho dự án của bạn.
+4. Tạo checklist Definition of Done.
+
+============================================================
+PHẦN 11. GITHUB ISSUES, PROJECTS, WIKI, RELEASES
+============================================================
+
+11.1. GitHub Issues
+
+Issue dùng để theo dõi:
+
+- Bug.
+- Feature request.
+- Task.
+- Discussion kỹ thuật.
+- Documentation work.
+
+11.2. Viết issue tốt
+
+Một bug issue tốt nên có:
+
+Title:
+Login fails when password contains special characters
+
+Description:
+- What happened?
+- What did you expect?
+- Steps to reproduce.
+- Environment.
+- Screenshots/logs.
+- Possible cause.
+
+Mẫu bug issue:
+
+## Description
+Mô tả lỗi.
+
+## Steps to reproduce
+1. Go to ...
+2. Click ...
+3. Enter ...
+4. See error ...
+
+## Expected behavior
+Điều mong đợi.
+
+## Actual behavior
+Điều thực tế.
+
+## Environment
+- OS:
+- Browser:
+- App version:
+
+## Additional context
+Log, ảnh, link liên quan.
+
+11.3. Labels
+
+Label giúp phân loại issue/PR.
+
+Ví dụ:
+
+- bug
+- enhancement
+- documentation
+- good first issue
+- help wanted
+- question
+- priority/high
+- priority/low
+- frontend
+- backend
+- security
+
+11.4. Milestones
+
+Milestone nhóm issue/PR theo mục tiêu.
+
+Ví dụ:
+
+- v1.0.0
+- Sprint 12
+- Beta Release
+- MVP
+
+11.5. Assignees
+
+Assignee là người chịu trách nhiệm xử lý issue/PR.
+
+11.6. GitHub Projects
+
+Projects là bảng quản lý công việc.
+
+Có thể tạo các cột:
+
+- Backlog
+- To do
+- In progress
+- In review
+- Done
+
+11.7. GitHub Wiki
+
+Wiki dùng để viết tài liệu dự án:
+
+- Hướng dẫn cài đặt.
+- Kiến trúc hệ thống.
+- Quy trình release.
+- Quy tắc coding.
+- Hướng dẫn onboarding.
+
+11.8. GitHub Releases
+
+Release là bản phát hành chính thức dựa trên tag.
+
+Một release thường gồm:
+
+- Version.
+- Release notes.
+- Assets.
+- Changelog.
+- Source code snapshot.
+
+11.9. Changelog
+
+Changelog ghi lại thay đổi theo phiên bản.
+
+Ví dụ:
+
+## v1.2.0
+
+### Added
+- Add user profile page.
+- Add search filter.
+
+### Fixed
+- Fix login redirect issue.
+
+### Changed
+- Improve dashboard layout.
+
+11.10. README chuyên nghiệp
+
+README nên có:
+
+- Tên dự án.
+- Mô tả ngắn.
+- Demo/screenshot.
+- Tính năng.
+- Công nghệ sử dụng.
+- Cài đặt.
+- Cách chạy.
+- Cách test.
+- Cấu trúc thư mục.
+- Environment variables.
+- Deployment.
+- Contribution guide.
+- License.
+
+Mẫu README:
+
+# Project Name
+
+Short description.
+
+## Features
+- Feature 1
+- Feature 2
+
+## Tech Stack
+- Frontend:
+- Backend:
+- Database:
+
+## Getting Started
+
+### Prerequisites
+- Node.js
+- Git
+
+### Installation
+```bash
+git clone ...
+cd project
+npm install
+npm run dev
+```
+
+## Environment Variables
+Create `.env`:
+
+```
+API_URL=
+DATABASE_URL=
+```
+
+## Scripts
+- npm run dev
+- npm run build
+- npm run test
+
+## Contributing
+Open an issue or pull request.
+
+## License
+MIT
+
+Bài tập phần 11:
+
+1. Tạo 3 issue: bug, feature, docs.
+2. Tạo label cho từng issue.
+3. Tạo project board.
+4. Tạo milestone v1.0.0.
+5. Tạo tag và GitHub Release.
+6. Viết README hoàn chỉnh cho repo.
+
+============================================================
+PHẦN 12. GITHUB ACTIONS VÀ CI/CD CƠ BẢN
+============================================================
+
+12.1. CI/CD là gì?
+
+CI là Continuous Integration.
+CD là Continuous Delivery hoặc Continuous Deployment.
+
+CI giúp tự động:
+
+- Cài dependencies.
+- Chạy lint.
+- Chạy test.
+- Build project.
+
+CD giúp tự động:
+
+- Deploy staging.
+- Deploy production.
+- Publish package.
+- Tạo release.
+
+12.2. GitHub Actions là gì?
+
+GitHub Actions là hệ thống tự động hóa tích hợp trong GitHub.
+
+Workflow được viết bằng YAML trong thư mục:
+
+.github/workflows/
+
+12.3. Workflow đầu tiên
+
+Tạo file:
+
+.github/workflows/ci.yml
+
+Nội dung mẫu cho Node.js:
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+12.4. Các thành phần chính
+
+name:
+Tên workflow.
+
+on:
+Sự kiện kích hoạt.
+
+jobs:
+Danh sách công việc.
+
+runs-on:
+Máy chạy workflow.
+
+steps:
+Các bước trong job.
+
+uses:
+Dùng action có sẵn.
+
+run:
+Chạy lệnh shell.
+
+12.5. Trigger workflow
+
+Ví dụ chạy khi push:
+
+on: push
+
+Chạy khi PR:
+
+on: pull_request
+
+Chạy thủ công:
+
+on: workflow_dispatch
+
+Chạy theo lịch:
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+12.6. Workflow cho Python
+
+name: Python CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      - run: pytest
+
+12.7. Matrix build
+
+Chạy nhiều version:
+
+strategy:
+  matrix:
+    node-version: [18, 20, 22]
+
+12.8. Secrets trong GitHub Actions
+
+Không ghi secret trực tiếp vào YAML.
+
+Dùng GitHub Secrets:
+
+Settings -> Secrets and variables -> Actions -> New repository secret
+
+Ví dụ dùng:
+
+env:
+  API_KEY: ${{ secrets.API_KEY }}
+
+12.9. Artifacts
+
+Artifact là file sinh ra từ workflow, ví dụ build output hoặc report.
+
+Ví dụ:
+
+- name: Upload coverage
+  uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: coverage/
+
+12.10. CI trong branch protection
+
+Có thể yêu cầu CI pass trước khi merge PR vào main.
+
+12.11. Lỗi thường gặp trong Actions
+
+- Sai indent YAML.
+- Dùng npm install thay vì npm ci trong CI.
+- Thiếu lock file.
+- Secret không có trong fork PR.
+- Test phụ thuộc timezone hoặc môi trường local.
+- Lệnh chạy được local nhưng thiếu dependency trên runner.
+
+Bài tập phần 12:
+
+1. Tạo workflow CI đơn giản.
+2. Chạy khi push và PR.
+3. Cố tình làm test fail.
+4. Sửa test để CI pass.
+5. Thêm badge CI vào README.
+6. Tạo workflow chạy thủ công bằng workflow_dispatch.
+
+============================================================
+PHẦN 13. BẢO MẬT, SSH, TOKEN, SECRET VÀ QUẢN LÝ QUYỀN
+============================================================
+
+13.1. Vì sao bảo mật GitHub quan trọng?
+
+Repo có thể chứa:
+
+- Source code.
+- Key deploy.
+- API endpoint.
+- Logic nghiệp vụ.
+- Thông tin khách hàng nếu quản lý sai.
+
+Lộ secret có thể gây:
+
+- Mất tiền cloud.
+- Bị chiếm tài khoản.
+- Rò rỉ dữ liệu.
+- Bị tấn công hệ thống.
+
+13.2. SSH key
+
+Tạo SSH key:
+
+$ ssh-keygen -t ed25519 -C "email@example.com"
+
+Xem public key:
+
+$ cat ~/.ssh/id_ed25519.pub
+
+Copy public key lên GitHub:
+
+Settings -> SSH and GPG keys -> New SSH key
+
+Kiểm tra:
+
+$ ssh -T git@github.com
+
+13.3. Personal Access Token
+
+GitHub có thể yêu cầu token thay cho password khi dùng HTTPS.
+
+Nguyên tắc:
+
+- Token chỉ cấp quyền cần thiết.
+- Đặt hạn sử dụng.
+- Không lưu token trong code.
+- Không chia sẻ token.
+- Thu hồi token nếu nghi lộ.
+
+13.4. .env và secret
+
+File .env nên nằm trong .gitignore.
+
+Ví dụ:
+
+.env
+.env.local
+.env.production
+
+Tạo file mẫu:
+
+.env.example
+
+Nội dung:
+
+API_URL=
+DATABASE_URL=
+JWT_SECRET=
+
+13.5. GitHub Secrets
+
+Dùng cho Actions và deploy.
+
+Không in secret ra log.
+Không echo secret.
+Không đưa secret vào artifact.
+
+13.6. Quyền repo
+
+Các vai trò thường gặp:
+
+- Read: đọc repo.
+- Triage: quản lý issue/PR cơ bản.
+- Write: push branch, tạo PR.
+- Maintain: quản lý repo không gồm quyền nguy hiểm nhất.
+- Admin: toàn quyền.
+
+13.7. Public vs Private repository
+
+Public:
+
+- Ai cũng xem được.
+- Tốt cho open source/portfolio.
+- Không được chứa thông tin nhạy cảm.
+
+Private:
+
+- Chỉ người được cấp quyền xem.
+- Phù hợp dự án công ty hoặc cá nhân chưa công khai.
+
+13.8. Dependabot
+
+Dependabot giúp:
+
+- Cảnh báo dependency có lỗ hổng.
+- Tạo PR cập nhật dependency.
+- Giảm rủi ro bảo mật.
+
+13.9. Secret scanning
+
+GitHub có tính năng phát hiện secret trong repo.
+
+Tuy nhiên không nên phụ thuộc hoàn toàn. Hãy phòng từ đầu bằng .gitignore và review kỹ.
+
+13.10. Khi lỡ commit secret
+
+Các bước:
+
+1. Thu hồi hoặc rotate secret ngay.
+2. Xóa secret khỏi code.
+3. Thêm vào .gitignore.
+4. Làm sạch lịch sử nếu cần.
+5. Force push sau khi team thống nhất.
+6. Kiểm tra log và hệ thống liên quan.
+
+Công cụ có thể dùng:
+
+- git filter-repo.
+- BFG Repo-Cleaner.
+
+Bài tập phần 13:
+
+1. Tạo SSH key và kết nối GitHub.
+2. Tạo .env.example.
+3. Đảm bảo .env không bị Git track.
+4. Bật Dependabot nếu dự án phù hợp.
+5. Kiểm tra quyền thành viên trong repo test.
+
+============================================================
+PHẦN 14. GIT TRONG DỰ ÁN THỰC TẾ
+============================================================
+
+14.1. Quy trình solo developer
+
+Quy trình đơn giản:
+
+1. main luôn ổn định.
+2. Tạo branch cho mỗi feature.
+3. Commit nhỏ.
+4. Push lên GitHub.
+5. Tạo PR, tự review.
+6. Merge khi xong.
+7. Tạo release/tag nếu cần.
+
+14.2. Quy trình team nhỏ
+
+Gợi ý:
+
+- main được bảo vệ.
+- Không push trực tiếp vào main.
+- Mỗi task có issue.
+- Mỗi issue có branch.
+- Mỗi branch tạo PR.
+- Ít nhất 1 reviewer.
+- CI phải pass.
+- Squash merge để main gọn.
+
+14.3. Git Flow
+
+Git Flow dùng các branch:
+
+- main: production.
+- develop: development integration.
+- feature/*: tính năng.
+- release/*: chuẩn bị release.
+- hotfix/*: sửa production khẩn cấp.
+
+Phù hợp:
+
+- Dự án release theo phiên bản.
+- Team cần quy trình rõ.
+- Sản phẩm có môi trường staging/production.
+
+Nhược điểm:
+
+- Nhiều branch.
+- Có thể phức tạp.
+- Không luôn phù hợp với deploy liên tục.
+
+14.4. Trunk-based development
+
+Mô hình:
+
+- main/trunk là nhánh trung tâm.
+- Branch sống ngắn.
+- Merge thường xuyên.
+- Dùng feature flags nếu tính năng chưa hoàn thiện.
+
+Phù hợp:
+
+- Team có CI mạnh.
+- Deploy thường xuyên.
+- Muốn giảm merge conflict.
+
+14.5. Feature flags
+
+Feature flag cho phép đưa code lên main nhưng chưa bật cho user.
+
+Ví dụ:
+
+if ENABLE_NEW_CHECKOUT:
+    show_new_checkout()
+else:
+    show_old_checkout()
+
+14.6. Hotfix production
+
+Quy trình:
+
+1. Tạo branch hotfix từ main.
+2. Sửa lỗi nhỏ nhất có thể.
+3. Test kỹ.
+4. PR vào main.
+5. Tag release mới.
+6. Merge/cherry-pick về develop nếu dùng Git Flow.
+
+14.7. Release branch
+
+Dùng khi chuẩn bị phát hành:
+
+- Chỉ nhận bugfix.
+- Không thêm feature lớn.
+- Cập nhật version.
+- Cập nhật changelog.
+- Tạo tag khi release.
+
+14.8. Monorepo và polyrepo
+
+Monorepo:
+- Nhiều project trong một repo.
+- Dễ chia sẻ code.
+- CI có thể phức tạp.
+- Cần quy ước rõ.
+
+Polyrepo:
+- Mỗi service/package một repo.
+- Dễ phân quyền.
+- Quản lý version giữa repo phức tạp hơn.
+
+14.9. Git submodule
+
+Submodule cho phép repo chứa repo khác.
+
+Thêm submodule:
+
+$ git submodule add https://github.com/user/lib.git libs/lib
+
+Clone repo có submodule:
+
+$ git clone --recurse-submodules <url>
+
+Cập nhật:
+
+$ git submodule update --init --recursive
+
+Submodule mạnh nhưng dễ gây nhầm lẫn cho người mới.
+
+14.10. Large files
+
+Git không phù hợp lưu file quá lớn như video, dataset, binary nặng.
+
+Có thể dùng Git LFS:
+
+$ git lfs install
+$ git lfs track "*.psd"
+$ git add .gitattributes
+$ git commit -m "Track PSD files with Git LFS"
+
+14.11. Quy trình review file cấu hình
+
+Cẩn thận với:
+
+- Dockerfile.
+- CI workflow.
+- Deployment config.
+- Infrastructure as Code.
+- Permission policy.
+- Script migration database.
+
+14.12. Code ownership
+
+GitHub có CODEOWNERS để tự động yêu cầu reviewer.
+
+Ví dụ file .github/CODEOWNERS:
+
+# Frontend
+/frontend/ @frontend-team
+
+# Backend
+/backend/ @backend-team
+
+# CI
+/.github/workflows/ @devops-team
+
+Bài tập phần 14:
+
+1. Thiết kế workflow Git cho team 3 người.
+2. Viết quy tắc đặt branch.
+3. Viết quy tắc merge.
+4. Tạo file CODEOWNERS giả lập.
+5. Mô phỏng hotfix production.
+6. Tạo release branch và tag.
+
+============================================================
+PHẦN 15. CÁC TÌNH HUỐNG LỖI THƯỜNG GẶP VÀ CÁCH XỬ LÝ
+============================================================
+
+15.1. Lỗi: not a git repository
+
+Thông báo:
+
+fatal: not a git repository
+
+Nguyên nhân:
+
+- Bạn không ở trong thư mục repo.
+- Chưa chạy git init.
+- Thư mục .git bị xóa.
+
+Cách xử lý:
+
+$ pwd
+$ ls -a
+$ git init
+
+Hoặc cd vào đúng thư mục.
+
+15.2. Lỗi: nothing to commit
+
+Thông báo:
+
+nothing to commit, working tree clean
+
+Ý nghĩa:
+
+- Không có thay đổi mới.
+- Hoặc bạn chưa sửa file.
+- Hoặc file bị .gitignore bỏ qua.
+
+Kiểm tra:
+
+$ git status
+
+15.3. Lỗi push rejected
+
+Thông báo:
+
+rejected
+fetch first
+
+Nguyên nhân:
+
+Remote có commit mới mà local chưa có.
+
+Cách xử lý:
+
+$ git pull --rebase
+$ git push
+
+Nếu conflict, giải quyết conflict rồi tiếp tục.
+
+15.4. Lỗi authentication failed
+
+Nguyên nhân:
+
+- Sai token.
+- Token hết hạn.
+- Chưa đăng nhập.
+- SSH key chưa cấu hình.
+
+Cách xử lý HTTPS:
+
+- Tạo token mới.
+- Đăng nhập lại credential manager.
+- Kiểm tra remote URL.
+
+Cách xử lý SSH:
+
+$ ssh -T git@github.com
+$ git remote -v
+
+15.5. Lỡ commit sai file
+
+Nếu chưa push:
+
+$ git reset --soft HEAD~1
+$ git restore --staged wrong-file.txt
+$ git commit -m "Correct commit"
+
+Nếu đã push:
+
+- Nếu chỉ sai file bình thường: tạo commit mới xóa/sửa.
+- Nếu là secret: rotate secret và làm sạch lịch sử.
+
+15.6. Lỡ commit vào main
+
+Nếu chưa push:
+
+$ git switch -c feature/my-work
+$ git switch main
+$ git reset --hard origin/main
+
+Nếu đã push lên main chung, không tự ý reset. Hãy trao đổi team và dùng revert nếu cần.
+
+15.7. Muốn đổi tên branch
+
+Đổi local branch hiện tại:
+
+$ git branch -m new-name
+
+Đổi branch local khác:
+
+$ git branch -m old-name new-name
+
+Push branch mới:
+
+$ git push -u origin new-name
+
+Xóa branch cũ remote:
+
+$ git push origin --delete old-name
+
+15.8. Muốn undo git add
+
+$ git restore --staged file.txt
+
+15.9. Muốn undo thay đổi file
+
+$ git restore file.txt
+
+15.10. Muốn undo commit cuối nhưng giữ code
+
+$ git reset --soft HEAD~1
+
+Hoặc giữ trong working directory:
+
+$ git reset HEAD~1
+
+15.11. Muốn xóa sạch thay đổi local
+
+Cẩn thận:
+
+$ git reset --hard
+$ git clean -fd
+
+git clean -fd xóa file untracked.
+
+15.12. Detached HEAD
+
+Detached HEAD xảy ra khi bạn checkout trực tiếp một commit thay vì branch.
+
+Ví dụ:
+
+$ git checkout a1b2c3d
+
+Nếu bạn muốn giữ thay đổi:
+
+$ git switch -c new-branch-name
+
+15.13. Conflict khi pull
+
+Cách xử lý:
+
+$ git pull
+# Git báo conflict
+# Mở file sửa conflict
+$ git add .
+$ git commit
+
+Nếu pull --rebase:
+
+$ git pull --rebase
+# sửa conflict
+$ git add .
+$ git rebase --continue
+
+15.14. Không thấy branch remote
+
+Chạy:
+
+$ git fetch --all
+$ git branch -a
+
+15.15. Remote URL sai
+
+Xem:
+
+$ git remote -v
+
+Đổi:
+
+$ git remote set-url origin git@github.com:username/repo.git
+
+15.16. Permission denied publickey
+
+Nguyên nhân SSH key chưa đúng.
+
+Kiểm tra:
+
+$ ssh-add -l
+$ ssh -T git@github.com
+
+Thêm key:
+
+$ ssh-add ~/.ssh/id_ed25519
+
+15.17. File bị Git ignore nhưng vẫn được track
+
+Nếu file đã được track trước khi thêm .gitignore, .gitignore không tự bỏ track.
+
+Cách xử lý:
+
+$ git rm --cached file.txt
+$ git commit -m "Stop tracking ignored file"
+
+Bài tập phần 15:
+
+1. Tạo lỗi push rejected và sửa.
+2. Tạo detached HEAD và thoát ra bằng branch mới.
+3. Lỡ add file rồi undo.
+4. Lỡ commit rồi reset --soft.
+5. Đổi remote URL.
+6. Xử lý conflict khi pull --rebase.
+
+============================================================
+PHẦN 16. BÀI TẬP THỰC HÀNH THEO CẤP ĐỘ
+============================================================
+
+16.1. Cấp độ 1: Người mới
+
+Bài 1: Repository đầu tiên
+
+Yêu cầu:
+
+1. Tạo folder git-lab-1.
+2. git init.
+3. Tạo README.md.
+4. Commit lần đầu.
+5. Sửa README.
+6. Commit lần hai.
+7. Xem git log --oneline.
+
+Bài 2: Staging
+
+Yêu cầu:
+
+1. Tạo 3 file: a.txt, b.txt, c.txt.
+2. Chỉ add a.txt và b.txt.
+3. Commit.
+4. Kiểm tra c.txt vẫn untracked.
+5. Add và commit c.txt.
+
+Bài 3: .gitignore
+
+Yêu cầu:
+
+1. Tạo file .env.
+2. Tạo .gitignore bỏ qua .env.
+3. Đảm bảo .env không xuất hiện trong git status.
+4. Tạo .env.example và commit.
+
+16.2. Cấp độ 2: Branch và merge
+
+Bài 4: Feature branch
+
+Yêu cầu:
+
+1. Tạo branch feature/homepage.
+2. Tạo index.html.
+3. Commit.
+4. Merge vào main.
+5. Xóa branch.
+
+Bài 5: Conflict
+
+Yêu cầu:
+
+1. Tạo file text.txt.
+2. Trên main sửa dòng 1.
+3. Trên branch feature/conflict sửa cùng dòng 1.
+4. Merge để tạo conflict.
+5. Giải quyết conflict.
+6. Commit merge.
+
+Bài 6: GitHub remote
+
+Yêu cầu:
+
+1. Tạo repo GitHub.
+2. Push repo local.
+3. Clone repo vào folder khác.
+4. Sửa từ folder clone và push.
+5. Pull về folder ban đầu.
+
+16.3. Cấp độ 3: Rebase và PR
+
+Bài 7: Rebase
+
+Yêu cầu:
+
+1. Tạo branch feature/rebase.
+2. Commit 2 lần.
+3. Quay lại main, commit 1 lần.
+4. Rebase feature lên main.
+5. Xem log graph.
+
+Bài 8: Squash
+
+Yêu cầu:
+
+1. Tạo 4 commit nhỏ trên branch.
+2. Dùng interactive rebase squash thành 1 commit.
+3. Push branch lên GitHub.
+4. Tạo PR.
+
+Bài 9: Pull Request
+
+Yêu cầu:
+
+1. Tạo issue.
+2. Tạo branch từ issue.
+3. Commit thay đổi.
+4. Tạo PR.
+5. Link issue bằng Closes #.
+6. Merge PR.
+
+16.4. Cấp độ 4: Nâng cao
+
+Bài 10: Stash
+
+Yêu cầu:
+
+1. Sửa file nhưng chưa commit.
+2. Stash thay đổi.
+3. Chuyển branch.
+4. Quay lại branch cũ.
+5. Pop stash.
+
+Bài 11: Reset và revert
+
+Yêu cầu:
+
+1. Tạo commit sai.
+2. Dùng reset khi chưa push.
+3. Tạo commit sai khác.
+4. Push lên GitHub.
+5. Dùng revert để đảo ngược.
+
+Bài 12: Cherry-pick
+
+Yêu cầu:
+
+1. Tạo branch bugfix.
+2. Commit một fix.
+3. Quay lại main.
+4. Cherry-pick commit fix.
+5. Kiểm tra log.
+
+Bài 13: Tag và release
+
+Yêu cầu:
+
+1. Tạo tag v1.0.0.
+2. Push tag.
+3. Tạo GitHub Release.
+4. Viết release notes.
+
+16.5. Cấp độ 5: Team workflow
+
+Bài 14: Mô phỏng team
+
+Yêu cầu:
+
+1. Tạo repo.
+2. Tạo branch develop.
+3. Tạo 2 feature branch.
+4. Merge vào develop bằng PR.
+5. Tạo release branch.
+6. Merge release vào main.
+7. Tag v1.0.0.
+
+Bài 15: CI/CD
+
+Yêu cầu:
+
+1. Tạo workflow CI.
+2. Chạy test tự động.
+3. Làm test fail.
+4. Sửa test.
+5. Bật branch protection yêu cầu CI pass.
+
+============================================================
+PHẦN 17. DỰ ÁN CUỐI KHÓA
+============================================================
+
+17.1. Mục tiêu dự án
+
+Bạn sẽ xây dựng một repository GitHub hoàn chỉnh cho một website tài liệu cá nhân hoặc app nhỏ.
+
+Tên dự án gợi ý:
+
+personal-knowledge-base
+
+17.2. Yêu cầu kỹ thuật
+
+Repository phải có:
+
+- README.md đầy đủ.
+- .gitignore đúng.
+- Branch main được bảo vệ nếu có thể.
+- Ít nhất 5 issue.
+- Ít nhất 3 pull request.
+- Ít nhất 1 conflict đã được giải quyết.
+- Ít nhất 1 tag.
+- Ít nhất 1 GitHub Release.
+- GitHub Actions CI đơn giản.
+- Changelog.
+- License.
+- Contribution guide.
+
+17.3. Cấu trúc repo gợi ý
+
+personal-knowledge-base/
+  README.md
+  CHANGELOG.md
+  CONTRIBUTING.md
+  LICENSE
+  .gitignore
+  .github/
+    workflows/
+      ci.yml
+    PULL_REQUEST_TEMPLATE.md
+    ISSUE_TEMPLATE/
+      bug_report.md
+      feature_request.md
+  docs/
+    git-notes.md
+    github-notes.md
+  src/
+    index.html
+    style.css
+    app.js
+
+17.4. Quy trình thực hiện
+
+Bước 1: Khởi tạo
+
+$ mkdir personal-knowledge-base
+$ cd personal-knowledge-base
+$ git init
+
+Bước 2: Tạo README, .gitignore, LICENSE
+
+Commit:
+
+$ git add .
+$ git commit -m "chore: initialize project"
+
+Bước 3: Push lên GitHub
+
+$ git remote add origin <repo-url>
+$ git push -u origin main
+
+Bước 4: Tạo issue
+
+Ví dụ:
+
+- Add homepage.
+- Add Git notes page.
+- Add GitHub notes page.
+- Add dark mode.
+- Add deployment workflow.
+
+Bước 5: Làm từng issue bằng branch riêng
+
+Ví dụ:
+
+$ git switch -c feature/homepage
+$ git add .
+$ git commit -m "feat: add homepage"
+$ git push -u origin feature/homepage
+
+Tạo PR, review, merge.
+
+Bước 6: Tạo CI
+
+File:
+
+.github/workflows/ci.yml
+
+Nếu là HTML/CSS/JS đơn giản, có thể chạy kiểm tra placeholder:
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  basic-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List files
+        run: ls -la
+      - name: Check README exists
+        run: test -f README.md
+
+Bước 7: Tạo tag release
+
+$ git tag -a v1.0.0 -m "Release v1.0.0"
+$ git push origin v1.0.0
+
+Tạo GitHub Release từ tag.
+
+17.5. Tiêu chí đánh giá
+
+Điểm tối đa 100:
+
+- Repository structure: 10
+- Commit history rõ ràng: 15
+- Branch/PR workflow: 20
+- Issue/project management: 10
+- Conflict handling: 10
+- CI workflow: 10
+- README/documentation: 15
+- Release/tag/changelog: 10
+
+17.6. Bài nộp cuối khóa
+
+Bạn cần nộp:
+
+1. Link GitHub repo.
+2. Ảnh chụp Pull Requests.
+3. Ảnh chụp GitHub Actions chạy thành công.
+4. Link release v1.0.0.
+5. Mô tả ngắn những lỗi bạn gặp và cách xử lý.
+
+============================================================
+PHẦN 18. CHEAT SHEET LỆNH GIT & GITHUB
+============================================================
+
+18.1. Cấu hình
+
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --global --list
+git config --global init.defaultBranch main
+
+18.2. Khởi tạo và clone
+
+git init
+git clone <url>
+
+18.3. Trạng thái và diff
+
+git status
+git diff
+git diff --staged
+
+18.4. Add và commit
+
+git add file.txt
+git add .
+git commit -m "message"
+git commit -am "message"
+git commit --amend
+
+18.5. Log
+
+git log
+git log --oneline
+git log --oneline --graph --decorate --all
+git show <hash>
+git blame file.txt
+
+18.6. Branch
+
+git branch
+git branch branch-name
+git switch branch-name
+git switch -c branch-name
+git branch -d branch-name
+git branch -D branch-name
+git branch -m new-name
+
+18.7. Merge
+
+git merge branch-name
+git merge --abort
+
+18.8. Remote
+
+git remote -v
+git remote add origin <url>
+git remote set-url origin <url>
+
+18.9. Push/Pull/Fetch
+
+git push
+git push -u origin main
+git push -u origin branch-name
+git pull
+git pull --rebase
+git fetch
+git fetch --all
+
+18.10. Rebase
+
+git rebase main
+git rebase --continue
+git rebase --abort
+git rebase -i HEAD~3
+
+18.11. Stash
+
+git stash
+git stash push -m "message"
+git stash list
+git stash pop
+git stash apply
+git stash drop
+git stash clear
+
+18.12. Reset/Restore/Revert
+
+git restore file.txt
+git restore --staged file.txt
+git reset HEAD~1
+git reset --soft HEAD~1
+git reset --hard HEAD~1
+git revert <hash>
+
+18.13. Cherry-pick
+
+git cherry-pick <hash>
+
+18.14. Tag
+
+git tag
+git tag v1.0.0
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+git push origin --tags
+git tag -d v1.0.0
+git push origin --delete v1.0.0
+
+18.15. Clean
+
+git clean -n
+git clean -fd
+
+18.16. Reflog
+
+git reflog
+git reset --hard <hash>
+
+18.17. GitHub CLI
+
+gh auth login
+gh repo create
+gh repo clone owner/repo
+gh issue list
+gh issue create
+gh pr create
+gh pr list
+gh pr checkout <number>
+
+============================================================
+PHẦN 19. LỘ TRÌNH ÔN TẬP 30 NGÀY
+============================================================
+
+Ngày 1:
+Cài Git, cấu hình user.name, user.email.
+
+Ngày 2:
+Học git init, git status, git add, git commit.
+
+Ngày 3:
+Học git log, git diff, git show.
+
+Ngày 4:
+Tạo .gitignore, thực hành bỏ qua file.
+
+Ngày 5:
+Thực hành commit message tốt.
+
+Ngày 6:
+Học branch: tạo, chuyển, xóa.
+
+Ngày 7:
+Merge branch, hiểu fast-forward.
+
+Ngày 8:
+Tạo conflict và giải quyết.
+
+Ngày 9:
+Tạo repo GitHub và push lần đầu.
+
+Ngày 10:
+Clone repo, pull và push.
+
+Ngày 11:
+Tạo branch remote.
+
+Ngày 12:
+Tạo Pull Request đầu tiên.
+
+Ngày 13:
+Viết mô tả PR tốt.
+
+Ngày 14:
+Review code giả lập.
+
+Ngày 15:
+Học fetch và pull --rebase.
+
+Ngày 16:
+Học rebase branch cá nhân.
+
+Ngày 17:
+Interactive rebase và squash.
+
+Ngày 18:
+Học stash.
+
+Ngày 19:
+Học reset --soft, --mixed, --hard.
+
+Ngày 20:
+Học revert.
+
+Ngày 21:
+Học cherry-pick.
+
+Ngày 22:
+Học tag và release.
+
+Ngày 23:
+Tạo issue, label, milestone.
+
+Ngày 24:
+Tạo GitHub Project.
+
+Ngày 25:
+Viết README chuyên nghiệp.
+
+Ngày 26:
+Tạo GitHub Actions CI.
+
+Ngày 27:
+Cấu hình SSH.
+
+Ngày 28:
+Học bảo mật secret, .env, token.
+
+Ngày 29:
+Mô phỏng workflow team.
+
+Ngày 30:
+Hoàn thành dự án cuối khóa và tạo release.
+
+============================================================
+PHẦN 20. PHỤ LỤC
+============================================================
+
+20.1. Thuật ngữ quan trọng
+
+Repository:
+Kho lưu trữ dự án.
+
+Commit:
+Một điểm lưu lịch sử.
+
+Branch:
+Nhánh phát triển độc lập.
+
+Merge:
+Gộp branch.
+
+Rebase:
+Đặt lại nền lịch sử commit.
+
+Remote:
+Repo trên máy chủ khác.
+
+Origin:
+Tên remote mặc định.
+
+Upstream:
+Repo gốc khi bạn fork.
+
+Pull Request:
+Yêu cầu gộp code và review.
+
+Conflict:
+Xung đột khi Git không tự merge được.
+
+Staging Area:
+Khu vực chuẩn bị commit.
+
+Working Directory:
+Thư mục đang làm việc.
+
+HEAD:
+Con trỏ tới commit hiện tại.
+
+Tag:
+Nhãn cho commit, thường dùng đánh dấu version.
+
+Fork:
+Bản sao repo trên tài khoản của bạn.
+
+Clone:
+Tải repo về máy.
+
+Push:
+Đẩy commit lên remote.
+
+Pull:
+Lấy và gộp thay đổi từ remote.
+
+Fetch:
+Lấy thay đổi từ remote nhưng chưa gộp.
+
+20.2. Quy tắc an toàn khi dùng Git
+
+1. Luôn chạy git status trước khi làm lệnh nguy hiểm.
+2. Không dùng reset --hard nếu chưa hiểu rõ.
+3. Không force push lên branch chung.
+4. Dùng --force-with-lease thay vì --force.
+5. Không commit secret.
+6. Pull/rebase main thường xuyên khi làm feature lâu.
+7. Tạo commit nhỏ và rõ nghĩa.
+8. Không merge code chưa test.
+9. Không xóa branch nếu chưa chắc đã merge.
+10. Trước khi xử lý conflict, đọc kỹ thay đổi của cả hai bên.
+
+20.3. Quy trình hằng ngày cho lập trình viên
+
+Buổi sáng:
+
+$ git switch main
+$ git pull --rebase
+
+Nhận task:
+
+$ git switch -c feature/task-name
+
+Trong lúc làm:
+
+$ git status
+$ git add .
+$ git commit -m "feat: implement task"
+
+Cập nhật main mới:
+
+$ git fetch origin
+$ git rebase origin/main
+
+Push:
+
+$ git push -u origin feature/task-name
+
+Tạo PR, review, sửa, merge.
+
+Sau merge:
+
+$ git switch main
+$ git pull --rebase
+$ git branch -d feature/task-name
+
+20.4. Khi nào dùng lệnh nào?
+
+Muốn lưu thay đổi:
+git add + git commit
+
+Muốn đưa lên GitHub:
+git push
+
+Muốn lấy từ GitHub:
+git pull
+
+Muốn tạo nhánh:
+git switch -c
+
+Muốn gộp nhánh:
+git merge
+
+Muốn lịch sử sạch:
+git rebase
+
+Muốn cất tạm:
+git stash
+
+Muốn undo file chưa commit:
+git restore
+
+Muốn undo commit local:
+git reset
+
+Muốn undo commit public:
+git revert
+
+Muốn lấy một commit:
+git cherry-pick
+
+Muốn đánh dấu version:
+git tag
+
+20.5. Mẫu .gitignore tổng hợp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build
+dist/
+build/
+coverage/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+20.6. Mẫu PULL_REQUEST_TEMPLATE.md
+
+## Summary
+Mô tả ngắn gọn thay đổi.
+
+## Why
+Vì sao cần thay đổi này?
+
+## Changes
+- 
+- 
+- 
+
+## Testing
+- [ ] Tested locally
+- [ ] Added/updated tests
+- [ ] CI passed
+
+## Screenshots
+Nếu có thay đổi UI, thêm ảnh ở đây.
+
+## Checklist
+- [ ] Code follows project conventions
+- [ ] No secrets committed
+- [ ] Documentation updated
+- [ ] Linked related issue
+
+20.7. Mẫu CONTRIBUTING.md
+
+# Contributing Guide
+
+Cảm ơn bạn muốn đóng góp cho dự án.
+
+## Workflow
+
+1. Fork repository.
+2. Create a new branch.
+3. Make changes.
+4. Commit with clear messages.
+5. Push your branch.
+6. Open a Pull Request.
+
+## Branch naming
+
+- feature/short-description
+- bugfix/short-description
+- docs/short-description
+- chore/short-description
+
+## Commit message
+
+Use Conventional Commits:
+
+- feat: add new feature
+- fix: fix bug
+- docs: update documentation
+- refactor: improve code structure
+- test: add or update tests
+- chore: maintenance work
+
+## Pull Request
+
+PR should include:
+
+- Clear title.
+- Summary.
+- Testing notes.
+- Related issue.
+- Screenshots if needed.
+
+20.8. Mẫu CHANGELOG.md
+
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+### Added
+- 
+
+### Changed
+- 
+
+### Fixed
+- 
+
+## [1.0.0] - YYYY-MM-DD
+
+### Added
+- Initial release.
+
+20.9. Câu hỏi phỏng vấn Git thường gặp
+
+Câu 1: Git khác GitHub như thế nào?
+Trả lời: Git là công cụ quản lý phiên bản chạy local. GitHub là nền tảng lưu trữ và cộng tác dựa trên Git.
+
+Câu 2: Git pull khác git fetch như thế nào?
+Trả lời: fetch tải thay đổi từ remote nhưng không merge. pull thường là fetch + merge hoặc fetch + rebase.
+
+Câu 3: Merge khác rebase như thế nào?
+Trả lời: merge gộp lịch sử và có thể tạo merge commit. rebase đặt lại nền commit giúp lịch sử tuyến tính nhưng có thể viết lại hash.
+
+Câu 4: Khi nào dùng revert thay vì reset?
+Trả lời: Khi commit đã public/shared, dùng revert để tạo commit đảo ngược mà không viết lại lịch sử.
+
+Câu 5: Staging area dùng để làm gì?
+Trả lời: Cho phép chọn thay đổi cụ thể để đưa vào commit.
+
+Câu 6: Conflict là gì?
+Trả lời: Là khi Git không tự gộp được thay đổi vì nhiều nhánh sửa cùng vùng code.
+
+Câu 7: Force push nguy hiểm thế nào?
+Trả lời: Nó có thể ghi đè lịch sử remote và làm mất commit của người khác.
+
+Câu 8: Làm sao xóa file khỏi Git nhưng giữ local?
+Trả lời: dùng git rm --cached file rồi thêm vào .gitignore.
+
+Câu 9: Detached HEAD là gì?
+Trả lời: Là trạng thái HEAD trỏ trực tiếp tới commit thay vì branch.
+
+Câu 10: Tag dùng để làm gì?
+Trả lời: Đánh dấu commit quan trọng, thường là phiên bản release.
+
+20.10. Kết luận
+
+Git và GitHub không chỉ là công cụ lưu code. Chúng là nền tảng của quy trình phát triển phần mềm hiện đại.
+
+Học Git tốt không có nghĩa là nhớ mọi lệnh ngay lập tức. Điều quan trọng là hiểu mô hình:
+
+Working Directory -> Staging Area -> Commit History -> Remote
+
+Khi hiểu mô hình này, bạn có thể suy luận được phần lớn tình huống thực tế.
+
+Hãy luyện tập thường xuyên, tạo repo thật, tạo branch thật, tạo conflict thật và tự xử lý. Sau một thời gian, Git sẽ trở thành kỹ năng tự nhiên trong công việc hằng ngày.
+
+============================================================
+HẾT GIÁO TRÌNH
+============================================================

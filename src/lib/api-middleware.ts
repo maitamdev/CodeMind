@@ -87,6 +87,7 @@ export function withAuth(
                 !isCSRFExempt(request.nextUrl.pathname)
             ) {
                 if (!validateCSRFToken(request)) {
+                    console.error("[API-MIDDLEWARE CSRF FAILED] Pathname:", request.nextUrl.pathname);
                     return NextResponse.json(
                         {
                             success: false,

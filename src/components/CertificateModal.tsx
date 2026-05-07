@@ -5,6 +5,7 @@ import { X, Download, Printer, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import Certificate from './Certificate';
+import { secureFetch } from '@/contexts/AuthContext';
 
 interface CertificateModalProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export default function CertificateModal({ isOpen, onClose, data, courseId, cour
     (async () => {
       try {
         setIssueError(null);
-        const res = await fetch('/api/certificates/issue', {
+        const res = await secureFetch('/api/certificates/issue', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ courseId, courseSlug }),

@@ -73,7 +73,7 @@ function setSecurityHeaders(
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com data:",
-            "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://i.ytimg.com https://cdn2.fptshop.com.vn https://caodangvietmyhanoi.edu.vn https://models.dev",
+            "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://i.ytimg.com https://cdn2.fptshop.com.vn https://caodangvietmyhanoi.edu.vn https://models.dev https://api.qrserver.com",
             "connect-src 'self' http://localhost:* https://*.supabase.co https://api.cloudinary.com wss://*.supabase.co https://cdn.jsdelivr.net",
             "frame-src 'self' https://www.youtube.com https://youtube.com",
             "media-src 'self' https://res.cloudinary.com blob:",
@@ -258,6 +258,7 @@ export function middleware(request: NextRequest) {
         // Skip CSRF for mobile/API clients using Bearer auth (no cookies)
         if (isWebRequest && !isMobileRequest) {
             if (!validateCSRFToken(request)) {
+                console.error("[CSRF FAILED] Pathname:", pathname, "Method:", request.method, "Exempt:", isCSRFExempt(pathname));
                 const csrfError = new NextResponse(
                     JSON.stringify({
                         success: false,

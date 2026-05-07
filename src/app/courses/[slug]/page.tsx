@@ -245,7 +245,7 @@ export default function CourseDetailPage() {
                                     <img
                                         src={course.thumbnailUrl}
                                         alt={course.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover object-top"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-400">

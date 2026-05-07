@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Flame } from "lucide-react";
+import { secureFetch } from "@/contexts/AuthContext";
 
 interface StreakIndicatorProps {
     isDarkTheme?: boolean;
@@ -17,9 +18,8 @@ export default function StreakIndicator({
         const fetchAndUpdateStreak = async () => {
             try {
                 // POST to update streak for today
-                const postRes = await fetch("/api/gamification/stats", {
+                const postRes = await secureFetch("/api/gamification/stats", {
                     method: "POST",
-                    credentials: "include",
                 });
                 const postData = await postRes.json();
                 if (postData.success) {

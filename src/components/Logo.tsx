@@ -6,6 +6,7 @@ interface LogoProps {
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   dark?: boolean;
+  asLink?: boolean;
 }
 
 const LogoIcon = ({ className }: { className?: string }) => (
@@ -17,7 +18,7 @@ const LogoIcon = ({ className }: { className?: string }) => (
   />
 );
 
-export default function Logo({ className = "", showText = true, size = 'md', dark = false }: LogoProps) {
+export default function Logo({ className = "", showText = true, size = 'md', dark = false, asLink = true }: LogoProps) {
   const sizeClasses = {
     sm: { icon: 'w-5 h-5', text: 'text-lg' },
     md: { icon: 'w-6 h-6', text: 'text-xl' },
@@ -29,11 +30,8 @@ export default function Logo({ className = "", showText = true, size = 'md', dar
   const textColor = dark ? 'text-white' : 'text-foreground';
   const brandColor = dark ? 'text-white/90' : 'text-primary';
 
-  return (
-    <Link 
-      href="/" 
-      className={`group flex items-center gap-2.5 select-none ${className}`}
-    >
+  const content = (
+    <>
       <div className="relative">
         {/* Logo Icon with hover effect */}
         <LogoIcon className={`${currentSize.icon} ${textColor} group-hover:scale-110 transition-transform duration-300`} />
@@ -44,6 +42,25 @@ export default function Logo({ className = "", showText = true, size = 'md', dar
           Code<span className={brandColor}>Mind</span>
         </span>
       )}
+    </>
+  );
+
+  const wrapperClassName = `group flex items-center gap-2.5 select-none ${className}`;
+
+  if (!asLink) {
+    return (
+      <div className={wrapperClassName}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link 
+      href="/" 
+      className={wrapperClassName}
+    >
+      {content}
     </Link>
   );
 }

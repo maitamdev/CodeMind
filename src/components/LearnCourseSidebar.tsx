@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, BookOpen, Clock, X, CheckCircle, FileText, Flag, PlayCircle } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Clock, X, CheckCircle, FileText, Flag, PlayCircle, Lock } from "lucide-react";
 
 interface LearnCourseSidebarProps {
   isOpen: boolean;
@@ -12,6 +12,7 @@ interface LearnCourseSidebarProps {
   handleLessonClick: (lesson: any) => void;
   isFree: boolean;
   codePlaygroundOpen?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function LearnCourseSidebar({
@@ -24,6 +25,7 @@ export default function LearnCourseSidebar({
   handleLessonClick,
   isFree,
   codePlaygroundOpen = false,
+  isAdmin = false,
 }: LearnCourseSidebarProps) {
   const isDarkTheme = !isFree;
   const sidebarBgClass = isDarkTheme ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200";
@@ -109,15 +111,21 @@ export default function LearnCourseSidebar({
 
               {expandedSections.has(section.id) && (
                 <div className={isDarkTheme ? "bg-gray-900/50" : "bg-gray-50"}>
-                  {section.lessons.map((lesson: any, lessonIndex: number) => (
+                  {section.lessons.map((lesson: any, lessonIndex: number) => {
+                    // Check if lesson is locked (not admin AND previous lesson in course is not completed)
+                    const allLessons = course.sections.flatMap((s: any) => s.lessons);
+                    const flatIndex = allLessons.findIndex((l: any) => l.id === lesson.id);
+                    const isLocked = !isAdmin && flatIndex > 0 && !allLessons[flatIndex - 1].isCompleted;
+
+                    return (
                     <button
                       key={lesson.id}
-                      onClick={() => handleLessonClick(lesson)}
+                      onClick={() => !isLocked && handleLessonClick(lesson)}
                       className={`w-full px-5 py-3 flex items-center space-x-3 transition-colors border-r-4 ${
                         currentLesson?.id === lesson.id
                           ? ""
                           : `${isDarkTheme ? "hover:bg-gray-700/30 border-transparent" : "hover:bg-gray-100 border-transparent"}`
-                      }`}
+                      } ${isLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       style={currentLesson?.id === lesson.id ? {
                         backgroundColor: isDarkTheme ? 'rgba(99, 102, 241, 0.1)' : 'rgba(99, 102, 241, 0.05)',
                         borderRightColor: 'var(--primary)',
@@ -129,13 +137,15 @@ export default function LearnCourseSidebar({
                       <div className="flex-shrink-0">
                         {lesson.isCompleted ? (
                           <CheckCircle className={`w-5 h-5 ${isDarkTheme ? "text-green-400" : "text-emerald-500"}`} />
+                        ) : isLocked ? (
+                          <Lock className={`w-4 h-4 ${isDarkTheme ? "text-gray-500" : "text-gray-400"}`} />
                         ) : (
                           <div className={`w-5 h-5 rounded-full border-2 ${isDarkTheme ? "border-gray-600" : "border-gray-400"}`}></div>
                         )}
                       </div>
                       <div className="flex-1 text-left">
                         <p
-                          className={`text-sm font-medium ${
+                          className={`text-sm font-medium line-clamp-1 ${
                             currentLesson?.id === lesson.id
                               ? ""
                               : isDarkTheme
@@ -152,7 +162,8 @@ export default function LearnCourseSidebar({
                         </div>
                       </div>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

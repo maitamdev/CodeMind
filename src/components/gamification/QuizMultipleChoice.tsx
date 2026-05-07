@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import ExerciseWrapper from "./ExerciseWrapper";
 import ExerciseActions from "./ExerciseActions";
+import { secureFetch } from "@/contexts/AuthContext";
 
 interface Option {
     id: string;
@@ -66,10 +67,9 @@ export default function QuizMultipleChoice({
         }
 
         // Fire API in background for XP tracking
-        fetch(`/api/exercises/${exerciseId}/submit`, {
+        secureFetch(`/api/exercises/${exerciseId}/submit`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({ answer: selectedId }),
         }).catch(() => {});
     };

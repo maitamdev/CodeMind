@@ -129,7 +129,7 @@ export default function AdminLayout({
                                 href="/"
                                 className="flex items-center gap-2 flex-1"
                             >
-                                <Logo size="sm" />
+                                <Logo size="sm" asLink={false} />
                                 <div className="flex flex-col">
                                     <span className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">
                                         Admin Panel
