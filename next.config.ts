@@ -37,6 +37,11 @@ const nextConfig: NextConfig = {
                 hostname: "i.ytimg.com",
                 pathname: "/**",
             },
+            {
+                protocol: "https",
+                hostname: "ui-avatars.com",
+                pathname: "/**",
+            },
         ],
     },
     // Increase max duration for video uploads
