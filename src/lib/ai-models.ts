@@ -2,7 +2,7 @@
 
 export const DEFAULT_GROQ_CHAT_MODEL = "llama-3.1-8b-instant";
 export const DEFAULT_GROQ_COMPLETION_MODEL = "llama-3.1-8b-instant";
-export const DEFAULT_GROQ_TUTOR_MODEL = "llama-3.1-8b-instant";
+export const DEFAULT_GROQ_TUTOR_MODEL = "llama3-8b-8192";
 
 // Legacy aliases for backward compatibility
 export const DEFAULT_OLLAMA_CHAT_MODEL = DEFAULT_GROQ_CHAT_MODEL;
@@ -43,8 +43,8 @@ export const APPROVED_GROQ_MODELS: GroqUIModel[] = [
         description: "Model miễn phí từ Mistral cực nhẹ",
     },
     {
-        id: DEFAULT_GROQ_TUTOR_MODEL,
-        name: "Llama 3.3 70B",
+        id: "llama3-8b-8192",
+        name: "Llama 3 8B (Groq)",
         provider: "Groq",
         providerSlug: "meta",
         description: "Tối ưu cho AI Tutor và giải thích bài học",
