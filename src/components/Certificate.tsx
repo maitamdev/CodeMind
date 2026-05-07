@@ -25,79 +25,92 @@ const Certificate: React.FC<CertificateProps> = ({
     ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(qrTarget)}`
     : '';
   return (
-    <div className="certificate-container w-full max-w-[1000px] mx-auto bg-white p-8 md:p-12 text-center relative overflow-hidden shadow-2xl print:shadow-none print:w-[100%] print:max-w-none print:p-0">
-      {/* Decorative Border */}
-      <div className="absolute inset-4 border-[12px] border-double border-yellow-600/30 pointer-events-none print:inset-0"></div>
-      <div className="absolute inset-8 border-[2px] border-yellow-600/20 pointer-events-none print:inset-4"></div>
+    <>
+      <style>{`
+        @media print {
+          @page {
+            size: A4 landscape;
+            margin: 0;
+          }
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+        }
+      `}</style>
+      <div className="certificate-container w-full max-w-[1000px] mx-auto bg-white p-8 md:p-12 text-center relative overflow-hidden shadow-2xl print:shadow-none print:w-[100%] print:h-[100vh] print:max-w-none print:p-8 print:flex print:flex-col print:justify-center print:m-0 print:border-0">
+        {/* Decorative Border */}
+        <div className="absolute inset-4 border-[12px] border-double border-yellow-600/30 pointer-events-none print:inset-6"></div>
+      <div className="absolute inset-8 border-[2px] border-yellow-600/20 pointer-events-none print:inset-8"></div>
 
       {/* Corner Ornaments */}
-      <div className="absolute top-4 left-4 w-24 h-24 border-t-[4px] border-l-[4px] border-yellow-600/40 rounded-tl-3xl pointer-events-none print:top-0 print:left-0"></div>
-      <div className="absolute top-4 right-4 w-24 h-24 border-t-[4px] border-r-[4px] border-yellow-600/40 rounded-tr-3xl pointer-events-none print:top-0 print:right-0"></div>
-      <div className="absolute bottom-4 left-4 w-24 h-24 border-b-[4px] border-l-[4px] border-yellow-600/40 rounded-bl-3xl pointer-events-none print:bottom-0 print:left-0"></div>
-      <div className="absolute bottom-4 right-4 w-24 h-24 border-b-[4px] border-r-[4px] border-yellow-600/40 rounded-br-3xl pointer-events-none print:bottom-0 print:right-0"></div>
+      <div className="absolute top-4 left-4 w-24 h-24 border-t-[4px] border-l-[4px] border-yellow-600/40 rounded-tl-3xl pointer-events-none print:top-6 print:left-6"></div>
+      <div className="absolute top-4 right-4 w-24 h-24 border-t-[4px] border-r-[4px] border-yellow-600/40 rounded-tr-3xl pointer-events-none print:top-6 print:right-6"></div>
+      <div className="absolute bottom-4 left-4 w-24 h-24 border-b-[4px] border-l-[4px] border-yellow-600/40 rounded-bl-3xl pointer-events-none print:bottom-6 print:left-6"></div>
+      <div className="absolute bottom-4 right-4 w-24 h-24 border-b-[4px] border-r-[4px] border-yellow-600/40 rounded-br-3xl pointer-events-none print:bottom-6 print:right-6"></div>
 
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] bg-[url('/grid-pattern.svg')] pointer-events-none"></div>
 
       {/* Content */}
-      <div className="relative z-10 py-8 px-4">
+      <div className="relative z-10 py-8 px-4 print:py-0">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center shadow-lg">
-              <Award className="w-6 h-6 text-white" />
+        <div className="mb-12 print:mb-6">
+          <div className="flex items-center justify-center gap-3 mb-4 print:mb-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center shadow-lg print:shadow-none print:border print:border-yellow-600">
+              <Award className="w-6 h-6 text-white print:text-yellow-700" />
             </div>
             <span className="text-2xl font-bold text-gray-800 tracking-widest uppercase">CodeMind</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 via-yellow-800 to-yellow-600">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 via-yellow-800 to-yellow-600 print:text-black print:bg-none print:text-5xl">
             Certificate
           </h1>
-          <p className="text-xl md:text-2xl text-yellow-700 font-serif italic">of Completion</p>
+          <p className="text-xl md:text-2xl text-yellow-700 font-serif italic print:text-xl">of Completion</p>
         </div>
 
         {/* Body */}
-        <div className="space-y-6 mb-16">
-          <p className="text-gray-600 text-lg uppercase tracking-widest">This is to certify that</p>
+        <div className="space-y-6 mb-16 print:mb-8 print:space-y-4">
+          <p className="text-gray-600 text-lg uppercase tracking-widest print:text-base">This is to certify that</p>
           
-          <div className="py-4">
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 border-b-2 border-gray-200 inline-block px-12 pb-2 min-w-[300px]">
+          <div className="py-4 print:py-2">
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 border-b-2 border-gray-200 inline-block px-12 pb-2 min-w-[300px] print:text-4xl">
               {studentName}
             </h2>
           </div>
 
-          <p className="text-gray-600 text-lg">has successfully completed the course</p>
+          <p className="text-gray-600 text-lg print:text-base">has successfully completed the course</p>
 
-          <div className="py-2">
-            <h3 className="text-3xl md:text-4xl font-bold text-indigo-900">
+          <div className="py-2 print:py-1">
+            <h3 className="text-3xl md:text-4xl font-bold text-indigo-900 print:text-2xl">
               {courseName}
             </h3>
           </div>
 
-          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed print:text-sm">
             Demonstrating dedication and proficiency in the subject matter, completing {courseDuration} of intensive training and practical exercises.
           </p>
         </div>
 
         {/* Footer / Signatures */}
-        <div className="flex flex-col md:flex-row justify-between items-end max-w-4xl mx-auto mt-12 gap-12">
+        <div className="flex flex-col md:flex-row justify-between items-end max-w-4xl mx-auto mt-12 gap-12 print:flex-row print:mt-6 print:gap-8">
           {/* Instructor Signature */}
           <div className="text-center flex-1">
             <div className="h-16 flex items-end justify-center mb-2">
-              <span className="font-script text-3xl text-gray-800 transform -rotate-6">{instructorName}</span>
+              <span className="font-script text-3xl text-gray-800 transform -rotate-6 print:text-2xl">{instructorName}</span>
             </div>
-            <div className="border-t border-gray-400 w-48 mx-auto pt-2">
-              <p className="font-bold text-gray-900">{instructorName}</p>
+            <div className="border-t border-gray-400 w-48 mx-auto pt-2 print:w-40">
+              <p className="font-bold text-gray-900 print:text-sm">{instructorName}</p>
               <p className="text-xs text-gray-500 uppercase tracking-wider">Instructor</p>
             </div>
           </div>
 
           {/* Seal */}
           <div className="flex-shrink-0">
-            <div className="w-32 h-32 rounded-full border-4 border-yellow-600/30 flex items-center justify-center relative bg-white shadow-inner">
+            <div className="w-32 h-32 rounded-full border-4 border-yellow-600/30 flex items-center justify-center relative bg-white shadow-inner print:w-24 print:h-24 print:shadow-none print:border-yellow-600">
               <div className="absolute inset-1 border border-yellow-600/20 rounded-full"></div>
               <div className="text-center">
-                <Award className="w-12 h-12 text-yellow-600 mx-auto mb-1" />
-                <div className="text-[10px] font-bold text-yellow-800 uppercase tracking-widest">Official<br/>Certified</div>
+                <Award className="w-12 h-12 text-yellow-600 mx-auto mb-1 print:w-8 print:h-8" />
+                <div className="text-[10px] font-bold text-yellow-800 uppercase tracking-widest print:text-[8px]">Official<br/>Certified</div>
               </div>
             </div>
           </div>
@@ -105,11 +118,11 @@ const Certificate: React.FC<CertificateProps> = ({
           {/* Date & ID */}
           <div className="text-center flex-1">
             <div className="h-16 flex items-end justify-center mb-2">
-              <span className="text-xl text-gray-800">{completionDate}</span>
+              <span className="text-xl text-gray-800 print:text-lg">{completionDate}</span>
             </div>
-            <div className="border-t border-gray-400 w-48 mx-auto pt-2">
-              <p className="font-bold text-gray-900">Date Issued</p>
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-mono break-all">
+            <div className="border-t border-gray-400 w-48 mx-auto pt-2 print:w-40">
+              <p className="font-bold text-gray-900 print:text-sm">Date Issued</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-mono break-all print:text-[8px]">
                 ID: {certificateId}
               </p>
             </div>
@@ -118,23 +131,23 @@ const Certificate: React.FC<CertificateProps> = ({
 
         {/* Verify Block */}
         {qrSrc && (
-          <div className="mt-10 pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-center gap-4 max-w-3xl mx-auto">
+          <div className="mt-10 pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-center gap-4 max-w-3xl mx-auto print:flex-row print:mt-6 print:pt-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={qrSrc}
               alt="Xác thực chứng chỉ"
-              className="w-24 h-24 rounded-lg border border-gray-200 bg-white p-1"
+              className="w-24 h-24 rounded-lg border border-gray-200 bg-white p-1 print:w-16 print:h-16"
               loading="lazy"
             />
-            <div className="text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 text-emerald-700 text-xs uppercase tracking-wider font-semibold mb-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> Verified by CodeMind
+            <div className="text-center md:text-left print:text-left">
+              <div className="inline-flex items-center gap-1.5 text-emerald-700 text-xs uppercase tracking-wider font-semibold mb-1 print:text-[10px]">
+                <ShieldCheck className="w-3.5 h-3.5 print:w-3 print:h-3" /> Verified by CodeMind
               </div>
-              <p className="text-xs text-gray-600 max-w-xs">
+              <p className="text-xs text-gray-600 max-w-xs print:text-[10px]">
                 Quét mã QR hoặc truy cập liên kết dưới đây để xác minh
                 tính hợp lệ của chứng chỉ này.
               </p>
-              <p className="mt-1 text-[10px] text-gray-500 font-mono break-all max-w-xs">
+              <p className="mt-1 text-[10px] text-gray-500 font-mono break-all max-w-xs print:text-[8px]">
                 {qrTarget}
               </p>
             </div>
@@ -142,6 +155,7 @@ const Certificate: React.FC<CertificateProps> = ({
         )}
       </div>
     </div>
+    </>
   );
 };
 
