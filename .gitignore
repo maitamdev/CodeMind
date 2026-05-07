@@ -131,3 +131,4 @@ celerybeat-schedule
 *.sqlite
 *.sqlite3
 *.db
+!database/*.sql
