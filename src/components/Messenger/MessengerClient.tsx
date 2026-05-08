@@ -104,25 +104,10 @@ export default function MessengerClient() {
         };
     }, [user]);
 
-    // Load Messages for active chat
+    // Subscribe to all incoming Realtime messages globally
     useEffect(() => {
-        if (!activeChat || !user) return;
-        
-        const loadMessages = async () => {
-            try {
-                const res = await fetch(`/api/messenger/messages?friendId=${activeChat.id}`);
-                const data = await res.json();
-                if (data.messages) {
-                    setMessages(data.messages);
-                }
-            } catch (error) {
-                console.error("Failed to load messages", error);
-            }
-        };
-        
-        loadMessages();
+        if (!user) return;
 
-        // Subscribe to Realtime messages
         const channel = supabase.channel(`direct_messages_${user.id}`)
             .on(
                 'postgres_changes',
@@ -134,11 +119,14 @@ export default function MessengerClient() {
                 },
                 (payload) => {
                     const newMsg = payload.new as Message;
-                    if (newMsg.sender_id === activeChat.id) {
-                        setMessages(prev => [...prev, newMsg]);
+                    if (activeChat && newMsg.sender_id === activeChat.id) {
+                        setMessages(prev => {
+                            // Prevent duplicates
+                            if (prev.some(m => m.id === newMsg.id)) return prev;
+                            return [...prev, newMsg];
+                        });
                     } else {
                         toast.success("Có tin nhắn mới!");
-                        // You could add a badge or play a sound here
                     }
                 }
             )
@@ -147,7 +135,39 @@ export default function MessengerClient() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [activeChat, user, toast]);
+    }, [user, activeChat, toast]);
+
+    // Load Messages for active chat & Fallback Polling
+    useEffect(() => {
+        if (!activeChat || !user) return;
+        
+        let isMounted = true;
+        
+        const loadMessages = async () => {
+            try {
+                const res = await fetch(`/api/messenger/messages?friendId=${activeChat.id}`);
+                const data = await res.json();
+                if (data.messages && isMounted) {
+                    setMessages(data.messages);
+                }
+            } catch (error) {
+                console.error("Failed to load messages", error);
+            }
+        };
+        
+        // Initial load
+        loadMessages();
+
+        // Fallback polling (every 3 seconds) in case WebSocket fails or isn't enabled properly
+        const pollId = setInterval(() => {
+            loadMessages();
+        }, 3000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(pollId);
+        };
+    }, [activeChat, user]);
 
     // Search Users
     useEffect(() => {
