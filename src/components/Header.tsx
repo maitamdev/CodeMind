@@ -1,6 +1,6 @@
 "use client";
 
-import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2, Shield, LayoutDashboard, Search } from "lucide-react";
+import { Sun, Moon, User, LogOut, FileText, Bookmark, Settings, CheckCircle2, Shield, LayoutDashboard, Search, MessageSquare } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
@@ -84,6 +84,15 @@ export default function Header() {
           >
             <Search className="h-4 w-4" />
           </button>
+
+          {/* Messenger */}
+          <Link
+            href="/messenger"
+            className="p-2 border border-border rounded-none hover:bg-secondary text-foreground transition-colors relative"
+            aria-label="Messenger"
+          >
+            <MessageSquare className="h-4 w-4" />
+          </Link>
 
           {/* Notifications */}
           <NotificationCenter />

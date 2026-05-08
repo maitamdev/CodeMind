@@ -164,6 +164,55 @@ export async function GET() {
             });
         }
 
+        // 2.5) Friend requests (pending & accepted)
+        const { data: friendships } = await supabaseAdmin
+            .from("friendships")
+            .select(`
+                id, status, updated_at,
+                user_id_1, user_id_2,
+                user1:user_id_1(full_name, username, avatar_url),
+                user2:user_id_2(full_name, username, avatar_url)
+            `)
+            .or(`user_id_1.eq.${userId},user_id_2.eq.${userId}`)
+            .gte("updated_at", thirtyDaysAgo);
+
+        for (const f of friendships ?? []) {
+            const isUser1 = f.user_id_1 === userId;
+            const otherUserField = isUser1 ? f.user2 : f.user1;
+            const otherUser = Array.isArray(otherUserField) ? otherUserField[0] : otherUserField;
+            const name = otherUser?.full_name || otherUser?.username || "Một thành viên";
+
+            if (f.status === "accepted") {
+                // If it was accepted recently
+                items.push({
+                    id: `friend_accept:${f.id}`,
+                    kind: "system",
+                    title: `${name} đã chấp nhận kết bạn`,
+                    message: "Hai bạn đã trở thành bạn bè. Hãy bắt đầu trò chuyện!",
+                    href: "/messenger",
+                    createdAt: f.updated_at as string,
+                    actor: {
+                        name,
+                        avatarUrl: (otherUser?.avatar_url as string | null) ?? null,
+                    },
+                });
+            } else if ((isUser1 && f.status === "pending_user2") || (!isUser1 && f.status === "pending_user1")) {
+                // Incoming friend request
+                items.push({
+                    id: `friend_request:${f.id}`,
+                    kind: "system",
+                    title: `${name} đã gửi lời mời kết bạn`,
+                    message: "Vào Messenger để chấp nhận lời mời.",
+                    href: "/messenger",
+                    createdAt: f.updated_at as string,
+                    actor: {
+                        name,
+                        avatarUrl: (otherUser?.avatar_url as string | null) ?? null,
+                    },
+                });
+            }
+        }
+
         // 3) Streak reminder
         const { data: gamification } = await supabaseAdmin
             .from("user_gamification")

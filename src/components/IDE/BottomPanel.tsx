@@ -14,6 +14,7 @@ import {
     StopCircle,
     Copy,
     Check,
+    Sparkles,
 } from "lucide-react";
 import type { BottomTab, ConsoleLog, CodeState, FileNode } from "./useIDEState";
 import { generatePreviewHTML } from "../CodePlayground/utils";
@@ -36,7 +37,7 @@ interface BottomPanelProps {
 }
 
 interface RunOutput {
-    type: "stdout" | "stderr" | "system" | "input";
+    type: "stdout" | "stderr" | "system" | "input" | "ai-explanation";
     text: string;
     timestamp: number;
 }
@@ -71,6 +72,47 @@ export default function BottomPanel({
     const [runInput, setRunInput] = useState("");
     const [copied, setCopied] = useState(false);
     const abortRef = useRef<AbortController | null>(null);
+    const [explainingId, setExplainingId] = useState<string | null>(null);
+
+    const handleExplainError = async (id: string, text: string) => {
+        if (!activeFile || explainingId) return;
+        setExplainingId(id);
+
+        try {
+            const res = await fetch("/api/ai/explain-error", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    error: text,
+                    code: activeFile.content,
+                    language: activeFile.language,
+                }),
+            });
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            const aiExplanation: RunOutput = {
+                type: "ai-explanation",
+                text: `✨ CodeMind AI Giải Thích Lỗi\n\n${data.explanation}\n\n💡 Đề xuất:\n${data.suggestion}${data.fixedCode ? `\n\n📝 Code sửa chữa:\n${data.fixedCode}` : ""}`,
+                timestamp: Date.now(),
+            };
+
+            setRunOutput(prev => [...prev, aiExplanation]);
+            
+            setTimeout(() => {
+                runEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }, 100);
+
+        } catch (err: any) {
+            setRunOutput(prev => [
+                ...prev,
+                { type: "stderr", text: `\n❌ Lỗi khi gọi AI: ${err.message}`, timestamp: Date.now() },
+            ]);
+        } finally {
+            setExplainingId(null);
+        }
+    };
 
     // Auto-scroll to bottom of console when new logs arrive
     useEffect(() => {
@@ -338,6 +380,7 @@ export default function BottomPanel({
     const getRunOutputStyle = (output: RunOutput) => {
         if (output.type === "stderr") return "text-red-400";
         if (output.type === "system") return "text-[var(--ide-accent)] opacity-70";
+        if (output.type === "ai-explanation") return "text-purple-300 bg-purple-500/10 border-l-2 border-purple-500 p-3 mt-2 rounded-r-md font-sans text-sm";
         return "text-emerald-400";
     };
 
@@ -490,14 +533,32 @@ export default function BottomPanel({
                                     {runOutput.map((output, i) => (
                                         <div
                                             key={`run-${i}`}
-                                            className={`flex items-start gap-3 py-1 px-2.5 rounded-md transition-colors ${getRunOutputStyle(output)}`}
+                                            className={`flex items-start gap-3 py-1 px-2.5 rounded-md transition-colors ${getRunOutputStyle(output)} group relative`}
                                         >
                                             {output.type === "system" && (
                                                 <span className="text-[10px] shrink-0 mt-0.5">⚙</span>
                                             )}
-                                            <span className="whitespace-pre-wrap break-all leading-relaxed text-[12.5px]">
+                                            {output.type === "ai-explanation" && (
+                                                <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-purple-400" />
+                                            )}
+                                            <span className="whitespace-pre-wrap break-all leading-relaxed text-[12.5px] flex-1">
                                                 {output.text}
                                             </span>
+                                            {output.type === "stderr" && !output.text.includes("AI CodeMind") && !output.text.includes("Lỗi khi gọi AI") && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleExplainError(`run-${i}`, output.text); }}
+                                                    disabled={explainingId !== null}
+                                                    className="opacity-0 group-hover:opacity-100 shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:text-purple-300 transition-all text-[11px] font-medium border border-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Hỏi AI giải thích lỗi này"
+                                                >
+                                                    {explainingId === `run-${i}` ? (
+                                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                                    ) : (
+                                                        <Sparkles className="w-3.5 h-3.5" />
+                                                    )}
+                                                    <span className="hidden sm:inline">Giải thích lỗi</span>
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
 
@@ -513,7 +574,7 @@ export default function BottomPanel({
                                     {consoleLogs.map((log, i) => (
                                         <div
                                             key={`log-${i}`}
-                                            className={`flex items-start gap-3 py-1.5 px-2.5 rounded-md transition-colors ${getLogStyle(log)}`}
+                                            className={`flex items-start gap-3 py-1.5 px-2.5 rounded-md transition-colors ${getLogStyle(log)} group relative`}
                                         >
                                             <span className="text-[10px] text-[var(--ide-text-faint)] flex-shrink-0 mt-1 font-mono tabular-nums">
                                                 {new Date(log.timestamp).toLocaleTimeString("vi-VN", {
@@ -522,11 +583,27 @@ export default function BottomPanel({
                                                     second: "2-digit",
                                                 })}
                                             </span>
-                                            <span className="whitespace-pre-wrap break-all leading-relaxed">
+                                            <span className="whitespace-pre-wrap break-all leading-relaxed flex-1">
                                                 {log.message}
                                             </span>
+                                            {log.type === "error" && !log.message.includes("AI CodeMind") && !log.message.includes("Lỗi khi gọi AI") && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleExplainError(`log-${i}`, log.message); }}
+                                                    disabled={explainingId !== null}
+                                                    className="opacity-0 group-hover:opacity-100 shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:text-purple-300 transition-all text-[11px] font-medium border border-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Hỏi AI giải thích lỗi này"
+                                                >
+                                                    {explainingId === `log-${i}` ? (
+                                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                                    ) : (
+                                                        <Sparkles className="w-3.5 h-3.5" />
+                                                    )}
+                                                    <span className="hidden sm:inline">Giải thích lỗi</span>
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
+
                                 </>
                             )}
                             <div ref={terminalEndRef} />
