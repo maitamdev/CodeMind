@@ -50,7 +50,7 @@ export default function MessengerClient() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Load Friends
+    // Load Friends & Listen to Friendships Realtime
     useEffect(() => {
         if (!user) return;
         const loadFriends = async () => {
@@ -70,6 +70,38 @@ export default function MessengerClient() {
             }
         };
         loadFriends();
+
+        // Subscribe to friendships Realtime
+        const friendsChannel = supabase.channel(`friendships_${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'friendships',
+                    filter: `user_id_1=eq.${user.id}`
+                },
+                () => {
+                    loadFriends();
+                }
+            )
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'friendships',
+                    filter: `user_id_2=eq.${user.id}`
+                },
+                () => {
+                    loadFriends();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(friendsChannel);
+        };
     }, [user]);
 
     // Load Messages for active chat

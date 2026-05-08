@@ -15,6 +15,11 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 type NotificationKind =
     | "answer"
@@ -169,7 +174,7 @@ function NotificationRow({
 }
 
 export default function NotificationCenter() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const [open, setOpen] = React.useState(false);
     const [items, setItems] = React.useState<NotificationItem[]>([]);
     const [loading, setLoading] = React.useState(false);
@@ -202,16 +207,48 @@ export default function NotificationCenter() {
         }
     }, [isAuthenticated]);
 
-    // Initial load + polling
+    // Initial load + polling + realtime
     React.useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user) {
             setItems([]);
             return;
         }
         loadNotifications();
         const id = setInterval(loadNotifications, POLL_INTERVAL_MS);
-        return () => clearInterval(id);
-    }, [isAuthenticated, loadNotifications]);
+
+        // Subscribe to friendships Realtime for instant notification
+        const channel = supabase.channel(`notifications_friendships_${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'friendships',
+                    filter: `user_id_1=eq.${user.id}`
+                },
+                () => {
+                    loadNotifications();
+                }
+            )
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'friendships',
+                    filter: `user_id_2=eq.${user.id}`
+                },
+                () => {
+                    loadNotifications();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            clearInterval(id);
+            supabase.removeChannel(channel);
+        };
+    }, [isAuthenticated, user, loadNotifications]);
 
     // Click outside to close
     React.useEffect(() => {
