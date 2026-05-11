@@ -21,11 +21,12 @@ function PlaygroundContent() {
     useEffect(() => {
         if (isLoading) return;
         if (!isAuthenticated) {
-            router.push("/auth/login");
+            const redirect = encodeURIComponent(`/playground${searchParams.toString() ? `?${searchParams.toString()}` : ""}`);
+            router.push(`/auth/login?redirect=${redirect}`);
             return;
         }
         setReady(true);
-    }, [isAuthenticated, isLoading, router]);
+    }, [isAuthenticated, isLoading, router, searchParams]);
 
     if (isLoading || !ready) {
         return <PageLoading message="Loading Playground..." bg="dark" />;

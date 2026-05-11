@@ -4,7 +4,9 @@ export type ToolIconKey =
     | "clip-path"
     | "snippet"
     | "grid"
-    | "face-alert";
+    | "face-alert"
+    | "planner"
+    | "ats";
 
 export type ToolAccent =
     | "sky"
@@ -60,9 +62,24 @@ export const toolLinks: ToolLink[] = [
         href: "/tools/css-grid-generator",
     },
     {
+        id: "study-planner",
+        name: "Study Planner AI",
+        href: "/tools/study-planner",
+    },
+    {
+        id: "ats-analyzer",
+        name: "ATS CV Analyzer",
+        href: "/tools/ats-analyzer",
+    },
+    {
         id: "face-touch-alert",
         name: "Cảnh báo sờ tay lên mặt",
         href: "/tools/face-touch-alert",
+    },
+    {
+        id: "ats-analyzer",
+        name: "ATS CV Analyzer",
+        href: "/tools/ats-analyzer",
     },
 ];
 
@@ -191,6 +208,29 @@ export const toolCatalog: ToolCatalogItem[] = [
             "Đây là nhóm công cụ thiên về AI và computer vision, phù hợp làm demo nghiên cứu hoặc bài trình bày đồ án.",
         outcome:
             "Tạo nền tảng tốt để trình bày pipeline nhận diện hành vi và kết nối giữa học máy với ứng dụng thực tế.",
+        accent: "cyan",
+    },
+    {
+        id: "study-planner",
+        name: "Study Planner AI",
+        href: "/tools/study-planner",
+        icon: "planner",
+        category: "AI",
+        focus: "Kế hoạch học tập",
+        audience: "Người học, mentor",
+        summary:
+            "Sinh kế hoạch học cá nhân hóa theo mục tiêu, thời gian và trọng tâm kỹ năng.",
+        description:
+            "Công cụ giúp biến mục tiêu học tập mơ hồ thành plan rõ ràng theo tuần, phù hợp với học viên cần lộ trình thực tế.",
+        highlights: [
+            "Chọn mục tiêu như xin thực tập, đổi việc hoặc build portfolio.",
+            "Tạo timeline học theo 2, 4 hoặc 8 tuần.",
+            "Có thể lưu plan để dùng lại hoặc sửa nhanh sau này.",
+        ],
+        tooltip:
+            "Rất hợp để biến mục tiêu học tập thành kế hoạch hành động rõ ràng chỉ trong vài thao tác.",
+        outcome:
+            "Giúp người học biết phải làm gì tuần này, tuần sau và hạn chế học lan man.",
         accent: "cyan",
     },
 ];

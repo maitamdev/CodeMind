@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowRight, Clock, Eye, Users, Sparkles, Zap, Star } from "lucide-react";
+import { Clock, Eye, Search, Sparkles, Star, Trophy, Users, Zap } from "lucide-react";
 
 import AvatarWithProBadge from "@/components/AvatarWithProBadge";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,7 +42,6 @@ const LEVEL_MAP: Record<string, string> = {
     ADVANCED: "Nâng cao",
 };
 
-// Helper function to calculate original price and discount for PRO courses
 const calculatePricing = (currentPrice: number) => {
     const originalPrice = Math.round(currentPrice * 1.4);
     const roundedOriginalPrice = Math.round(originalPrice / 100000) * 100000;
@@ -52,22 +51,40 @@ const calculatePricing = (currentPrice: number) => {
 
     return {
         originalPrice: roundedOriginalPrice,
-        currentPrice: currentPrice,
+        currentPrice,
         discountPercent,
     };
 };
+
+const sectionLinks = [
+    { label: "Lộ trình", href: "/roadmap" },
+    { label: "Bài viết", href: "/articles" },
+    { label: "Q&A", href: "/qa" },
+];
 
 export default function CoursesSection() {
     const [proCourses, setProCourses] = useState<Course[]>([]);
     const [freeCourses, setFreeCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [enrollingCourse, setEnrollingCourse] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<"all" | "pro" | "free">("all");
+    const [sortMode, setSortMode] = useState<"popular" | "rating" | "newest">("popular");
+    const [searchTerm, setSearchTerm] = useState("");
     const toast = useToast();
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated } = useAuth();
     const router = useRouter();
+    const [visibleCount, setVisibleCount] = useState(8);
+    const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchCourses();
+    }, []);
+
+    useEffect(() => {
+        const onResize = () => setVisibleCount(window.innerWidth >= 1280 ? 10 : 8);
+        onResize();
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
     }, []);
 
     const fetchCourses = async () => {
@@ -77,20 +94,15 @@ export default function CoursesSection() {
             const data = await response.json();
 
             if (data.success) {
-                const courses = data.data.courses.map(
-                    (course: any, index: number) => ({
-                        ...course,
-                        gradient: "",
-                        featured: index === 0 && !course.isFree,
-                        isEnrolled: false,
-                    }),
-                );
+                const courses = data.data.courses.map((course: any, index: number) => ({
+                    ...course,
+                    gradient: "",
+                    featured: index === 0 && !course.isFree,
+                    isEnrolled: false,
+                }));
 
-                const pro = courses.filter((c: Course) => c.isPro);
-                const free = courses.filter((c: Course) => c.isFree);
-
-                setProCourses(pro);
-                setFreeCourses(free);
+                setProCourses(courses.filter((c: Course) => c.isPro));
+                setFreeCourses(courses.filter((c: Course) => c.isFree));
             } else {
                 toast.error("Không thể tải danh sách khóa học");
             }
@@ -107,42 +119,21 @@ export default function CoursesSection() {
             toast.error("Vui lòng đăng nhập để đăng ký khóa học");
             return;
         }
-
         if (enrollingCourse) return;
 
         try {
             setEnrollingCourse(course.id);
-
             const response = await fetch(`/api/courses/${course.slug}/enroll`, {
                 method: "POST",
                 credentials: "include",
             });
-
             const data = await response.json();
 
             if (data.success) {
                 toast.success(data.message || "Đăng ký khóa học thành công!");
-
-                if (data.data?.upgradedToPro) {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    setTimeout(() => {
-                        router.push(`/learn/${course.slug}`);
-                    }, 800);
-                }
+                setTimeout(() => router.push(`/learn/${course.slug}`), 900);
             } else {
-                if (data.message && data.message.includes("đã đăng ký")) {
-                    toast.info(
-                        "Bạn đã đăng ký khóa học này. Đang chuyển hướng...",
-                    );
-                    setTimeout(() => {
-                        router.push(`/learn/${course.slug}`);
-                    }, 800);
-                } else {
-                    toast.error(data.message || "Không thể đăng ký khóa học");
-                }
+                toast.error(data.message || "Không thể đăng ký khóa học");
             }
         } catch (error) {
             console.error("Error during enrollment:", error);
@@ -152,45 +143,30 @@ export default function CoursesSection() {
         }
     };
 
-    const handleProCourseClick = async (course: Course) => {
-        if (!isAuthenticated) {
-            router.push(`/courses/${course.slug}`);
-            return;
-        }
-
-        if (enrollingCourse) return;
-
-        try {
-            setEnrollingCourse(course.id);
-
-            const response = await fetch(`/api/courses/${course.slug}`, {
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                if (data.data.isEnrolled) {
-                    router.push(`/learn/${course.slug}`);
-                } else {
-                    router.push(`/courses/${course.slug}`);
-                }
-            } else {
-                router.push(`/courses/${course.slug}`);
-            }
-        } catch (error) {
-            console.error("Error checking enrollment:", error);
-            router.push(`/courses/${course.slug}`);
-        } finally {
-            setEnrollingCourse(null);
-        }
+    const handleProCourseClick = (course: Course) => {
+        router.push(isAuthenticated ? `/courses/${course.slug}` : `/courses/${course.slug}`);
     };
 
-    // Skeleton loading component
+    const proCount = proCourses.length;
+    const freeCount = freeCourses.length;
+    const allCourses = [...proCourses, ...freeCourses];
+    const filteredCourses = (activeTab === "pro"
+        ? proCourses
+        : activeTab === "free"
+            ? freeCourses
+            : allCourses
+    ).filter((course) => {
+        const q = searchTerm.trim().toLowerCase();
+        if (!q) return true;
+        return [course.title, course.subtitle, course.instructor?.name, course.instructor?.username]
+            .filter(Boolean)
+            .some((value) => String(value).toLowerCase().includes(q));
+    }).sort((a, b) => {
+        if (sortMode === "rating") return b.rating - a.rating;
+        if (sortMode === "newest") return (b.totalLessons ?? 0) - (a.totalLessons ?? 0);
+        return b.students - a.students;
+    });
+
     const SkeletonCard = () => (
         <div className="border border-border overflow-hidden h-full flex flex-col bg-background animate-pulse">
             <div className="relative aspect-video bg-secondary flex-shrink-0" />
@@ -214,113 +190,126 @@ export default function CoursesSection() {
         </div>
     );
 
-    const renderSectionHeader = (title: string, subtitle: string, badge?: string) => (
-        <div className="flex items-center justify-between mb-8">
-            <div>
-                <div className="flex items-center gap-3 mb-2">
-                    <h2 className="text-foreground font-mono" style={{ fontWeight: 800 }}>
-                        {title}
-                    </h2>
-                    {badge && (
-                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 border border-border text-muted-foreground">
-                            {badge}
-                        </span>
-                    )}
-                </div>
-                <p className="text-muted-foreground text-sm">{subtitle}</p>
-            </div>
-            <a
-                href="/roadmap"
-                className="hidden md:flex items-center text-muted-foreground font-mono text-sm hover:text-foreground transition-colors duration-200"
-            >
-                Xem lộ trình
-                <ArrowRight className="w-4 h-4 ml-2" />
-            </a>
-        </div>
-    );
-
-    const GRID_CLASS =
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-px bg-border";
-
     return (
-        <section
-            id="courses-section"
-            className="py-16 bg-background"
-        >
+        <section id="courses-section" ref={sectionRef} className="py-16 bg-background">
             <div className="px-4 sm:px-6 md:px-10 lg:px-16 xl:px-[90px] 2xl:px-16">
+                <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                    <div>
+                        <div className="inline-flex items-center gap-2 border border-border bg-secondary/30 px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-3">
+                            <Sparkles className="h-3.5 w-3.5" />
+                            Danh mục học tập
+                        </div>
+                        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                            Khóa học được sắp xếp để bạn bắt đầu nhanh hơn
+                        </h2>
+                        <p className="text-muted-foreground max-w-2xl">
+                            Chọn giữa khóa Pro, miễn phí hoặc xem toàn bộ danh mục theo nhu cầu học tập hiện tại.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {sectionLinks.map((link) => (
+                            <a key={link.href} href={link.href} className="border border-border bg-background px-3 py-2 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
+                                {link.label}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="mb-6 grid gap-3 lg:grid-cols-[1fr_auto_auto] lg:items-center">
+                    <div className="relative">
+                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Tìm khóa học, giảng viên, nội dung..."
+                            className="w-full border border-border bg-background py-2.5 pl-9 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground"
+                        />
+                    </div>
+                    <select
+                        value={sortMode}
+                        onChange={(e) => setSortMode(e.target.value as typeof sortMode)}
+                        className="border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-foreground"
+                    >
+                        <option value="popular">Phổ biến</option>
+                        <option value="rating">Đánh giá cao</option>
+                        <option value="newest">Nhiều bài nhất</option>
+                    </select>
+                    <div className="flex flex-wrap gap-2 lg:justify-end">
+                        {[
+                            { id: "all", label: `Tất cả (${proCount + freeCount})` },
+                            { id: "pro", label: `Pro (${proCount})` },
+                            { id: "free", label: `Miễn phí (${freeCount})` },
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                                className={`border px-4 py-2 text-sm font-medium transition-colors ${activeTab === tab.id ? "border-foreground bg-foreground text-background" : "border-border bg-background text-foreground hover:bg-secondary"}`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 {loading ? (
-                    <>
-                        {/* PRO Courses Skeleton */}
-                        <div className="mb-16">
-                            {renderSectionHeader("Khóa học Pro", "Khóa học chuyên sâu cho developer", "PRO")}
-                            <div className={GRID_CLASS}>
-                                {[...Array(4)].map((_, index) => (
-                                    <SkeletonCard key={index} />
-                                ))}
-                            </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-border">
+                        {[...Array(8)].map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))}
+                    </div>
+                ) : filteredCourses.length === 0 ? (
+                    <div className="border border-border bg-background px-6 py-14 text-center">
+                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center border border-border bg-secondary">
+                            <Search className="h-5 w-5 text-muted-foreground" />
                         </div>
-                        {/* FREE Courses Skeleton */}
-                        <div>
-                            {renderSectionHeader("Khóa học miễn phí", "Học miễn phí với các khóa học chất lượng")}
-                            <div className={GRID_CLASS}>
-                                {[...Array(4)].map((_, index) => (
-                                    <SkeletonCard key={index} />
-                                ))}
-                            </div>
-                        </div>
-                    </>
+                        <h3 className="mb-2 text-lg font-semibold text-foreground">Không tìm thấy khóa học phù hợp</h3>
+                        <p className="mx-auto max-w-md text-sm leading-6 text-muted-foreground">
+                            Thử đổi từ khóa tìm kiếm hoặc chuyển sang tab khác để xem thêm lựa chọn.
+                        </p>
+                    </div>
                 ) : (
                     <>
-                        {proCourses.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                                className="mb-16"
-                            >
-                                {renderSectionHeader("Khóa học Pro", "Khóa học chuyên sâu cho developer", "PRO")}
-                                <div className={GRID_CLASS}>
-                                    {proCourses.map((course) => (
-                                        <CourseCard
-                                            key={course.id}
-                                            course={course}
-                                            onEnroll={() =>
-                                                handleEnroll(course)
-                                            }
-                                            onProClick={() =>
-                                                handleProCourseClick(course)
-                                            }
-                                            isEnrolling={
-                                                enrollingCourse === course.id
-                                            }
-                                        />
-                                    ))}
+                        <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                            <div className="border border-border bg-background p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 flex items-center justify-center border border-border bg-secondary">
+                                    <Zap className="h-4 w-4" />
                                 </div>
-                            </motion.div>
-                        )}
-                        {freeCourses.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                {renderSectionHeader("Khóa học miễn phí", "Học miễn phí với các khóa học chất lượng")}
-                                <div className={GRID_CLASS}>
-                                    {freeCourses.map((course) => (
-                                        <CourseCard
-                                            key={course.id}
-                                            course={course}
-                                            onEnroll={() =>
-                                                handleEnroll(course)
-                                            }
-                                            isEnrolling={
-                                                enrollingCourse === course.id
-                                            }
-                                        />
-                                    ))}
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">Học nhanh</p>
+                                    <p className="text-xs text-muted-foreground">Cấu trúc rõ, ít ma sát</p>
                                 </div>
-                            </motion.div>
-                        )}
+                            </div>
+                            <div className="border border-border bg-background p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 flex items-center justify-center border border-border bg-secondary">
+                                    <Trophy className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">Có động lực</p>
+                                    <p className="text-xs text-muted-foreground">Streak, XP và badge</p>
+                                </div>
+                            </div>
+                            <div className="border border-border bg-background p-4 flex items-center gap-3">
+                                <div className="h-10 w-10 flex items-center justify-center border border-border bg-secondary">
+                                    <Users className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">Cộng đồng</p>
+                                    <p className="text-xs text-muted-foreground">Học cùng người khác</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-px bg-border">
+                            {filteredCourses.slice(0, visibleCount).map((course) => (
+                                <CourseCard
+                                    key={course.id}
+                                    course={course}
+                                    onEnroll={() => handleEnroll(course)}
+                                    onProClick={() => handleProCourseClick(course)}
+                                    isEnrolling={enrollingCourse === course.id}
+                                />
+                            ))}
+                        </motion.div>
                     </>
                 )}
             </div>
@@ -340,7 +329,6 @@ function CourseCard({
     isEnrolling: boolean;
 }) {
     const { isAuthenticated } = useAuth();
-    const toast = useToast();
     const router = useRouter();
     const cardRef = useRef<HTMLDivElement>(null);
     const [localMouse, setLocalMouse] = useState({ x: 0, y: 0 });
@@ -355,36 +343,23 @@ function CourseCard({
 
     const handleCardClick = () => {
         if (isEnrolling) return;
-
+        if (course.isPro && onProClick) {
+            onProClick();
+            return;
+        }
         if (!isAuthenticated) {
             router.push(`/courses/${course.slug}`);
             return;
         }
-
-        (async () => {
-            try {
-                const response = await fetch(`/api/courses/${course.slug}`, {
-                    credentials: "include",
-                });
-                const data = await response.json();
-
-                if (data.success && data.data.isEnrolled) {
-                    router.push(`/learn/${course.slug}`);
-                } else {
-                    router.push(`/courses/${course.slug}`);
-                }
-            } catch {
-                router.push(`/courses/${course.slug}`);
-            }
-        })();
+        router.push(course.isFree ? `/learn/${course.slug}` : `/courses/${course.slug}`);
     };
 
-    const instructorName =
-        course.instructor?.name || course.instructor?.username || "Giảng viên";
+    const instructorName = course.instructor?.name || course.instructor?.username || "Giảng viên";
     const instructorAvatar = course.instructor?.avatar;
     const instructorIsPro = course.instructor?.isPro ?? false;
     const instructorIsRegistered = course.instructor?.isRegistered ?? false;
     const levelDisplay = LEVEL_MAP[course.level] || "Cơ bản";
+    const rating = Number.isFinite(course.rating) ? course.rating.toFixed(1) : "4.8";
 
     return (
         <div
@@ -395,7 +370,6 @@ function CourseCard({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Spotlight hover effect */}
             {isHovered && (
                 <div
                     className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
@@ -405,27 +379,22 @@ function CourseCard({
                 />
             )}
 
-            <div className="relative z-10">
-                {/* Banner */}
-                <div
-                    className={`relative aspect-video flex-shrink-0 overflow-hidden ${isEnrolling ? "opacity-50" : ""}`}
-                >
+            <div className="relative z-10 h-full border border-border">
+                <div className={`relative aspect-video flex-shrink-0 overflow-hidden ${isEnrolling ? "opacity-50" : ""}`}>
                     {course.thumbnailUrl ? (
                         <img
                             src={course.thumbnailUrl}
                             alt={course.title}
-                            className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                            className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         />
                     ) : (
-                        <div className="absolute inset-0 bg-secondary flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center justify-center bg-secondary">
                             <Sparkles className="w-8 h-8 text-muted-foreground/30" />
                         </div>
                     )}
 
-                    {/* Overlay gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                    {/* Pro badge */}
                     {course.isPro && !isEnrolling && (
                         <div className="absolute top-3 left-3 z-20">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-foreground text-background text-[10px] font-mono font-bold uppercase tracking-wider">
@@ -434,64 +403,51 @@ function CourseCard({
                         </div>
                     )}
 
-                    {/* Level badge */}
                     <div className="absolute top-3 right-3 z-20">
                         <span className="px-2 py-0.5 bg-background/80 backdrop-blur-sm border border-border text-foreground text-[10px] font-mono uppercase tracking-wider">
                             {levelDisplay}
                         </span>
                     </div>
 
-                    {/* Loading overlay */}
                     {isEnrolling && (
                         <div className="absolute inset-0 bg-background/60 flex items-center justify-center z-10">
                             <div className="text-foreground text-center">
                                 <div className="animate-spin h-5 w-5 border border-foreground border-t-transparent rounded-full mx-auto mb-2" />
-                                <div className="text-xs font-mono">
-                                    {course.isFree ? "enrolling..." : "checking..."}
-                                </div>
+                                <div className="text-xs font-mono">{course.isFree ? "enrolling..." : "checking..."}</div>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 flex flex-col p-4">
-                    {/* Title */}
-                    <h3 className="text-foreground font-semibold text-sm mb-2 line-clamp-2 group-hover:text-foreground/80 transition-colors">
+                <div className="flex h-full flex-col p-4">
+                    <h3 className="mb-2 text-sm font-semibold text-foreground line-clamp-2 transition-colors group-hover:text-foreground/80">
                         {course.title}
                     </h3>
+                    <p className="mb-3 text-xs leading-5 text-muted-foreground line-clamp-2">{course.subtitle}</p>
 
-                    {/* Price row */}
-                    <div className="mb-3">
+                    <div className="mb-3 flex items-center gap-3 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1"><Star className="h-3.5 w-3.5" /> {rating}</span>
+                        <span className="flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {course.students.toLocaleString()}</span>
+                        <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {course.duration}</span>
+                    </div>
+
+                    <div className="mb-3 flex items-baseline gap-2">
                         {course.isPro ? (
-                            <div className="flex items-baseline gap-2">
+                            <>
                                 <span className="text-xs text-muted-foreground line-through font-mono">
-                                    {new Intl.NumberFormat("vi-VN").format(
-                                        calculatePricing(course.priceAmount)
-                                            .originalPrice,
-                                    )}
-                                    đ
+                                    {new Intl.NumberFormat("vi-VN").format(calculatePricing(course.priceAmount).originalPrice)}đ
                                 </span>
                                 <span className="text-sm font-bold text-foreground font-mono">
-                                    {new Intl.NumberFormat("vi-VN").format(
-                                        course.priceAmount,
-                                    )}
-                                    đ
+                                    {new Intl.NumberFormat("vi-VN").format(course.priceAmount)}đ
                                 </span>
-                            </div>
+                            </>
                         ) : (
-                            <span className="text-sm font-bold text-foreground font-mono">
-                                {course.price === "Miễn phí"
-                                    ? "$ free"
-                                    : course.price}
-                            </span>
+                            <span className="text-sm font-bold text-foreground font-mono">Miễn phí</span>
                         )}
                     </div>
 
-                    {/* Author + Stats row */}
-                    <div className="flex items-center justify-between text-[12px] text-muted-foreground mt-auto font-mono">
-                        {/* Author */}
-                        <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="mt-auto flex items-center justify-between gap-3 text-[12px] text-muted-foreground font-mono">
+                        <div className="flex min-w-0 items-center gap-1.5">
                             <AvatarWithProBadge
                                 avatarUrl={instructorAvatar}
                                 fullName={instructorName}
@@ -499,22 +455,21 @@ function CourseCard({
                                 isRegistered={instructorIsRegistered}
                                 size="2xs"
                             />
-                            <span className="truncate">
-                                {instructorName}
-                            </span>
+                            <span className="truncate">{instructorName}</span>
                         </div>
-
-                        {/* Stats */}
-                        <div className="flex items-center gap-3 flex-shrink-0">
-                            <span className="flex items-center gap-1">
-                                <Eye className="w-3 h-3" />
-                                {course.students.toLocaleString()}
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {course.duration}
-                            </span>
-                        </div>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (course.isPro && onProClick) {
+                                    onProClick();
+                                    return;
+                                }
+                                onEnroll();
+                            }}
+                            className="shrink-0 border border-border bg-background px-3 py-1.5 text-[11px] uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
+                        >
+                            {course.isPro ? "Chi tiết" : "Học ngay"}
+                        </button>
                     </div>
                 </div>
             </div>

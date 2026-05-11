@@ -1,6 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,6 +17,7 @@ interface ModalProps {
   showCloseButton?: boolean;
   closeOnBackdropClick?: boolean;
   className?: string;
+  contentClassName?: string;
   headerIcon?: ReactNode;
   buttonSize?: ButtonSize;
 }
@@ -42,6 +44,7 @@ export default function Modal({
   showCloseButton = true,
   closeOnBackdropClick = true,
   className = "",
+  contentClassName = "",
   headerIcon,
   buttonSize = "md",
 }: ModalProps) {
@@ -100,66 +103,76 @@ export default function Modal({
     }
   };
 
-  if (!isOpen) return null;
+  // We need to use a portal to escape any parent containers with `transform`, `filter`, or `backdrop-filter`
+  // that would act as a containing block for `fixed` positioned elements.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 pointer-events-auto"
-        style={{ position: 'fixed', zIndex: 9999, isolation: 'isolate' }}
-        onMouseDown={handleBackdropMouseDown}
-        onMouseUp={handleBackdropMouseUp}
-        onClick={handleBackdropClick}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? "modal-title" : undefined}
-      >
+      {isOpen && (
         <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-          className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} ${className} max-h-[90vh] overflow-hidden flex flex-col`}
-          onClick={(e) => e.stopPropagation()}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto bg-black/60 backdrop-blur-sm p-3 sm:p-4 pointer-events-auto"
+          style={{ position: 'fixed', zIndex: 9999, isolation: 'isolate' }}
+          onMouseDown={handleBackdropMouseDown}
+          onMouseUp={handleBackdropMouseUp}
+          onClick={handleBackdropClick}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? "modal-title" : undefined}
         >
-          {/* Header */}
-          {(title || headerIcon || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <div className="flex items-center space-x-4">
-                {headerIcon && (
-                  <div className="flex-shrink-0">
-                    {headerIcon}
-                  </div>
-                )}
-                {title && (
-                  <div id="modal-title" className="modal-title text-gray-900 leading-tight">
-                    {title}
-                  </div>
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+            className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} ${className} max-h-[90vh] overflow-hidden flex flex-col mx-auto`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            {(title || headerIcon || showCloseButton) && (
+              <div className={`flex items-center justify-between p-6 border-b border-gray-100 ${!title && !headerIcon ? 'absolute right-0 top-0 border-none !p-4 z-50 w-full pointer-events-none' : ''}`}>
+                <div className="flex items-center space-x-4">
+                  {headerIcon && (
+                    <div className="flex-shrink-0">
+                      {headerIcon}
+                    </div>
+                  )}
+                  {title && (
+                    <div id="modal-title" className="modal-title text-gray-900 leading-tight">
+                      {title}
+                    </div>
+                  )}
+                </div>
+                {showCloseButton && (
+                  <button
+                    onClick={onClose}
+                    className="flex-shrink-0 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 pointer-events-auto"
+                    aria-label="Đóng modal"
+                  >
+                    <X className="w-4 h-4 text-gray-600" />
+                  </button>
                 )}
               </div>
-              {showCloseButton && (
-                <button
-                  onClick={onClose}
-                  className="flex-shrink-0 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  aria-label="Đóng modal"
-                >
-                  <X className="w-4 h-4 text-gray-600" />
-                </button>
-              )}
-            </div>
-          )}
+            )}
 
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
-            {children}
-          </div>
+            {/* Content */}
+            <div className={`flex-1 overflow-y-auto p-6 ${contentClassName}`}>
+              {children}
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </AnimatePresence>
+      )}
+    </AnimatePresence>,
+    document.body
   );
 }
 
