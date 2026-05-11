@@ -6,8 +6,9 @@ import { ArrowRight, BookOpen, CheckCircle2, Eye, EyeOff, Lock, Mail, Sparkles, 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { Suspense } from "react";
 
-export default function LoginPage() {
+function LoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get("redirect") || "/dashboard";
@@ -171,5 +172,13 @@ export default function LoginPage() {
                 </section>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-background" />}>
+            <LoginContent />
+        </Suspense>
     );
 }

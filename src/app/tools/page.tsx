@@ -17,6 +17,7 @@ import {
     Search,
     ShieldAlert,
     Sparkles,
+    Zap,
     type LucideIcon,
 } from "lucide-react";
 
@@ -40,6 +41,7 @@ const iconMap: Record<ToolCatalogItem["icon"], LucideIcon> = {
     grid: Grid3X3,
     planner: Sparkles,
     "face-alert": ShieldAlert,
+    ats: Zap,
 };
 
 const accentStyles: Record<ToolCatalogItem["accent"], { bar: string; iconBg: string; icon: string; check: string; hoverTitle: string; hoverBtn: string }> = {

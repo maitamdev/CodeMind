@@ -19,7 +19,7 @@ const AI_SERVICE_URL = process.env.AI_SERVICE_URL ?? "http://localhost:8000";
 export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
-        const file = (formData as any).get("file") as File | Blob | null;
+        const file = formData.get("file") as File | Blob | null;
 
         if (!file) {
             return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const filename = "name" in file ? (file as any).name : "";
+        const filename = file instanceof File ? file.name : "document.pdf";
         if (!filename.toLowerCase().endsWith(".pdf")) {
             return NextResponse.json(
                 { error: "Only PDF files are accepted" },
